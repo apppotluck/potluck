@@ -1,0 +1,64 @@
+<section ng-controller="HomeViewController">
+    <!-- social icons -->
+    <!-- /social icons -->
+    <section class="row">
+        <section class="col-xs-12 logo" style="margin-top:10%;">
+            <img src="./assets/images/pl-logo.png" width="371" height="145">
+
+        </section>
+    </section>
+
+    <section class="row">
+        <section class="col-xs-12">
+            <h3 class="pot-divider">Connect with</h3>
+        </section>
+    </section><!-- /sep -->
+
+    <!-- social icons -->
+    <section class="row">
+        <section class="col-xs-12 social-icons">
+            <section class="col-xs-2"></section>
+            <section class="col-xs-4"><a href="#"><img src="./assets/images/facebook.png"></a></section>
+            <section class="col-xs-4"><a href="#"><img src="./assets/images/twitter.png"></a></section>
+            <section class="col-xs-2"></section>
+        </section>
+    </section>
+
+    <section class="row">
+        <section class="col-xs-12">
+            <h3 class="pot-divider">or</h3>
+        </section>
+    </section>
+
+    <!-- Login form -->
+    <section class="row">
+        <section class="col-xs-12">
+            <form ng-submit="login()">
+                <article class="form-group pot-form-group">
+                    <label for="username" class="label-hide">{{constants.username}}</label>
+                    <input type="text" class="form-control pop-form-control sprite us" ng-model="login.username" id="username" placeholder="{{constants.username}}">
+                </article>
+
+                <article class="form-group pot-form-group">
+                    <label for="password" class="label-hide">{{constants.password}}</label>
+                    <input type="password" class="form-control pop-form-control sprite pd" ng-model="login.password" id="password" placeholder="{{constants.password}}">
+                </article>
+                <button type="submit" class="btn pop-btn orange">{{constants.signIn}}</button>
+
+            </form>
+        </section>
+        <!-- sep -->
+
+    </section><!-- /Login form -->
+
+    <section class="row">
+        <section class="col-xs-12">
+            <article class="pot-forgot pot-forgot-line text-center">
+                <a href="forgot-password">{{constants.forgotPassword}}?</a>
+                <a href="register">{{constants.signUp}}</a>
+            </article>
+        </section>
+    </section>
+
+
+</section>

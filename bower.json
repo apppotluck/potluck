@@ -1,0 +1,26 @@
+{
+  "name": "potluck",
+  "version": "1.0.0",
+  "homepage": "https://github.com/puneetratan/potluck",
+  "description": "potluck.",
+  "keywords": [
+    "potluck"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0",
+    "angular-route": "~1.2.14",
+    "jquery": "~2.1.0",
+    "requirejs": "~2.1.11",
+    "angular-bootstrap": "~0.13.4"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.0"
+  }
+}

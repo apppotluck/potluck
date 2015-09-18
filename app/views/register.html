@@ -1,0 +1,54 @@
+<section class="pop-btn yellow">
+    <section class="col-xs-1 back-arrow"><span class=""><a href="/"><img src="./assets/images/arrow.png" width="10" height="17" alt="Back Arrow"></a></span></section>
+    <section class="col-xs-9 title-text">Sign Up</section>
+    <section class="col-xs-1 sprite pot-moreover"></section>
+</section>
+<section class="container">
+    <section class="row" ng-controller="RegisterController">
+        <section class="col-xs-12">
+            <form name="userForm" ng-submit="submitForm()" novalidate role="form">
+
+                <article class="form-group pot-form-group"ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }" >
+                    <label for="username" class="label-hide">Username</label>
+                    <input type="text" class="form-control pop-form-control gry-bdr" ng-init="nameFocused = false" ng-focus="nameFocused = true" ng-class="{'org-bdr' : nameFocused}" ng-blur="nameFocused = false" id="name" placeholder="Name" ng-model="user.name"  ng-minlength="3" ng-maxlength="8" required>
+                    <span ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">You name is required.</span>
+                </article>
+
+
+
+                <article class="form-group pot-form-group"  ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+                    <label for="password" class="label-hide">Email Address</label>
+                    <input type="email" class="form-control pop-form-control gry-bdr" ng-init="emailFocused = false" ng-focus="emailFocused = true" ng-class="{'org-bdr' : emailFocused}" ng-blur="emailFocused = false" id="emailAddress" placeholder="Email Address" ng-model="user.email" required>
+                    <span class="col-red error-msg help-block" ng-show="userForm.email.$invalid && !userForm.email.$pristine">Please enter a valid email</span>
+                </article>
+
+                <article class="form-group pot-form-group">
+                    <label for="password" class="label-hide">Password</label>
+                    <input type="password"  class="form-control pop-form-control gry-bdr" ng-init="passwordFocused = false" ng-focus="passwordFocused = true" ng-class="{'org-bdr' : passwordFocused}" ng-blur="passwordFocused = false"  id="password" name="user_password" ng-model="user.password" ng-minlength="8" ng-maxlength="20" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" ng-required="true"  />
+
+                    <span ng-show="userForm.user_password.$error.required && userForm.user_password.$dirty">required</span>
+                    <span ng-show="!userForm.user_password.$error.required && (userForm.user_password.$error.minlength || userForm.user_password.$error.maxlength) && userForm.user_password.$dirty">Passwords must be between 8 and 20 characters.</span>
+                    <span ng-show="!userForm.user_password.$error.required && !userForm.user_password.$error.minlength && !userForm.user_password.$error.maxlength && userForm.user_password.$error.pattern && userForm.user_password.$dirty">Must contain one lower & uppercase letter, and one non-alpha character (a number or a symbol.)</span>
+
+                </article>
+
+                <article class="form-group pot-form-group" ng-class="{'has-error':userForm.user_cpassword.$invalid && !userForm.user_cpassword.$pristine}">
+                    <label for="password" class="label-hide">Confirm Password</label>
+                    <input ng-model="user.cpassword" class="form-control pop-form-control gry-bdr" ng-init="focused = false" ng-focus="cPasswordFocused = true" ng-class="{'org-bdr' : cPasswordFocused}" ng-blur="cPasswordFocused = false" name="user_cpassword" type="password" ng-required="true" valid-password-c="user.password"  >
+                    <span ng-show="userForm.user_cpassword.$viewValue != undefined && (userForm.user_password.$viewValue != userForm.user_cpassword.$viewValue)">Passwords do not match</span>
+
+                </article>
+
+                <article class="checkbox pot-checkbox" ng-class="{'has-error':userForm.user_terms.$invalid && !userForm.user_terms.$pristine}">
+                    <label class="pot-terms">
+                        <input type="checkbox" name="user_terms" value="Terms and conditions" ng-required="true"  /> I have read the terms and conditions
+                    </label>
+                    <span ng-show="userForm.user_terms.$error.required && userForm.user_terms.$dirty">required</span>
+                </article>
+
+                <button type="submit" class="btn pop-btn orange" ng-disabled="userForm.$invalid">Submit</button>
+                <button type="submit" class="btn pop-btn gry">Cancel</button>
+            </form>
+        </section>
+    </section>
+</section>

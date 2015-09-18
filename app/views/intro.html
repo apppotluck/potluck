@@ -1,0 +1,102 @@
+<!--<section class="row l-yellow">-->
+    <!--<figure><img src="./assets/images/yellow.png"></figure>-->
+    <!--<article class="title">Create Event & Invite Friends in ease.</article>-->
+    <!--<article class="desc">Register for FREE and Create an event and Invite in less then few seconds.</article>-->
+    <!--<section class="col-xs-12 pagi">-->
+        <!--<section class="col-xs-3"></section>-->
+        <!--<section class="col-xs-6">-->
+            <!--<ul class="pagination-dots">-->
+                <!--<li><a href="#" class="selected"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+            <!--</ul>-->
+        <!--</section>-->
+        <!--<section class="col-xs-3"></section>-->
+    <!--</section>-->
+    <!--<section class="row">-->
+        <!--<button type="submit" class="btn pop-btn orange">Get Started</button>-->
+    <!--</section>-->
+<!--</section>-->
+<!--<section class="row l-yellow violet">-->
+    <!--<figure><img src="./assets/images/yellow.png"></figure>-->
+    <!--<article class="title">Create Event & Invite Friends in ease.</article>-->
+    <!--<article class="desc">Register for FREE and Create an event and Invite in less then few seconds.</article>-->
+    <!--<section class="col-xs-12 pagi">-->
+        <!--<section class="col-xs-3"></section>-->
+        <!--<section class="col-xs-6">-->
+            <!--<ul class="pagination-dots">-->
+                <!--<li><a href="#" class="selected"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+            <!--</ul>-->
+        <!--</section><section class="col-xs-3"></section>-->
+    <!--</section>-->
+    <!--<section class="row">-->
+        <!--<button type="submit" class="btn pop-btn orange">Get Started</button>-->
+    <!--</section>-->
+<!--</section>-->
+<!--<section class="row l-yellow green">-->
+    <!--<figure><img src="./assets/images/yellow.png"></figure>-->
+    <!--<article class="title">Create Event & Invite Friends in ease.</article>-->
+    <!--<article class="desc">Register for FREE and Create an event and Invite in less then few seconds.</article>-->
+    <!--<section class="col-xs-12 pagi">-->
+        <!--<section class="col-xs-3"></section>-->
+        <!--<section class="col-xs-6">-->
+            <!--<ul class="pagination-dots">-->
+                <!--<li><a href="#" class="selected"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+            <!--</ul>-->
+        <!--</section><section class="col-xs-3"></section>-->
+    <!--</section>-->
+    <!--<section class="row">-->
+        <!--<button type="submit" class="btn pop-btn orange">Get Started</button>-->
+    <!--</section>-->
+<!--</section>-->
+<!--<section class="row l-yellow blue relative">-->
+    <!--<figure><img src="./assets/images/yellow.png"></figure>-->
+    <!--<article class="title">Create Event & Invite Friends in ease.</article>-->
+    <!--<article class="desc">Register for FREE and Create an event and Invite in less then few seconds.</article>-->
+    <!--<section class="col-xs-12 pagi">-->
+        <!--<section class="col-xs-3"></section>-->
+        <!--<section class="col-xs-6">-->
+            <!--<ul class="pagination-dots">-->
+                <!--<li><a href="#" class="selected"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+                <!--<li><a href="#"></a></li>-->
+            <!--</ul>-->
+        <!--</section><section class="col-xs-3"></section>-->
+
+    <!--</section>-->
+    <!--<section class="row">-->
+        <!--<button type="submit" class="btn pop-btn orange">Get Started</button>-->
+    <!--</section>-->
+<!--</section>-->
+<div ng-controller="IntroController">
+    <div>
+        <carousel interval="myInterval">
+            <slide ng-repeat="slide in slides" active="slide.active">
+                <section class="row l-yellow {{slide.cssName}}">
+                    <figure><img ng-src="{{slide.image}}" style="margin:auto;"></figure>
+                    <div class="carousel-caption">
+                        <article class="title">{{slide.titleText}}</article>
+                        <article class="desc">{{slide.subTitle}}</article>
+                        <section class="col-xs-12 pagi">
+                            <section class="col-xs-3"></section>
+                                <section class="col-xs-6">
+                                </section>
+                            <section class="col-xs-3"></section>
+                        </section>
+                    </div>
+                </section>
+            </slide>
+        </carousel>
+        <section class="row">
+        <button type="submit" class="btn pop-btn orange">{{constants.getStarted}}</button>
+        </section>
+    </div>
+</div>
