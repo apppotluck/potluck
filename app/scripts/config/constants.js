@@ -6,6 +6,7 @@ var constants = {
     ,"signUp"         : "New Here? Sign Up"
     ,"getStarted"     : "Get Started"
     , "fbAppId"       : 959273690831612
+    , "oathId"        : 'e6u0TKccWPGCnAqheXQYg76Vf2M'
 };
 
 var loginModelObject = {   "userId": ""

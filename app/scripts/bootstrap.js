@@ -37,9 +37,10 @@ require
 (
     [
         'app',
-        'services/API',
+        'services/twitterService',
         'bootstrap-ui',
-        'ngFacebook'
+        'ngFacebook',
+        'services/API'
     ],
     function(app)
     {

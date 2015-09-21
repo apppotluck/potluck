@@ -14,18 +14,6 @@ define([
                 return {
                     getAPI: function (serviceConfig, callbackFunction, errorCallback) {
                         var shouldExclude = false;
-//                        console.log("***********"+serviceConfig.url+"********************** Before service call ******** "+new Date().getTime())
-
-                        if ((serviceConfig.method == 'POST')) {
-//                            for (var i = 0; i < excludeSecurityCheckArr.length; i++) {
-//                                if (!(serviceConfig.url.indexOf(excludeSecurityCheckArr[i]) < 0)) {
-//                                    shouldExclude = true;
-//                                }
-//                            }
-//                            if (!shouldExclude) {
-//                                serviceConfig = angular.copy(commonMethods.addHeaderForEncryption(serviceConfig));
-//                            }
-                        }
                         $http.defaults.useXDomain = true;
                         $http(serviceConfig).success(function (response, status, headers, config) {
 //                            console.log("***********"+serviceConfig.url+"**********************  Got response       ******** "+new Date().getTime())
