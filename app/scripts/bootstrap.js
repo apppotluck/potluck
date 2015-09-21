@@ -7,7 +7,8 @@ require.config({
 		'jquery'            : '/bower_components/jquery/dist/jquery',
         'constants'         : '/scripts/config/constants',
         'appConfig'         : '/scripts/config/appConfig',
-        'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls'
+        'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls',
+        'ngFacebook'         : '../lib/ngFacebook'
     },
 	shim: {
         'angular': {
@@ -22,6 +23,9 @@ require.config({
         'bootstrap-ui': {
             deps: ['angular']
         },
+        'ngFacebook': {
+            deps: ['angular']
+        },
 		'bootstrap': {
 			deps: ['jquery']
 		}
@@ -34,7 +38,8 @@ require
     [
         'app',
         'services/API',
-        'bootstrap-ui'
+        'bootstrap-ui',
+        'ngFacebook'
     ],
     function(app)
     {

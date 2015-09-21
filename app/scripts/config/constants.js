@@ -5,6 +5,7 @@ var constants = {
     ,"forgotPassword" : "Forgot Password"
     ,"signUp"         : "New Here? Sign Up"
     ,"getStarted"     : "Get Started"
+    , "fbAppId"       : 959273690831612
 };
 
 var loginModelObject = {   "userId": ""
