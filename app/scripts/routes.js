@@ -6,7 +6,8 @@ define([], function()
             '/': {
                 templateUrl: '/views/home.html',
                 dependencies: [
-                    'controllers/HomeViewController'
+                    'controllers/HomeViewController',
+                    'directives/google-plus-signin'
                 ]
             },
             '/intro': {
@@ -20,6 +21,7 @@ define([], function()
                 dependencies: [
                     'controllers/RegisterController',
                     'directives/compareTo'
+
                 ]
             },
             '/forgot-password': {

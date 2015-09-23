@@ -50,6 +50,15 @@ define(['app'], function(app)
                 $scope.refreshTimeline();
             }
 
+            $scope.$on('signinCallback', function (event, authResult) {
+                // User successfully authorized the G+ App!
+                console.log('Signed in!');
+            });
+            $scope.$on('event:google-plus-signin-failure', function (event, authResult) {
+                // User has not authorized the G+ App!
+                console.log('Not signed into Google Plus.');
+            });
+
             $scope.login = function () {
                 loginModelObject.userId = $scope.login.username;
                 loginModelObject.password = $scope.login.password;
