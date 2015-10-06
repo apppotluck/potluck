@@ -1,5 +1,5 @@
 var constants = {
-    "username"        : "UserName1234"
+    "username"        : "UserName"
     ,"password"       : "password"
     ,"signIn"         : "Sign In"
     ,"forgotPassword" : "Forgot Password"
