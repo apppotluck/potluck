@@ -4,11 +4,12 @@ define(['app'], function(app)
         [
             '$scope',
             '$location',
+            '$animate',
             function($scope,API,$location) {
                 $scope.constants = constants;
-                $scope.myInterval = 5000;
-                $scope.noWrapSlides = false;
-                $scope.slides= [];
+                $scope.myInterval = 50000;
+                $scope.noWrapSlides = true;
+                var slides = $scope.slides= [];
                 $scope.slides = [{
                     "titleText":"Create Event & Invite Friends in ease1.",
                     "subTitle":"Register for FREE and Create an event and Invite in less then few seconds.",
@@ -32,4 +33,5 @@ define(['app'], function(app)
                 }]
             }
         ]);
+    
 });

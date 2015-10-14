@@ -20,16 +20,25 @@ define([], function()
                 templateUrl: '/views/register.html',
                 dependencies: [
                     'controllers/RegisterController',
-                    'directives/compareTo'
-
+                    'directives/compareTo',
+                    'directives/header'
                 ]
             },
             '/forgot-password': {
                 templateUrl: '/views/forgot-password.html',
                 dependencies: [
-                    'controllers/ForgotPasswordController'
+                    'controllers/ForgotPasswordController',
+                    'directives/header'
+                ]
+            },
+            '/create-event': {
+                templateUrl: '/views/events/create-event.html',
+                dependencies: [
+                    'controllers/events/CreateEventController',
+                    'directives/header'
                 ]
             }
+
         }
     };
 });

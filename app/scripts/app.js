@@ -1,7 +1,6 @@
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
-    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngFacebook']);
-
+    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngAnimate','ngFacebook']);
     app
     .config(
         [
@@ -23,7 +22,10 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
 
                 $facebookProvider.setAppId(constants.fbAppId);
 
-                $locationProvider.html5Mode(true);
+               $locationProvider.html5Mode({
+                  enabled: true,
+                  requireBase: false
+                });
 
                 if(config.routes !== undefined)
                 {

@@ -7,15 +7,16 @@ require.config({
 		'jquery'            : '/bower_components/jquery/dist/jquery',
         'constants'         : '/scripts/config/constants',
         'appConfig'         : '/scripts/config/appConfig',
-        'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls',
-        'ngFacebook'         : '../lib/ngFacebook'
+        'angular-animate'   : '/bower_components/angular-animate/angular-animate',
+        'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
+        'ngFacebook'        : '../lib/ngFacebook'
     },
 	shim: {
         'angular': {
             exports: 'angular'
         },
         'app': {
-			deps: ['angular', 'angular-route','bootstrap','constants','appConfig','bootstrap-ui']
+			deps: ['angular', 'angular-route','bootstrap','constants','appConfig','angular-animate','bootstrap-ui']
 		},
 		'angular-route': {
 			deps: ['angular']
@@ -28,7 +29,10 @@ require.config({
         },
 		'bootstrap': {
 			deps: ['jquery']
-		}
+		},
+        'angular-animate': {
+            deps: ['angular']
+        }
 	},
     priority: ['angular']
 });
@@ -38,7 +42,6 @@ require
     [
         'app',
         'services/twitterService',
-        'bootstrap-ui',
         'ngFacebook',
         'services/API'
     ],
