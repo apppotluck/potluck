@@ -9,7 +9,11 @@ require.config({
         'appConfig'         : '/scripts/config/appConfig',
         'angular-animate'   : '/bower_components/angular-animate/angular-animate',
         'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
-        'ngFacebook'        : '../lib/ngFacebook'
+        'ngFacebook'        : '../lib/ngFacebook',
+        'timepickerPop'     : '../lib/timepickerPop',
+        'ngAutocomplete'    : '../lib/ngAutocomplete',
+        'autocomplete'    : '../lib/autocomplete',
+
     },
 	shim: {
         'angular': {
@@ -32,6 +36,15 @@ require.config({
 		},
         'angular-animate': {
             deps: ['angular']
+        },
+        'timepickerPop': {
+            deps:['angular','bootstrap-ui']
+        },
+        'ngAutocomplete':{
+            deps:['angular']
+        },
+        'autocomplete': {
+            deps:['angular']
         }
 	},
     priority: ['angular']
@@ -43,7 +56,10 @@ require
         'app',
         'services/twitterService',
         'ngFacebook',
-        'services/API'
+        'services/API',
+        'timepickerPop',
+        'ngAutocomplete',
+        'autocomplete'
     ],
     function(app)
     {

@@ -1,86 +1,129 @@
 <header title="Create Event"></header>
-<section class="row">
-           <section class="col-xs-12">
-           		<form>
-                	<article class="form-group pot-form-group">
-                        <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr org-bdr" id="name" placeholder="Event Name">
-                        <span class="col-gry error-msg">For ex. Sunday Funday</span>
-                    </article>
-                    
-                    <section class="row">
-                   		<section class="col-xs-6">
-                        	<article class="form-group pot-form-group">
-                    		<span class="date-icon"></span>
-							<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="password" placeholder="Date">
-                    </article>
-                        </section>
-                        <section class="col-xs-6">
-                        	 <article class="form-group pot-form-group">
-                     	<span class="time-icon"></span>
-                        <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="confirm password" placeholder="Start Time">
-                        <span class="col-gry error-msg"><a href="#">Add End Time</a> (Optional)</span>
-                    </article>
-                        </section>
-                    </section>
-                    
-                    <article class="form-group pot-form-group">
-                    	<span class="loc-icon"></span>
-						<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Location">
-                        <span class="col-gry error-msg">Type the complete address</span>
-                    </article>
-                    
-                   <section class="row create-event" style="margin-bottom:20px;">
-                        <section class="col-xs-4">
-                        <input type="radio" id="radio03" name="radio1" />
-                        <label for="radio03"><span></span>Veg</label>
-                        </section>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="style/autocomplete.css"> -->
 
-                        <section class="col-xs-4">
-                         <input type="radio" id="radio04" name="radio1" />
-                         <label for="radio04"><span></span>N-Veg</label>
-                        </section>
-                        
-                         <section class="col-xs-4">
-                         <input type="radio" id="radio05" name="radio1" />
-                         <label for="radio05"><span></span>Both</label>
-                        </section>
-                    </section>
-                    
-                    
-    				
-					 <article class="form-group pot-form-group">
-                     	<span class="dropdown-icon"></span>
-						<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Choose Theme (Optional)">
+<style type="text/css">
+/* AUTOCOMPLETE */
+
+.autocomplete{
+  width: 100%;
+  position: relative;
+}
+
+.autocomplete input{
+  font-size: 1.2em;
+  width: 100%;
+  padding:0.4em;
+}
+
+.autocomplete ul{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-left: 1px solid #888;
+  border-right: 1px solid #888;
+  border-bottom: 1px solid #888;
+  z-index: 1;
+}
+
+.autocomplete li{
+  text-align: left;
+  list-style:none;
+  width: 100%;
+  padding:0.4em;
+  background-color: #fff;
+}
+
+.autocomplete li.active{
+  width: 100%;
+  background-color: #4bf;
+}
+
+.autocomplete .highlight {
+  background-color: #E2E2E2;
+}
+
+.autocomplete li.active .highlight {
+  background: #666;
+  color: #fff;
+}
+
+</style>
+<section class="row" ng-controller="CreateEventController">
+    <section class="col-xs-12">
+        <form>
+            <article class="form-group pot-form-group">
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr org-bdr" id="name" placeholder="Event Name">
+                <span class="col-gry error-msg">For ex. Sunday Funday</span>
+            </article>
+            <section class="row">
+                <section class="col-xs-6">
+                    <article class="form-group pot-form-group">
+                        <input type="date" class="form-control ng-valid ng-isolate-scope ng-valid-required ng-dirty ng-valid-date ng-touched" uib-datepicker-popup="" ng-model="dt" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required="required" style="">
                     </article>
-                    
-                         
-                    <article class="form-group pot-form-group relative">
-                     	<span class="dropdown-icon"></span>
-						<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Invitees Choice">
-                       <span class="col-gry error-msg">Invitees can bring their own choice of food.</span>
+                </section>
+                <section class="col-xs-6">
+                    <article class="form-group pot-form-group">
+                        <span class="time-icon"></span>
+                        <!-- <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="confirm password" placeholder="Start Time"> -->
+                        <div class="container">
+                            <div class='col-md-6 col-md-offset-3'>
+                                <timepicker-pop input-time="time1" class="input-group" show-meridian='showMeridian'>
+                                </timepicker-pop>
+                            </div>
+                        </div>
+                        <!-- <span class="col-gry error-msg"><a href="#">Add End Time</a> (Optional)</span> -->
                     </article>
-                    
-                    
-                     <article class="form-group pot-form-group">
-                     	<span class="invfriends-icon"></span>
-						<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Assign Dishes">
-                        <span class="col-gry error-msg">Add dishes you prefer for this potluck.</span>
-                    </article>
-                    
-                    
-                     <article class="form-group pot-form-group">
-                     	<span class="invfriends-icon"></span>
-						<input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Invite Friends">
-                        <span class="col-gry error-msg">5 friends has been invited. <a href="#">View</a></span>
-                    </article>
-                    
-                      <article class="form-group pot-form-group padbot40">
-                     <textarea placeholder="Enter your personalised message...(Optional)" class="menu-message gry-bdr"></textarea>
-                    </article>
-                </form>
-                <section class="row">
-        			<button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
-        		</section>
-           </section>
-        </section><!-- /Login form -->
+                </section>
+            </section>
+            <article class="form-group pot-form-group">
+                <!-- <span class="loc-icon"></span>
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Location"> -->
+                <span class="col-gry error-msg">Type the complete address</span>
+                 <input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1" details="details1" ng-model="currentlocation" options="options1"/>
+            </article>
+            <section class="row create-event" style="margin-bottom:20px;">
+                <section class="col-xs-4">
+                    <input type="radio" id="radio03" name="radio1" />
+                    <label for="radio03"><span></span>Veg</label>
+                </section>
+                <section class="col-xs-4">
+                    <input type="radio" id="radio04" name="radio1" />
+                    <label for="radio04"><span></span>N-Veg</label>
+                </section>
+                <section class="col-xs-4">
+                    <input type="radio" id="radio05" name="radio1" />
+                    <label for="radio05"><span></span>Both</label>
+                </section>
+            </section>
+            <article class="form-group pot-form-group">
+                <span class="dropdown-icon"></span>
+                <!-- <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Choose Theme (Optional)"> -->
+                <autocomplete ng-model="result" attr-placeholder="type to search themes..." click-activation="true" data="themes" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+            </article>
+            <article class="form-group pot-form-group relative">
+                <span class="dropdown-icon"></span>
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Invitees Choice">
+                <span class="col-gry error-msg">Invitees can bring their own choice of food.</span>
+            </article>
+            <article class="form-group pot-form-group">
+                <span class="invfriends-icon"></span>
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Assign Dishes">
+                <span class="col-gry error-msg">Add dishes you prefer for this potluck.</span>
+            </article>
+            <article class="form-group pot-form-group">
+                <span class="invfriends-icon"></span>
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Invite Friends">
+                <span class="col-gry error-msg">5 friends has been invited. <a href="#">View</a></span>
+            </article>
+            <article class="form-group pot-form-group padbot40">
+                <textarea placeholder="Enter your personalised message...(Optional)" class="menu-message gry-bdr"></textarea>
+            </article>
+        </form>
+        <section class="row">
+            <button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
+        </section>
     </section>
+</section>
+<!-- /Login form -->
+</section>

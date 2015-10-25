@@ -4,49 +4,68 @@
 
 var SERVICES_DOMAIN_NAME = '';
 
-if(window.location.hostname == 'localhost') {
+if (window.location.hostname == 'localhost') {
     // starts LOCAL Configurations
     var APP_SERVICE_FOLDER_NAME = '/';
     var SERVICES_CONTEXT_NAME = '/';
-    var PHOTO_URL_CONTEXT = SERVICES_DOMAIN_NAME+'/';
+    var PHOTO_URL_CONTEXT = SERVICES_DOMAIN_NAME + '/';
 }
 
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
-var METHOD_TYPE_GET ='GET';
-var METHOD_TYPE_POST ='POST';
-var METHOD_TYPE_PUT ='PUT';
-var METHOD_TYPE_DELETE ='DELETE';
+var METHOD_TYPE_GET = 'GET';
+var METHOD_TYPE_POST = 'POST';
+var METHOD_TYPE_PUT = 'PUT';
+var METHOD_TYPE_DELETE = 'DELETE';
 
-var requestHeaders =  {
+var requestHeaders = {
     'Content-Type': 'application/json',
-    'Accept':'application/json'
+    'Accept': 'application/json'
 };
 
 
 var AUTHENTICATE_USER = {
     method: METHOD_TYPE_POST,
-    url: SERVICES_DOMAIN_NAME +SERVICES_CONTEXT_NAME+ SERVICE_NAME_AUTH_USER,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_AUTH_USER,
+    headers: requestHeaders
+};
+var CURRENT_LOCATION = {
+    method: METHOD_TYPE_GET,
+    url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=40.1381687,-82.9843817',
     headers: requestHeaders
 };
 
 var appConfig = {
-    'component':{
+    'component': {
         API: {
             name: 'ServiceAPI'
         },
-      'authUser' :{
-          'serviceConfig': {
-              method:METHOD_TYPE_POST,
-              url:SERVICES_DOMAIN_NAME+SERVICES_CONTEXT_NAME+SERVICE_NAME_AUTH_USER,
-              headers: requestHeaders
-          }
-      }
+        'authUser': {
+            'serviceConfig': {
+                method: METHOD_TYPE_POST,
+                url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_AUTH_USER,
+                headers: requestHeaders
+            }
+        },
+        'getCurrentLocation': {
+            'serviceConfig': {
+                method: METHOD_TYPE_GET,
+                url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_AUTH_USER,
+                headers: requestHeaders
+            }
+        }
     },
     'serviceAPI': {
         // AUTHORIZATION SERVICE
-        'authAPI': function (API, _successCallback, _errorCallback, requestBody) {
+        'authAPI': function(API, _successCallback, _errorCallback, requestBody) {
             var serviceConfig = angular.copy(AUTHENTICATE_USER);
             serviceConfig.data = requestBody;
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'getCurrentLocation': function(API, _successCallback, _errorCallback, requestBody) {
+            var serviceConfig = {};
+            serviceConfig.method =  METHOD_TYPE_GET,
+            serviceConfig.url =  'https://maps.googleapis.com/maps/api/geocode/json?latlng='+requestBody.lat+','+requestBody.lang,
+            serviceConfig.headers =  requestHeaders;
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         }
     }

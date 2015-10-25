@@ -1,6 +1,6 @@
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
-    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngAnimate','ngFacebook']);
+    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngAnimate','ngFacebook','timepickerPop','ngAutocomplete','autocomplete']);
     app
     .config(
         [
@@ -22,7 +22,7 @@ define(['routes','services/dependencyResolverFor'], function(config, dependencyR
 
                 $facebookProvider.setAppId(constants.fbAppId);
 
-               $locationProvider.html5Mode({
+                $locationProvider.html5Mode({
                   enabled: true,
                   requireBase: false
                 });
