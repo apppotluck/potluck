@@ -12,6 +12,7 @@ if (window.location.hostname == 'localhost') {
 }
 
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
+var SERVICE_NAME_CREATE_EVENT = 'create-event'; //POST
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -33,6 +34,11 @@ var CURRENT_LOCATION = {
     url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=40.1381687,-82.9843817',
     headers: requestHeaders
 };
+var CREATE_EVENT = {
+    method: METHOD_TYPE_POST,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_CREATE_EVENT,
+    headers: requestHeaders
+}
 
 var appConfig = {
     'component': {
@@ -63,9 +69,15 @@ var appConfig = {
         },
         'getCurrentLocation': function(API, _successCallback, _errorCallback, requestBody) {
             var serviceConfig = {};
-            serviceConfig.method =  METHOD_TYPE_GET,
-            serviceConfig.url =  'https://maps.googleapis.com/maps/api/geocode/json?latlng='+requestBody.lat+','+requestBody.lang,
-            serviceConfig.headers =  requestHeaders;
+            serviceConfig.method = METHOD_TYPE_GET,
+                serviceConfig.url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + requestBody.lat + ',' + requestBody.lang,
+                serviceConfig.headers = requestHeaders;
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'createEvent': function(API, _successCallback, _errorCallback, requestBody) {
+            var serviceConfig = angular.copy(CREATE_EVENT);
+            serviceConfig.data = requestBody;
+            console.log("====",requestBody);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         }
     }

@@ -47,6 +47,17 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $rootScope.displayCreateEventFormDisplay = false;
                     $rootScope.inviteFriendsFormDisplay = true;
                 }
+
+                $scope.createEvent = function() {
+                  $scope.demo = {};
+                  $scope.demo.name = "eventName";
+                  $scope.demo.test = "eventtest";
+                  appConfig.serviceAPI.createEvent(API,function(response){
+                      console.log(response);
+                  },function(err){
+                    console.log(err);
+                  },$scope.demo);
+                }
             }
 
         ])
