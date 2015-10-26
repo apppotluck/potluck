@@ -1,0 +1,8 @@
+<section class="row" >
+	Invite friends
+	<div ng-repeat="item in items">
+		<input type="text" placeholder="{{item.friendNameName}}" ng-model="item.friendNameName"> X
+	</div>	
+	<button name="add more friend" value="Add more" ng-click="add()">Add More</button>
+	<button name="submit" ng-click="addFriends()">Submit</button>
+</section>

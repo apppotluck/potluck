@@ -4,7 +4,8 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             '$scope',
             'API',
             '$location',
-            function($scope, API, $location) {
+            '$rootScope',
+            function($scope, API, $location,$rootScope) {
                 $scope.today = function() {
                     $scope.dt = new Date();
                 };
@@ -19,9 +20,11 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $scope.result1 = '';
                 $scope.options1 = null;
                 $scope.details1 = '';
+                $rootScope.displayCreateEventFormDisplay = true;
+                $rootScope.totalNumberOfFriendsInvited = 0;
 
                 $scope.themes = ["Italian", "Indian", "Chinees", "USA"];
-                $scope.friends= ["Puneet","Archana","Sajjin","Pooja","Kaarthik","Malai","Sarvanan"];
+                $scope.friends = ["Puneet", "Archana", "Sajjin", "Pooja", "Kaarthik", "Malai", "Sarvanan"];
 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showPosition);
@@ -39,7 +42,33 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                         console.log(err);
                     }, $scope.locationObject)
                 }
+
+                $scope.inviteFriends = function() {
+                    $rootScope.displayCreateEventFormDisplay = false;
+                    $rootScope.inviteFriendsFormDisplay = true;
+                }
             }
 
         ])
+    app.controller('InviteFriendsController', [
+        '$scope',
+        'API',
+        '$location',
+        '$rootScope',
+        function($scope, API, $location,$rootScope) {
+            $scope.inviteFriendsForm = '/views/events/invite-friends.html';
+            $scope.items = [{"friendNameName":""}];
+            $scope.add = function() {
+                $scope.items.push({
+                    friendNameName: ""
+                });
+            };
+            $scope.addFriends = function() {
+              console.log($scope.items.length);
+              $rootScope.inviteFriendsFormDisplay = false;
+              $rootScope.displayCreateEventFormDisplay = true;
+              $rootScope.totalNumberOfFriendsInvited = $scope.items.length;
+            }
+        }
+    ])
 });

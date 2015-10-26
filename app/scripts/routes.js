@@ -38,7 +38,6 @@ define([], function()
                     'directives/header'
                 ]
             }
-
         }
     };
 });

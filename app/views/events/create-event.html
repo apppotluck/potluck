@@ -49,8 +49,8 @@
 }
 
 </style>
-<section class="row" ng-controller="CreateEventController">
-    <section class="col-xs-12">
+<section class="row" ng-controller="CreateEventController" >
+    <section class="col-xs-12" ng-show="displayCreateEventFormDisplay">
         <form>
             <article class="form-group pot-form-group">
                 <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr org-bdr" id="name" placeholder="Event Name">
@@ -112,9 +112,9 @@
                 <span class="col-gry error-msg">Add dishes you prefer for this potluck.</span>
             </article>
             <article class="form-group pot-form-group">
-                <span class="invfriends-icon"></span>
+                <span class="invfriends-icon" ng-click="inviteFriends();"></span>
                 <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Invite Friends">
-                <span class="col-gry error-msg">5 friends has been invited. <a href="#">View</a></span>
+                <span class="col-gry error-msg">{{totalNumberOfFriendsInvited}} friends has been invited. <a href="#" ng-click="inviteFriends()">View</a></span>
             </article>
             <article class="form-group pot-form-group padbot40">
                 <textarea placeholder="Enter your personalised message...(Optional)" class="menu-message gry-bdr"></textarea>
@@ -125,5 +125,7 @@
         </section>
     </section>
 </section>
-<!-- /Login form -->
+
+<section>
+<div ng-include="inviteFriendsForm" ng-controller="InviteFriendsController" ng-show="inviteFriendsFormDisplay"></div>
 </section>
