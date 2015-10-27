@@ -6,20 +6,15 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             '$location',
             '$rootScope',
             function($scope, API, $location,$rootScope) {
+                $scope.event = {};
                 $scope.today = function() {
-                    $scope.dt = new Date();
+                    $scope.event.date = new Date();
                 };
                 $scope.today();
                 $scope.time1 = new Date();
-
-                $scope.time2 = new Date();
-                $scope.time2.setHours(7, 30);
                 $scope.showMeridian = true;
 
                 $scope.disabled = false;
-                $scope.result1 = '';
-                $scope.options1 = null;
-                $scope.details1 = '';
                 $rootScope.displayCreateEventFormDisplay = true;
                 $rootScope.totalNumberOfFriendsInvited = 0;
 
@@ -31,13 +26,13 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 }
 
                 function showPosition(position) {
-                    $scope.currentlocation = "Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude;
+                    $scope.event.currentlocation = "Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude;
                     $scope.locationObject = {};
                     $scope.locationObject.lat = position.coords.latitude;
                     $scope.locationObject.lang = position.coords.longitude;
                     appConfig.serviceAPI.getCurrentLocation(API, function(response) {
                         // console.log(response.results[0].formatted_address);
-                        $scope.currentlocation = response.results[0].formatted_address
+                        $scope.event.currentlocation = response.results[0].formatted_address
                     }, function(err) {
                         console.log(err);
                     }, $scope.locationObject)
@@ -49,14 +44,13 @@ define(['app', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 }
 
                 $scope.createEvent = function() {
-                  $scope.demo = {};
-                  $scope.demo.name = "eventName";
-                  $scope.demo.test = "eventtest";
-                  appConfig.serviceAPI.createEvent(API,function(response){
-                      console.log(response);
-                  },function(err){
-                    console.log(err);
-                  },$scope.demo);
+                  console.log($scope.event)
+                  console.log($scope.time1,"====",$scope.event.inputTime);
+                  // appConfig.serviceAPI.createEvent(API,function(response){
+                  //     console.log(response);
+                  // },function(err){
+                  //   console.log(err);
+                  // },$scope.demo);
                 }
             }
 

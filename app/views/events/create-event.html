@@ -53,13 +53,13 @@
     <section class="col-xs-12" ng-show="displayCreateEventFormDisplay">
         <form>
             <article class="form-group pot-form-group">
-                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr org-bdr" id="name" placeholder="Event Name">
+                <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr org-bdr" id="name" placeholder="Event Name" ng-model="event.name">
                 <span class="col-gry error-msg">For ex. Sunday Funday</span>
             </article>
             <section class="row">
                 <section class="col-xs-6">
                     <article class="form-group pot-form-group">
-                        <input type="date" class="form-control ng-valid ng-isolate-scope ng-valid-required ng-dirty ng-valid-date ng-touched" uib-datepicker-popup="" ng-model="dt" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required="required" style="">
+                        <input type="date" class="form-control ng-valid ng-isolate-scope ng-valid-required ng-dirty ng-valid-date ng-touched" uib-datepicker-popup="" ng-model="event.date" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required="required" style="">
                     </article>
                 </section>
                 <section class="col-xs-6">
@@ -68,8 +68,10 @@
                         <!-- <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="confirm password" placeholder="Start Time"> -->
                         <div class="container">
                             <div class='col-md-6 col-md-offset-3'>
-                                <timepicker-pop input-time="time1" class="input-group" show-meridian='showMeridian'>
+                              <!-- <input type="text" dn-timepicker ng-model="time1" min-time="9:00" max-time="17:00" step="10m"/> -->
+                                <timepicker-pop input-time="time1" ng-model="event.time" class="input-group" show-meridian='showMeridian'>
                                 </timepicker-pop>
+                                <!-- <input type="text" ng-model="event.time" value="time1 | date:'shortTime' "> -->
                             </div>
                         </div>
                         <!-- <span class="col-gry error-msg"><a href="#">Add End Time</a> (Optional)</span> -->
@@ -80,26 +82,26 @@
                 <!-- <span class="loc-icon"></span>
                 <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Location"> -->
                 <span class="col-gry error-msg">Type the complete address</span>
-                 <input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1" details="details1" ng-model="currentlocation" options="options1"/>
+                 <input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1" details="details1" ng-model="event.currentlocation" options="options1"/>
             </article>
             <section class="row create-event" style="margin-bottom:20px;">
                 <section class="col-xs-4">
-                    <input type="radio" id="radio03" name="radio1" />
+                    <input type="radio" id="radio03" name="radio1" ng-model="event.foodtype"  />
                     <label for="radio03"><span></span>Veg</label>
                 </section>
                 <section class="col-xs-4">
-                    <input type="radio" id="radio04" name="radio1" />
+                    <input type="radio" id="radio04" name="radio1" ng-model="event.foodtype" />
                     <label for="radio04"><span></span>N-Veg</label>
                 </section>
                 <section class="col-xs-4">
-                    <input type="radio" id="radio05" name="radio1" />
+                    <input type="radio" id="radio05" name="radio1" ng-model="event.foodtype" />
                     <label for="radio05"><span></span>Both</label>
                 </section>
             </section>
             <article class="form-group pot-form-group">
                 <span class="dropdown-icon"></span>
                 <!-- <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Choose Theme (Optional)"> -->
-                <autocomplete ng-model="result" attr-placeholder="type to search themes..." click-activation="true" data="themes" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                <autocomplete ng-model="event.theme" attr-placeholder="type to search themes..." click-activation="true" data="themes" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
             </article>
             <article class="form-group pot-form-group relative">
                 <span class="dropdown-icon"></span>
@@ -117,7 +119,7 @@
                 <span class="col-gry error-msg">{{totalNumberOfFriendsInvited}} friends has been invited. <a href="#" ng-click="inviteFriends()">View</a></span>
             </article>
             <article class="form-group pot-form-group padbot40">
-                <textarea placeholder="Enter your personalised message...(Optional)" class="menu-message gry-bdr"></textarea>
+                <textarea placeholder="Enter your personalised message...(Optional)" ng-model="event.message" class="menu-message gry-bdr"></textarea>
             </article>
         </form>
         <section class="row">
@@ -129,3 +131,4 @@
 <section>
 <div ng-include="inviteFriendsForm" ng-controller="InviteFriendsController" ng-show="inviteFriendsFormDisplay"></div>
 </section>
+
