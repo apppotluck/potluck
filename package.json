@@ -21,7 +21,8 @@
     "faker": "^3.0.1",
     "mongodb": "^2.0.42",
     "mongojs": "0.18.0",
-    "open": "0.0.5"
+    "open": "0.0.5",
+    "oriento": "^1.2.0"
   },
   "devDependencies": {
     "karma": "^0.12.0",

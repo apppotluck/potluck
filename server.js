@@ -3,6 +3,7 @@ var express = require('express'),
     Q = require('q'),
     faker = require('faker'),
     dbOperation = require('./dbOperation'),
+    // dbOp = require('./db_open_close'),
     app = express();
 
 app.use(express.compress());
@@ -20,23 +21,28 @@ app.get('/random/user', function(req, res) {
 })
 
 app.get('/*', function(req, res) {
+    
     res.sendfile(__dirname + '/app/index.html');
 });
+
+app.get('/db',function(){
+})
 
 app.post('/create-event', function(req, res) {
     var body = req.body;
     console.log(body);
-    dbOperation.create('events', body).then(function(result) {
-        var authResponse = {
-            responseData: {
-                message: 'success'
-            }
-        }
-        res.json(authResponse);
-        res.send();
-    }, function(err) {
+    dbOperation.create('events', body);
+    // .then(function(result) {
+    //     var authResponse = {
+    //         responseData: {
+    //             message: 'success'
+    //         }
+    //     }
+    //     res.json(authResponse);
+    //     res.send();
+    // }, function(err) {
 
-    })
+    // })
 
 })
 app.post('/auth/user', function(req, res) {
