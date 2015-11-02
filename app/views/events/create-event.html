@@ -109,7 +109,7 @@
                 <span class="col-gry error-msg">Invitees can bring their own choice of food.</span>
             </article>
             <article class="form-group pot-form-group">
-                <span class="invfriends-icon"></span>
+                <span class="invfriends-icon" ng-click="assignDishes()"></span>
                 <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" id="name" placeholder="Assign Dishes">
                 <span class="col-gry error-msg">Add dishes you prefer for this potluck.</span>
             </article>
@@ -129,6 +129,8 @@
 </section>
 
 <section>
+<div ng-include="assignDisheesForm" ng-controller="AssignDishesController" ng-show="assignDishesFormDisplay"></div>
+
 <div ng-include="inviteFriendsForm" ng-controller="InviteFriendsController" ng-show="inviteFriendsFormDisplay"></div>
 </section>
 

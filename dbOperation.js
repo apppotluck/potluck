@@ -1,13 +1,5 @@
-// var mongo = require("mongodb");
-// var MongoClient = require('mongodb').MongoClient;
-// var dbConfig = require('./dbConfig');
-// var Q = require('q');
-
-// var dburl = "localhost/potluck";
-// var collections = ['users', 'events'];
-// var db = require('mongojs').connect(dburl, collections);
-
-var Oriento = require('oriento');
+var Q = require('q'),
+Oriento = require('oriento');
 
 var server = Oriento({
     host: 'localhost',
@@ -69,6 +61,26 @@ module.exports = (function() {
         },
         findOne: function(id, collectionName, identifer) {
 
+        },
+        getFoodType: function(){
+            var defered = Q.defer();
+            db.query("select * from potluck_FoodType").then(function(response) {
+                defered.resolve(response);
+            },function(err){
+                defered.reject(false);
+            });
+            return defered.promise;
+        },
+        getThemes: function(){
+          var defered = Q.defer();
+            db.query("select * from potluck_themes").then(function(response) {
+                
+                defered.resolve(response);
+            },function(err){
+                defered.reject(false);
+            });
+            return defered.promise;  
         }
+
     }
 })();

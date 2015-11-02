@@ -13,6 +13,8 @@ if (window.location.hostname == 'localhost') {
 
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
 var SERVICE_NAME_CREATE_EVENT = 'create-event'; //POST
+var SERVICE_NAME_GET_FOOD_TYPE= 'getFoodType';
+var SERVICE_NAME_GET_GET_THEMES = 'getThemes';
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -38,7 +40,21 @@ var CREATE_EVENT = {
     method: METHOD_TYPE_POST,
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_CREATE_EVENT,
     headers: requestHeaders
+};
+
+var GET_FOOD_TYPE = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_FOOD_TYPE,
+    headers: requestHeaders
+};
+
+var GET_THEMES = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_GET_THEMES,
+    headers: requestHeaders
 }
+
+
 
 var appConfig = {
     'component': {
@@ -78,6 +94,14 @@ var appConfig = {
             var serviceConfig = angular.copy(CREATE_EVENT);
             serviceConfig.data = requestBody;
             console.log("====",requestBody);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'getFoodType': function(API, _successCallback, _errorCallback) {
+            var serviceConfig = angular.copy(GET_FOOD_TYPE);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'getThemes': function(API, _successCallback, _errorCallback) {
+            var serviceConfig = angular.copy(GET_THEMES);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         }
     }

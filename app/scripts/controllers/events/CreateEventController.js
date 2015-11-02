@@ -19,6 +19,23 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.displayCreateEventFormDisplay = true;
                 $rootScope.totalNumberOfFriendsInvited = 0;
 
+               
+
+                // get theme 
+                appConfig.serviceAPI.getThemes(API, function(themeResponse) {
+                    console.log(themeResponse);
+                }, function(err) {
+                    console.log(err);
+                });
+
+                 // get food type 
+                appConfig.serviceAPI.getFoodType(API, function(response) {
+                    console.log(response);
+                }, function(err) {
+                    console.log(err);
+                });
+
+
                 $scope.themes = ["Italian", "Indian", "Chinees", "USA"];
                 $scope.friends = ["Puneet", "Archana", "Sajjin", "Pooja", "Kaarthik", "Malai", "Sarvanan"];
 
@@ -60,11 +77,11 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $scope.createEvent = function() {
                     console.log($scope.event)
                     console.log($scope.time1, "====", $scope.event.inputTime);
-                    appConfig.serviceAPI.createEvent(API,function(response){
+                    appConfig.serviceAPI.createEvent(API, function(response) {
                         console.log(response);
-                    },function(err){
-                      console.log(err);
-                    },$scope.demo);
+                    }, function(err) {
+                        console.log(err);
+                    }, $scope.demo);
                 }
             }
 

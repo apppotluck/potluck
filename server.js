@@ -20,13 +20,34 @@ app.get('/random/user', function(req, res) {
     res.json(user);
 })
 
+app.get('/getFoodType',function(req,res){
+    dbOperation.getFoodType().then(function(foodTypeResponse){
+         res.json(foodTypeResponse);
+         res.send();
+    },function(err){
+        res.json("error");
+        res.send();
+    })
+});
+
+app.get('/getThemes',function(req,res){
+    dbOperation.getThemes().then(function(themesResponse){
+         res.json(themesResponse);
+         res.send();
+    },function(err){
+        res.json("error");
+        res.send();
+    })
+});
+
+
 app.get('/*', function(req, res) {
-    
     res.sendfile(__dirname + '/app/index.html');
 });
 
 app.get('/db',function(){
 })
+
 
 app.post('/create-event', function(req, res) {
     var body = req.body;
