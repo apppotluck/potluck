@@ -19,18 +19,24 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.displayCreateEventFormDisplay = true;
                 $rootScope.totalNumberOfFriendsInvited = 0;
 
-               
 
+                $scope.themes = {};
                 // get theme 
                 appConfig.serviceAPI.getThemes(API, function(themeResponse) {
-                    console.log(themeResponse);
+                    for(var i in themeResponse) {
+                        $scope.themes[themeResponse[i]['@rid']] = themeResponse[i].name
+                    }
+                    console.log($scope.themes);
                 }, function(err) {
                     console.log(err);
                 });
 
-                 // get food type 
+                // get food type 
+                $scope.foodTypeArray = {}
                 appConfig.serviceAPI.getFoodType(API, function(response) {
-                    console.log(response);
+                    for(var i in response) {
+                        $scope.foodTypeArray[response[i]['@rid']] = response[i].name
+                    }
                 }, function(err) {
                     console.log(err);
                 });
@@ -75,13 +81,16 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 }
 
                 $scope.createEvent = function() {
+                    
+                    $scope.event.time = $scope.time1.getHours()+":"+$scope.time1.getMinutes()
                     console.log($scope.event)
-                    console.log($scope.time1, "====", $scope.event.inputTime);
-                    appConfig.serviceAPI.createEvent(API, function(response) {
-                        console.log(response);
-                    }, function(err) {
-                        console.log(err);
-                    }, $scope.demo);
+
+
+                    // appConfig.serviceAPI.createEvent(API, function(response) {
+                    //     console.log(response);
+                    // }, function(err) {
+                    //     console.log(err);
+                    // }, $scope.demo);
                 }
             }
 

@@ -25,18 +25,22 @@ angular.module('timepickerPop', [ 'ui.bootstrap' ])
     },
     link : function(scope, element, attrs, ngModel) {
         var parseTime = function(viewValue) {
-
+          console.log("-----hhh",viewValue);
         if (!viewValue) {
+          console.log("111");
           ngModel.$setValidity('time', true);
           return null;
         } else if (angular.isDate(viewValue) && !isNaN(viewValue)) {
+          console.log("222");
           ngModel.$setValidity('time', true);
           return viewValue;
         } else if (angular.isString(viewValue)) {
+          console.log("333");
           var timeRegex = /^(0?[0-9]|1[0-2]):[0-5][0-9] ?[a|p]m$/i;
           if (!scope.showMeridian) {
             timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
           }
+          console.log("viewValue=====>",viewValue);
           if (!timeRegex.test(viewValue)) {
             ngModel.$setValidity('time', false);
             return undefined;
@@ -55,6 +59,7 @@ angular.module('timepickerPop', [ 'ui.bootstrap' ])
             return date;
           };
         } else {
+          console.log("444");
           ngModel.$setValidity('time', false);
           return undefined;
         };
@@ -63,6 +68,7 @@ angular.module('timepickerPop', [ 'ui.bootstrap' ])
       ngModel.$parsers.push(parseTime);
 
       var showTime = function(data) {
+
         parseTime(data);
         var timeFormat = (!scope.showMeridian) ? "HH:mm" : "hh:mm a";
         return $filter('date')(data, timeFormat);

@@ -85,17 +85,10 @@
                  <input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1" details="details1" ng-model="event.currentlocation" options="options1"/>
             </article>
             <section class="row create-event" style="margin-bottom:20px;">
-                <section class="col-xs-4">
-                    <input type="radio" id="radio03" name="radio1" ng-model="event.foodtype"  />
-                    <label for="radio03"><span></span>Veg</label>
-                </section>
-                <section class="col-xs-4">
-                    <input type="radio" id="radio04" name="radio1" ng-model="event.foodtype" />
-                    <label for="radio04"><span></span>N-Veg</label>
-                </section>
-                <section class="col-xs-4">
-                    <input type="radio" id="radio05" name="radio1" ng-model="event.foodtype" />
-                    <label for="radio05"><span></span>Both</label>
+                
+                <section ng-repeat="(key, value) in foodTypeArray" class="col-xs-4">
+                    <input type="radio" id="radio{{key}}" name="radio1" value="{{key}}" ng-model="event.foodtype"  />
+                    <label for="radio{{key}}"><span></span>{{value}}</label>
                 </section>
             </section>
             <article class="form-group pot-form-group">

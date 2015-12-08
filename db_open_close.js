@@ -1,12 +1,17 @@
-var Q = require('q'),
-_ = require('underscore'),
-Oriento = require('oriento');
+var Oriento = require('oriento');
 
 var server = Oriento({
     host: 'localhost',
     port: 2424,
     username: 'root',
     password: 'demo'
+});
+
+// List databases
+server.list().then(function(dbs) {
+    console.log('There are ' + dbs.length + ' databases on the server.');
+}, function(err) {
+    console.log(err);
 });
 
 var db = server.use({
@@ -17,7 +22,10 @@ var db = server.use({
 
 module.exports = (function() {
     return {
-        create: function(collectionName, body, autoId) {
+        create: function(body) {
+            console.log("inside create");
+            var defered = Q.defer();
+            console.log(body);
             db.query('insert into events (name,date,time,location,foodTypeId,themeId,Message) values (:name, :date, :time, :location, :foodTypeId, :themeId, :message)', {
                 params: {
                     name: 'demo',
@@ -31,15 +39,6 @@ module.exports = (function() {
             }).then(function(response) {
                 console.log(response); //an Array of records inserted
             });
-            // var defered = Q.defer();
-            // console.log(body);
-            // try {
-            //     db[collectionName].insert(body);
-            //     defered.resolve(true);
-            // } catch (e) {
-            //     defered.reject(false);
-            // }
-            // return defered.promise;
         },
         update: function() {
 
@@ -65,22 +64,15 @@ module.exports = (function() {
         },
         getFoodType: function(){
             var defered = Q.defer();
-            db.query("select * from potluck_FoodType").then(function(response) {
+            db.query("select * from FoodType").then(function(response) {
                 defered.resolve(response);
             },function(err){
                 defered.reject(false);
             });
             return defered.promise;
-        },
-        getThemes: function(){
-          var defered = Q.defer();
-            db.query("select * from potluck_themes").then(function(response) {
-                defered.resolve(response);
-            },function(err){
-                defered.reject(false);
-            });
-            return defered.promise;  
         }
-
     }
-})();
+});
+// db.query('select * from potluck_users').then(function(results) {
+//     console.log(results);
+// });
