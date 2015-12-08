@@ -20,16 +20,16 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.totalNumberOfFriendsInvited = 0;
 
 
-                $scope.themes = {};
-                // get theme 
-                appConfig.serviceAPI.getThemes(API, function(themeResponse) {
-                    for(var i in themeResponse) {
-                        $scope.themes[themeResponse[i]['@rid']] = themeResponse[i].name
-                    }
-                    console.log($scope.themes);
-                }, function(err) {
-                    console.log(err);
-                });
+                // $scope.themes = {};
+                // // get theme 
+                // appConfig.serviceAPI.getThemes(API, function(themeResponse) {
+                //     for(var i in themeResponse) {
+                //         $scope.themes[themeResponse[i]['@rid']] = themeResponse[i].name
+                //     }
+                //     console.log($scope.themes);
+                // }, function(err) {
+                //     console.log(err);
+                // });
 
                 // get food type 
                 $scope.foodTypeArray = {}
@@ -82,9 +82,12 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
 
                 $scope.createEvent = function() {
                     
-                    $scope.event.time = $scope.time1.getHours()+":"+$scope.time1.getMinutes()
-                    console.log($scope.event)
+                    $scope.event.time  = $scope.time1.getHours()+":"+$scope.time1.getMinutes()
+                    $scope.event.users = $rootScope.inviteUsers;
+                    $scope.event.dishAllocation = $rootScope.dishesAndUsers;
 
+                    console.log($scope.event)
+                    
 
                     // appConfig.serviceAPI.createEvent(API, function(response) {
                     //     console.log(response);
@@ -111,10 +114,15 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 });
             };
             $scope.addFriends = function() {
-                console.log($scope.items.length);
+                var userArray = [];
+                for(var i in $scope.items) {
+                    userArray.push($scope.items[i].friendNameName);
+                }
                 $rootScope.inviteFriendsFormDisplay = false;
                 $rootScope.displayCreateEventFormDisplay = true;
                 $rootScope.totalNumberOfFriendsInvited = $scope.items.length;
+                $rootScope.inviteUsers = userArray;
+
             }
         }
     ])
@@ -125,19 +133,27 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
         '$rootScope',
         function($scope, API, $location, $rootScope) {
             $rootScope.assignDisheesForm = '/views/events/assign-dishes.html';
-            $scope.items = [{
-                "friendNameName": ""
+            $scope.dishesItems = [{
+                "friendName": "",
+                "dishes":""
             }];
             $scope.add = function() {
-                $scope.items.push({
-                    friendNameName: ""
+                $scope.dishesItems.push({
+                    friendName: "",
+                    dishes:""
                 });
             };
             $scope.assignDishes = function() {
-                console.log($scope.items.length);
                 $rootScope.assignDishesFormDisplay = false;
                 $rootScope.displayCreateEventFormDisplay = true;
-                $rootScope.totalNumberOfFriendsInvited = $scope.items.length;
+                $rootScope.totalNumberOfFriendsInvited = $scope.dishesItems.length;
+                var dishes = [];
+                for(var i in $scope.dishesItems) {
+                    var obj = {};
+                    obj[$scope.dishesItems[i].friendName] = $scope.dishesItems[i].dishes;
+                    dishes.push(obj);
+                }
+                $rootScope.dishesAndUsers = dishes;
             }
         }
     ])
