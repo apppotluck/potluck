@@ -1,6 +1,8 @@
-var Q = require('q'),
-_ = require('underscore'),
-Oriento = require('oriento');
+var Q           = require('q'),
+_               = require('underscore'),
+Oriento         = require('oriento'),
+util            = require("util"),
+EventEmitter    = require("events").EventEmitter;
 
 var server = Oriento({
     host: 'localhost',
@@ -15,22 +17,64 @@ var db = server.use({
     password: 'demo'
 });
 
+
+var saveUsers = function(userEmailId) {
+    var uPromise = Q.defer();
+    db.query('insert into potluck_users(emailId,status)values(:emailId, :status)',{
+        params: {
+            emailId: userEmailId,
+            status: "active"
+        },
+        RETURN:"@rid"
+    }).then(function(res){
+        uPromise.resolve(res);
+    },function(err){
+        uPromise.reject(err);
+    })
+    return uPromise.promise;
+}
+
 module.exports = (function() {
     return {
         create: function(collectionName, body, autoId) {
-            db.query('insert into events (name,date,time,location,foodTypeId,themeId,Message) values (:name, :date, :time, :location, :foodTypeId, :themeId, :message)', {
-                params: {
-                    name: 'demo',
-                    date: '11/01/2015',
-                    time: '9:30 AM',
-                    location: 'Cassini Dr, Columbus, OH 43240, USA',
-                    foodTypeId: '2',
-                    themeId: 1,
-                    message: "Personal message"
+            var userPromise = [],
+                dishAllocationPromise = [];
+            console.log(body);
+            // for(var i=0;i<body.users.length;i++) {
+            //     userPromise.push(saveUsers(body.users[i]));
+            // }
+            for(var index in body.dishAllocation) {
+                for(var dish in body.dishAllocation[index]) {
+                    console.log(dish,"===",body.dishAllocation[index][dish])
                 }
-            }).then(function(response) {
-                console.log(response); //an Array of records inserted
-            });
+                // dishAllocationPromise
+            }
+            // Q.allSettled(userPromise).then(function(response){
+            //     if(response.length > 0) {
+            //         for(var j=0;j<response.length;j++) {
+            //             if(response[j].state === "fulfilled") {
+            //                 recordObject = JSON.parse(JSON.stringify(response[j].value));
+            //                 userId = recordObject[0]['@rid'];
+
+            //             }
+            //         }
+            //     }
+            // },function(err){
+            //     console.log(err);
+            // })
+            // db.query('insert into events (name,date,time,location,foodTypeId,themeId,Message) values (:name, :date, :time, :location, :foodTypeId, :themeId, :message)', {
+            //     params: {
+            //         name: 'demo',
+            //         date: '11/01/2015',
+            //         time: '9:30 AM',
+            //         location: 'Cassini Dr, Columbus, OH 43240, USA',
+            //         foodTypeId: '2',
+            //         themeId: 1,
+            //         message: "Personal message"
+            //     }
+            // }).then(function(response) {
+            //     console.log(response); //an Array of records inserted
+            // });
             // var defered = Q.defer();
             // console.log(body);
             // try {

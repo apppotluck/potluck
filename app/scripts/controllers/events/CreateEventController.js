@@ -86,14 +86,14 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $scope.event.users = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
 
-                    console.log($scope.event)
+                    // console.log($scope.event)
                     
 
-                    // appConfig.serviceAPI.createEvent(API, function(response) {
-                    //     console.log(response);
-                    // }, function(err) {
-                    //     console.log(err);
-                    // }, $scope.demo);
+                    appConfig.serviceAPI.createEvent(API, function(response) {
+                        console.log(response);
+                    }, function(err) {
+                        console.log(err);
+                    }, $scope.event);
                 }
             }
 
