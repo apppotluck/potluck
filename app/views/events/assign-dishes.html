@@ -1,9 +1,9 @@
 <section class="row" >
 	Assign Dishes
 	<div ng-repeat="item in dishesItems">
-		<input type="text" placeholder="{{item.dishes}}" placeholder="Dishes" ng-model="item.dishes">
+		<input type="text" placeholder="friend" ng-model="item.friendName">
 
-		<input type="text" placeholder="{{item.friendName}}" placeholder="Friend" ng-model="item.friendName"> X
+		<input type="text" placeholder="dish" ng-model="item.dishes"> X
 	</div>	
 	<button name="add more friend" value="Add more" ng-click="add()">Add More</button>
 	<button name="submit" ng-click="assignDishes()">Submit</button>

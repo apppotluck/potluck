@@ -90,7 +90,7 @@ app.post('/auth/user', function(req, res) {
 });
 
 app.listen(8000, function(err, res) {
-    open('http://localhost:8000/');
+    // open('http://localhost:8000/');
 });
 
 console.log('Listening on port 8000');
