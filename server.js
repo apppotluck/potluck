@@ -51,20 +51,26 @@ app.get('/db',function(){
 
 app.post('/create-event', function(req, res) {
     var body = req.body;
-    console.log(body);
-    dbOperation.create('events', body);
-    // .then(function(result) {
-    //     var authResponse = {
-    //         responseData: {
-    //             message: 'success'
-    //         }
-    //     }
-    //     res.json(authResponse);
-    //     res.send();
-    // }, function(err) {
-
-    // })
-
+    dbOperation.create('events', body)
+    .then(function(result) {
+        var authResponse = {
+            responseData: {
+                status: "success",
+                message: result
+            }
+        }
+        res.json(authResponse);
+        res.send();
+    }, function(err) {
+        var authResponse = {
+            responseData: {
+                status : "failed",
+                message: "something went wrong. Please try again later"
+            }
+        }
+        res.json(authResponse);
+        res.send();
+    })
 })
 app.post('/auth/user', function(req, res) {
 

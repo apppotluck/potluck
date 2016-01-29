@@ -23,23 +23,16 @@ var getRid = function(res) {
 
 var insertIntoDishAllocation = function(uID, eID, dID) {
     var dishAllocationPromise = Q.defer();
-    if (_.isNull(dID) || _.isUndefined(dID)) { // Friends whom dish is not allocated they are invited but no dish allocation for them
-        dId = "";
+    var queryToInsertInDishAllocationTable;
+    if (_.isNull(dID) || _.isUndefined(dID) || _.isEmpty(dID)) { // Friends whom dish is not allocated they are invited but no dish allocation for them
+        queryToInsertInDishAllocationTable = 'insert into potluck_Dish_Allocation(eventId,userId)values('+eID+','+uID+') RETURN @rid';
+    } else {
+        queryToInsertInDishAllocationTable = 'insert into potluck_Dish_Allocation(dishId,eventId,userId)values('+dID+','+eID+','+uID+') RETURN @rid';
     }
-    console.log(uID,"==",eID,"===",dID);
-    db.exec('insert into potluck_Dish_Allocation(DishId,eventId,usersId)values(:dishId,:eventId,:friendId)', {
-        params: {
-            dishId: dID,
-            eventId: eID,
-            friendId: uID
-        },
-        RETURN: "@rid"
-    }).then(function(res) {
+    db.exec(queryToInsertInDishAllocationTable).then(function(res) {
         var dishAllocationID = getRid(res);
-        console.log("dishAllocationID====>", dishAllocationID);
         dishAllocationPromise.resolve(dishAllocationID);
     }, function(err) {
-        console.log("insertIntoDishAllocation error===>", err);
         dishAllocationPromise.reject(err);
     });
     return dishAllocationPromise.promise;
@@ -98,7 +91,8 @@ module.exports = (function() {
         create: function(collectionName, body, autoId) {
             var userPromise = [],
                 dishAllocationPromiseArray = [],
-                userObject = [];
+                userObject = [],
+                eventSavePromise = Q.defer();
             for (var index in body.dishAllocation) {
                 for (var user in body.dishAllocation[index]) {
                     var obj = {
@@ -115,18 +109,7 @@ module.exports = (function() {
                 userObject.push(obj);
             }
 
-            db.exec('insert into potluck_events(name,date,time,location,foodTypeId,themeId,Message) values (:name, :date, :time, :location, :foodTypeId, :themeId, :message)', {
-                    params: {
-                        date: body.date,
-                        foodTypeId: body.foodType,
-                        location: body.currentlocation,
-                        message: body.message,
-                        name: body.name,
-                        time: body.time,
-                        theme: body.theme
-                    },
-                    RETURN: "@rid"
-                }).then(function(res) {
+            db.exec('insert into potluck_events(name,date,time,location,foodTypeId,theme,Message) values ("'+body.name+'", "'+body.date+'", "'+body.time+'", "'+body.currentlocation+'", '+body.foodtype+', "'+body.theme+'", "'+body.message+'") RETURN @rid').then(function(res) {
                     var eventId = getRid(res);
                     _.map(userObject, function(v, k, arr) {
                         userPromise.push(saveUsers(arr[k].user, arr[k].dish));
@@ -136,7 +119,6 @@ module.exports = (function() {
                         try {
                             _.map(response, function(v, key, arr) {
                                 if (arr[key].state === "fulfilled") {
-                                    // console.log(arr[key].value.userId, "====", arr[key].value.dishId, "=====", eventId)
                                     var dId;
                                     if (_.isUndefined(arr[key].value.dishId)) {
                                         dId = "";
@@ -147,22 +129,25 @@ module.exports = (function() {
                                 }
                             })
                         } catch (e) {
-                            console.log("error=>", e);
+                            eventSavePromise.reject(e);
                         }
                         Q.allSettled(dishAllocationPromiseArray).then(function(response) {
-                                console.log("response all inserted===>", response);
+                                eventSavePromise.resolve("event saved successfully");
                             },
                             function(err) {
                                 console.log(err);
+                                eventSavePromise.reject(err);
                             })
                     }, function(err) {
                         console.log(err);
+                        eventSavePromise.reject(err);
                     });
 
                 }, function(err) {
                     console.log(err);
+                    eventSavePromise.reject(err);
                 })
-                // return defered.promise;
+                return eventSavePromise.promise;
         },
         update: function() {
 

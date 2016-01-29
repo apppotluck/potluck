@@ -85,12 +85,11 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $scope.event.time  = $scope.time1.getHours()+":"+$scope.time1.getMinutes()
                     $scope.event.users = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
-
-                    // console.log($scope.event)
                     
-
                     appConfig.serviceAPI.createEvent(API, function(response) {
-                        console.log(response);
+                        if(response.status === "success") {
+                            $location.path('events');
+                        }
                     }, function(err) {
                         console.log(err);
                     }, $scope.event);
