@@ -37,6 +37,13 @@ define([], function()
                     'controllers/events/CreateEventController',
                     'directives/header'
                 ]
+            },
+            '/events': {
+                templateUrl: '/views/events/events.html',
+                dependencies: [
+                    'controllers/events/EventsController',
+                    'directives/header'
+                ]
             }
         }
     };
