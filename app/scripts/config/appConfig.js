@@ -13,8 +13,9 @@ if (window.location.hostname == 'localhost') {
 
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
 var SERVICE_NAME_CREATE_EVENT = 'create-event'; //POST
-var SERVICE_NAME_GET_FOOD_TYPE= 'getFoodType';
-var SERVICE_NAME_GET_GET_THEMES = 'getThemes';
+var SERVICE_NAME_GET_FOOD_TYPE= 'getFoodType'; // GET
+var SERVICE_NAME_GET_GET_THEMES = 'getThemes'; // GET
+var SERVICE_NAME_GET_GET_EVENTS = 'getEvents'; // GET
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -52,7 +53,13 @@ var GET_THEMES = {
     method: METHOD_TYPE_GET,
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_GET_THEMES,
     headers: requestHeaders
-}
+};
+
+var GET_EVENTS = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_GET_EVENTS,
+    headers: requestHeaders
+};
 
 
 
@@ -103,6 +110,10 @@ var appConfig = {
         'getThemes': function(API, _successCallback, _errorCallback) {
             var serviceConfig = angular.copy(GET_THEMES);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
-        }
+        },
+        'getEvents': function(API, _successCallback, _errorCallback) {
+            var serviceConfig = angular.copy(GET_EVENTS);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
     }
 };

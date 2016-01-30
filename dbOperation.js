@@ -25,9 +25,9 @@ var insertIntoDishAllocation = function(uID, eID, dID) {
     var dishAllocationPromise = Q.defer();
     var queryToInsertInDishAllocationTable;
     if (_.isNull(dID) || _.isUndefined(dID) || _.isEmpty(dID)) { // Friends whom dish is not allocated they are invited but no dish allocation for them
-        queryToInsertInDishAllocationTable = 'insert into potluck_Dish_Allocation(eventId,userId)values('+eID+','+uID+') RETURN @rid';
+        queryToInsertInDishAllocationTable = 'insert into potluck_dish_allocation(event_id,user_id)values(['+eID+'],['+uID+']) RETURN @rid';
     } else {
-        queryToInsertInDishAllocationTable = 'insert into potluck_Dish_Allocation(dishId,eventId,userId)values('+dID+','+eID+','+uID+') RETURN @rid';
+        queryToInsertInDishAllocationTable = 'insert into potluck_dish_allocation(dish_id,event_id,user_id)values(['+dID+'],['+eID+'],['+uID+']) RETURN @rid';
     }
     db.exec(queryToInsertInDishAllocationTable).then(function(res) {
         var dishAllocationID = getRid(res);
@@ -41,10 +41,10 @@ var insertIntoDishAllocation = function(uID, eID, dID) {
 var saveUsers = function(userEmailId, dishName) {
     var uPromise = Q.defer();
     var userID, obj = {};
-    db.exec('insert into potluck_users(emailId,status)values(:emailId, :status)', {
+    db.exec('insert into potluck_users(email_id,status)values(:emailId, :status)', {
         params: {
             emailId: userEmailId,
-            status: "active"
+            status: 1
         },
         RETURN: "@rid"
     }).then(function(res) {
@@ -109,7 +109,7 @@ module.exports = (function() {
                 userObject.push(obj);
             }
 
-            db.exec('insert into potluck_events(name,date,time,location,foodTypeId,theme,Message) values ("'+body.name+'", "'+body.date+'", "'+body.time+'", "'+body.currentlocation+'", '+body.foodtype+', "'+body.theme+'", "'+body.message+'") RETURN @rid').then(function(res) {
+            db.exec('insert into potluck_events(name,event_date,event_time,location,food_type_id,theme,message) values ("'+body.name+'", "'+body.date+'", "'+body.time+'", "'+body.currentlocation+'", ['+body.foodtype+'], "'+body.theme+'", "'+body.message+'") RETURN @rid').then(function(res) {
                     var eventId = getRid(res);
                     _.map(userObject, function(v, k, arr) {
                         userPromise.push(saveUsers(arr[k].user, arr[k].dish));
@@ -173,7 +173,7 @@ module.exports = (function() {
         },
         getFoodType: function() {
             var defered = Q.defer();
-            db.query("select * from potluck_FoodType").then(function(response) {
+            db.query("select * from potluck_food_type").then(function(response) {
                 defered.resolve(response);
             }, function(err) {
                 defered.reject(false);
@@ -188,7 +188,16 @@ module.exports = (function() {
                 defered.reject(false);
             });
             return defered.promise;
+        },
+        getEvents: function() {
+            var defered = Q.defer();
+            db.query("select event_id.name as eventName,event_id.location as location,event_id.event_time as event_time,event_id.event_date as  event_date,event_id.message as event_message,event_id.theme as event_theme,event_id.food_type_id as food_type_id,event_id.food_type_id.name as type_name,user_id.email_id as email_id,dish_id.name as dish_name from potluck_dish_allocation").then(function(response) {
+                console.log(JSON.stringify(response));
+                defered.resolve(JSON.stringify(response));
+            }, function(err) {
+                defered.reject(false);
+            });
+            return defered.promise;
         }
-
     }
 })();

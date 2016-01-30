@@ -1,6 +1,6 @@
 define(['routes','services/dependencyResolverFor'], function(config, dependencyResolverFor)
 {
-    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngAnimate','ngFacebook','timepickerPop','ngAutocomplete','autocomplete']);
+    var app = angular.module('app', ['ngRoute','ui.bootstrap','ngAnimate','ngFacebook','timepickerPop','ngAutocomplete','autocomplete','ngMaterial']);
     app
     .config(
         [

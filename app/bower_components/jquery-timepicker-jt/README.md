@@ -140,7 +140,7 @@ Highlight the nearest corresponding time option as a value is typed into the for
 *default: true*
 
 - **useSelect**  
-Convert the input to an HTML `<SELECT>` control. This is ideal for small screen devices, or if you want to prevent the user from entering arbitrary values. This option is not compatible with the following options: ```appendTo```, ```closeOnWindowScroll```, ```disableTouchKeyboard```, ```forceRoundTime```, ```scrollDefaultNow```, ```selectOnBlur```, ```typeAheadHighlight```.  
+Convert the input to an HTML `<SELECT>` control. This is ideal for small screen devices, or if you want to prevent the user from entering arbitrary values. This option is not compatible with the following options: ```appendTo```, ```closeOnWindowScroll```, ```disableTouchKeyboard```, ```forceRoundTime```, ```scrollDefault```, ```selectOnBlur```, ```typeAheadHighlight```.  
 *default: false*
 
 Methods
@@ -154,7 +154,7 @@ Get the time as an integer, expressed as seconds from 12am.
 	```
 
 - **getTime**  
-Get the time using a Javascript Date object, relative to a Date object (default: today).
+Get the time using a Javascript Date object, relative to a Date object (default: Jan 1, 1970).
 
 	```javascript
 	$('#getTimeExample').timepicker('getTime');
@@ -241,16 +241,16 @@ Sample markup with class names:
 ...
 <div class="ui-timepicker-wrapper ui-timepicker-positioned-top optional-custom-classname" tabindex="-1">
 	<ul class="ui-timepicker-list">
-		<li>12:00am</li>
-		<li>12:30am</li>
+		<li class="ui-timepicker-am">12:00am</li>
+		<li class="ui-timepicker-am">12:30am</li>
 		...
-		<li>4:30pm</li>
-		<li class="ui-timepicker-selected">5:00pm</li>
-		<li class="ui-timepicker-disabled">5:30pm</li>
-		<li>6:00pm <span class="ui-timepicker-duration">(1 hour)</span></li>
-		<li>6:30pm</li>
+		<li class="ui-timepicker-pm">4:30pm</li>
+		<li class="ui-timepicker-pm ui-timepicker-selected">5:00pm</li>
+		<li class="ui-timepicker-pm ui-timepicker-disabled">5:30pm</li>
+		<li class="ui-timepicker-pm">6:00pm <span class="ui-timepicker-duration">(1 hour)</span></li>
+		<li class="ui-timepicker-pm">6:30pm</li>
 		...
-		<li>11:30pm</li>
+		<li class="ui-timepicker-pm">11:30pm</li>
 	</ul>
 </div>
 ```
@@ -275,6 +275,8 @@ Development guidelines
 
 1. Install dependencies (jquery + grunt) `npm install`
 2. For sanity checks and minification run `grunt`, or just `grunt lint` to have the code linted
+ 
+jquery-timepicker follows [semantic versioning](http://semver.org/).
 
 - - -
 

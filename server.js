@@ -40,6 +40,15 @@ app.get('/getThemes',function(req,res){
     })
 });
 
+app.get('/getEvents',function(req,res){
+    dbOperation.getEvents().then(function(eventsResponse){
+         res.json(eventsResponse);
+         res.send();
+    },function(err){
+        res.json("error");
+        res.send();
+    })
+});
 
 app.get('/*', function(req, res) {
     res.sendfile(__dirname + '/app/index.html');
