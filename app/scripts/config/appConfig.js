@@ -6,9 +6,8 @@ var SERVICES_DOMAIN_NAME = '';
 
 if (window.location.hostname == 'localhost') {
     // starts LOCAL Configurations
-    var APP_SERVICE_FOLDER_NAME = '/';
-    var SERVICES_CONTEXT_NAME = '/';
-    var PHOTO_URL_CONTEXT = SERVICES_DOMAIN_NAME + '/';
+    var APP_SERVICE_FOLDER_NAME = '/potluck/';
+    var SERVICES_CONTEXT_NAME = '/potluck/';
 }
 
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
@@ -16,6 +15,7 @@ var SERVICE_NAME_CREATE_EVENT = 'create-event'; //POST
 var SERVICE_NAME_GET_FOOD_TYPE= 'getFoodType'; // GET
 var SERVICE_NAME_GET_GET_THEMES = 'getThemes'; // GET
 var SERVICE_NAME_GET_GET_EVENTS = 'getEvents'; // GET
+var SERVICE_NAME_REGISTER_USER = 'create-user';
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -61,6 +61,12 @@ var GET_EVENTS = {
     headers: requestHeaders
 };
 
+var CREATE_USER = {
+    method: METHOD_TYPE_POST,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_REGISTER_USER,
+    headers: requestHeaders
+};
+
 
 
 var appConfig = {
@@ -93,14 +99,13 @@ var appConfig = {
         'getCurrentLocation': function(API, _successCallback, _errorCallback, requestBody) {
             var serviceConfig = {};
             serviceConfig.method = METHOD_TYPE_GET,
-                serviceConfig.url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + requestBody.lat + ',' + requestBody.lang,
-                serviceConfig.headers = requestHeaders;
+            serviceConfig.url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + requestBody.lat + ',' + requestBody.lang,
+            serviceConfig.headers = requestHeaders;
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
         'createEvent': function(API, _successCallback, _errorCallback, requestBody) {
             var serviceConfig = angular.copy(CREATE_EVENT);
             serviceConfig.data = requestBody;
-            console.log("====",requestBody);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
         'getFoodType': function(API, _successCallback, _errorCallback) {
@@ -115,5 +120,10 @@ var appConfig = {
             var serviceConfig = angular.copy(GET_EVENTS);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
+        'registerUser': function(API, _successCallback, _errorCallback, requestBody) {
+            var serviceConfig = angular.copy(CREATE_USER);
+            serviceConfig.data = requestBody;
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        }
     }
 };

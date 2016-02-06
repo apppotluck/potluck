@@ -10,7 +10,7 @@ define([
 
     function(app) {
 
-        return app.factory('API', function ($http) {
+        return app.factory('API', function ($http,$localStorage) {
                 return {
                     getAPI: function (serviceConfig, callbackFunction, errorCallback) {
                         var shouldExclude = false;

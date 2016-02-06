@@ -6,7 +6,12 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             '$location',
             '$rootScope',
             '$q',
-            function($scope, API, $location, $rootScope, $q, glocation) {
+            'jwtHelper',
+            '$localStorage',
+            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,glocation) {
+                if ($localStorage.token === "undefined") {
+                    $location.path('/');
+                } 
                 $scope.event = {};
                 $scope.today = function() {
                     $scope.event.date = new Date();
@@ -34,7 +39,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 // get food type 
                 $scope.foodTypeArray = {}
                 appConfig.serviceAPI.getFoodType(API, function(response) {
-                    for(var i in response) {
+                    for (var i in response) {
                         $scope.foodTypeArray[response[i]['@rid']] = response[i].name
                     }
                 }, function(err) {
@@ -43,7 +48,6 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
 
 
                 $scope.themes = ["Italian", "Indian", "Chinees", "USA"];
-                $scope.friends = ["Puneet", "Archana", "Sajjin", "Pooja", "Kaarthik", "Malai", "Sarvanan"];
 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showPosition);
@@ -81,13 +85,16 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 }
 
                 $scope.createEvent = function() {
-                    
-                    $scope.event.time  = $scope.time1.getHours()+":"+$scope.time1.getMinutes()
+
+                    $scope.event.time = $scope.time1.getHours() + ":" + $scope.time1.getMinutes()
                     $scope.event.users = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
-                    
+                    var userToken = $localStorage.token;
+                    var userDetails = jwtHelper.decodeToken(userToken);
+                    $scope.event.created_by = userDetails.rid
                     appConfig.serviceAPI.createEvent(API, function(response) {
-                        if(response.status === "success") {
+                        console.log(response);
+                        if (response.status === "success") {
                             $location.path('events');
                         }
                     }, function(err) {
@@ -114,7 +121,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             };
             $scope.addFriends = function() {
                 var userArray = [];
-                for(var i in $scope.items) {
+                for (var i in $scope.items) {
                     userArray.push($scope.items[i].friendNameName);
                 }
                 $rootScope.inviteFriendsFormDisplay = false;
@@ -134,12 +141,12 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             $rootScope.assignDisheesForm = '/views/events/assign-dishes.html';
             $scope.dishesItems = [{
                 "friendName": "",
-                "dishes":""
+                "dishes": ""
             }];
             $scope.add = function() {
                 $scope.dishesItems.push({
                     friendName: "",
-                    dishes:""
+                    dishes: ""
                 });
             };
             $scope.assignDishes = function() {
@@ -147,7 +154,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.displayCreateEventFormDisplay = true;
                 $rootScope.totalNumberOfFriendsInvited = $scope.dishesItems.length;
                 var dishes = [];
-                for(var i in $scope.dishesItems) {
+                for (var i in $scope.dishesItems) {
                     var obj = {};
                     obj[$scope.dishesItems[i].friendName] = $scope.dishesItems[i].dishes;
                     dishes.push(obj);

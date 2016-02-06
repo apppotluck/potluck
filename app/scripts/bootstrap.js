@@ -2,21 +2,23 @@ require.config({
     baseUrl: '/scripts',
     catchError: true,
     paths: {
-        'angular'           : '/bower_components/angular/angular',
-        'angular-route'     : '/bower_components/angular-route/angular-route',
-        'angular-animate'   : '/bower_components/angular-animate/angular-animate',
-        'ngAria'            : '/bower_components/angular-aria/angular-aria.min',
-        'ngMaterial'        : '/bower_components/angular-material/angular-material.min',
-        'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
-        'angular-dateParser': '/bower_components/angular-dateParser/dataparser',
-        'bootstrap'         : '../lib/bootstrap/js/bootstrap.min',
-        'jquery'            : '/bower_components/jquery/dist/jquery',
-        'constants'         : '/scripts/config/constants',
-        'appConfig'         : '/scripts/config/appConfig',
-        'ngFacebook'        : '../lib/ngFacebook',
-        'timepickerPop'     : '../lib/timepickerPop',
-        'ngAutocomplete'    : '../lib/ngAutocomplete',
-        'autocomplete'      : '../lib/autocomplete'
+        'angular'           : '/bower_components/angular/angular'
+        , 'angular-route'     : '/bower_components/angular-route/angular-route'
+        , 'angular-animate'   : '/bower_components/angular-animate/angular-animate'
+        , 'ngAria'            : '/bower_components/angular-aria/angular-aria.min'
+        , 'ngMaterial'        : '/bower_components/angular-material/angular-material.min'
+        , 'bootstrap-ui'      : '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min'
+        , 'angular-dateParser': '/bower_components/angular-dateParser/dataparser'
+        , 'jwtHelper'         : '/bower_components/angular-jwt/dist/angular-jwt.min'
+        , 'localStorage'      : '/bower_components/ngstorage/ngStorage.min'
+        , 'bootstrap'         : '../lib/bootstrap/js/bootstrap.min'
+        , 'jquery'            : '/bower_components/jquery/dist/jquery'
+        , 'constants'         : '/scripts/config/constants'
+        , 'appConfig'         : '/scripts/config/appConfig'
+        , 'ngFacebook'        : '../lib/ngFacebook'
+        , 'timepickerPop'     : '../lib/timepickerPop'
+        , 'ngAutocomplete'    : '../lib/ngAutocomplete'
+        , 'autocomplete'      : '../lib/autocomplete'
 
     },
     shim: {
@@ -55,6 +57,12 @@ require.config({
         },
         'ngMaterial': {
             deps:['ngAria']
+        },
+        'jwtHelper': {
+            deps:['angular']
+        },
+        'localStorage': {
+             deps:['angular']
         }
         
     },
@@ -71,7 +79,9 @@ require
         'timepickerPop',
         'ngAutocomplete',
         'autocomplete',
-        'ngMaterial'
+        'ngMaterial',
+        'jwtHelper',
+        'localStorage'
     ],
     function(app)
     {

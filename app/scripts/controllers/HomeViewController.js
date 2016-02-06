@@ -1,3 +1,4 @@
+
 define(['app'], function(app)
 {
 	app.controller('HomeViewController',
@@ -7,7 +8,9 @@ define(['app'], function(app)
         '$location',
         '$facebook',
         'twitterService',
-        function($scope,API,$location,$facebook,twitterService) {
+        'jwtHelper',
+        '$localStorage',
+        function($scope,API,$location,$facebook,twitterService,jwtHelper,$localStorage) {
             $scope.constants = constants;
             // When the user clicks to fb connect
             $scope.fbLogin = function() {
@@ -60,10 +63,11 @@ define(['app'], function(app)
             });
 
             $scope.login = function () {
-                loginModelObject.userId = $scope.login.username;
+                loginModelObject.username = $scope.login.username;
                 loginModelObject.password = $scope.login.password;
                 appConfig.serviceAPI.authAPI(API, function(result){
                     if(result.responseData.message === "success") {
+                        $localStorage.token = result.responseData.token;
                         $location.path('intro');
                     }
                 },function(err){
