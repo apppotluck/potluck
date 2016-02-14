@@ -91,7 +91,10 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
                     var userToken = $localStorage.token;
                     var userDetails = jwtHelper.decodeToken(userToken);
-                    $scope.event.created_by = userDetails.rid
+                    $scope.event.created_by = userDetails.rid;
+                    console.log(userDetails)
+                    console.log($scope.event);
+                    
                     appConfig.serviceAPI.createEvent(API, function(response) {
                         console.log(response);
                         if (response.status === "success") {

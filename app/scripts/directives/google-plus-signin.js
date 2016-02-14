@@ -33,6 +33,10 @@ define(['app'], function(app)
                         state: ''
                     };
 
+                    scope.signinCallback = function() {
+                      
+                    }
+
                     defaults.clientid = attrs.clientid;
                     defaults.theme = attrs.theme;
 
@@ -69,6 +73,7 @@ define(['app'], function(app)
         }]).
         run(['$window','$rootScope',function($window, $rootScope) {
             $window.signinCallback = function (authResult) {
+              alert("here===")
                 if (authResult && authResult.access_token){
                     $rootScope.$broadcast('event:google-plus-signin-success', authResult);
                 } else {

@@ -2,7 +2,7 @@ require.config({
     baseUrl: '/scripts',
     catchError: true,
     paths: {
-        'angular'           : '/bower_components/angular/angular'
+        'angular'             : '/bower_components/angular/angular'
         , 'angular-route'     : '/bower_components/angular-route/angular-route'
         , 'angular-animate'   : '/bower_components/angular-animate/angular-animate'
         , 'ngAria'            : '/bower_components/angular-aria/angular-aria.min'

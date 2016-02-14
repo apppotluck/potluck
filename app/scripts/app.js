@@ -19,6 +19,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                     app.service = $provide.service;
 
                     $facebookProvider.setAppId(constants.fbAppId);
+                    // $facebookProvider.setAppSecret(constants.secret);
 
                     $locationProvider.html5Mode({
                         enabled: true,
@@ -44,8 +45,12 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                         return {
                             'request': function(config) {
                                 config.headers = config.headers || {};
-                                if ($localStorage.token) {
-                                    config.headers.Authorization = $localStorage.token;
+                                if (config.url === "/potluck/auth/user" || config.url.split(".").pop() == '.html') {
+                                    config.headers.skipAuthorization = true;
+                                } else {
+                                    if ($localStorage.token) {
+                                        config.headers.Authorization = $localStorage.token;
+                                    }
                                 }
                                 return config;
                             },

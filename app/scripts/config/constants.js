@@ -8,7 +8,7 @@ var constants = {
     ,"fbAppId"        : 959273690831612
     ,"oathId"         : 'e6u0TKccWPGCnAqheXQYg76Vf2M'
     ,"gplusClientId"  : '836324652246-r69j3phnfv90mijm7b3bokb1g4m1sg01.apps.googleusercontent.com'
-    ,"secret"         : 'P0tluckAppWithTE@M' 
+    ,"secret"         : 'P0tluck@pp' 
 };
 
 var loginModelObject = {   "username": ""

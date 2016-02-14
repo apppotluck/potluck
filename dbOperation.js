@@ -39,31 +39,24 @@ var insertIntoDishAllocation = function(uID, eID, dID) {
     return dishAllocationPromise.promise;
 };
 
-var saveUsers = function(userEmailId, dishName) {
+var saveUsers = function(userEmailId) {
     var uPromise = Q.defer();
     var userID, obj = {};
-    db.exec('insert into potluck_users(email_id,status)values(:emailId, :status)', {
+    db.exec('insert into potluck_users(email_id,password,status,registerd_by,username)values(:emailId,:password,:status,:rby,:username)', {
         params: {
             emailId: userEmailId,
-            status: 1
+            password:md5('123456'),
+            status: 1,
+            rby: "app",
+            username:userEmailId.match(/([^@]+).+/)[1]
         },
         RETURN: "@rid"
     }).then(function(res) {
         userID = getRid(res);
-        if (!_.isNull(dishName) && !_.isUndefined(dishName)) {
-            saveDish(dishName).then(function(dishId) {
-                obj = {
-                    "userId": userID,
-                    "dishId": dishId
-                }
-                uPromise.resolve(obj);
-            })
-        } else {
-            obj = {
-                "userId": userID
-            }
-            uPromise.resolve(obj);
+        obj = {
+            "userId": userID
         }
+        uPromise.resolve(obj);
     }, function(err) {
         console.log("some problem", err);
         uPromise.reject(err);
@@ -94,15 +87,6 @@ module.exports = (function() {
                 dishAllocationPromiseArray = [],
                 userObject = [],
                 eventSavePromise = Q.defer();
-            for (var index in body.dishAllocation) {
-                for (var user in body.dishAllocation[index]) {
-                    var obj = {
-                        "user": user,
-                        "dish": body.dishAllocation[index][user]
-                    }
-                    userObject.push(obj);
-                }
-            }
             for (var i = 0; i < body.users.length; i++) {
                 var obj = {
                     "user": body.users[i]
@@ -110,40 +94,17 @@ module.exports = (function() {
                 userObject.push(obj);
             }
 
-            db.exec('insert into potluck_events(name,event_date,event_time,location,food_type_id,theme,message) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", [' + body.foodtype + '], "' + body.theme + '", "' + body.message + '") RETURN @rid').then(function(res) {
+            db.exec('insert into potluck_events(name,event_date,event_time,location,food_type_id,theme,message,created_by) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", [' + body.foodtype + '], "' + body.theme + '", "' + body.message + '",'+body.created_by+') RETURN @rid').then(function(res) {
                 var eventId = getRid(res);
                 _.map(userObject, function(v, k, arr) {
-                    userPromise.push(saveUsers(arr[k].user, arr[k].dish));
+                    userPromise.push(saveUsers(arr[k].user));
                 });
 
                 Q.allSettled(userPromise).then(function(response) {
-                    try {
-                        _.map(response, function(v, key, arr) {
-                            if (arr[key].state === "fulfilled") {
-                                var dId;
-                                if (_.isUndefined(arr[key].value.dishId)) {
-                                    dId = "";
-                                } else {
-                                    dId = arr[key].value.dishId;
-                                }
-                                dishAllocationPromiseArray.push(insertIntoDishAllocation(arr[key].value.userId, eventId, dId));
-                            }
-                        })
-                    } catch (e) {
-                        eventSavePromise.reject(e);
-                    }
-                    Q.allSettled(dishAllocationPromiseArray).then(function(response) {
-                            eventSavePromise.resolve("event saved successfully");
-                        },
-                        function(err) {
-                            console.log(err);
-                            eventSavePromise.reject(err);
-                        })
+                    eventSavePromise.resolve("event saved successfully");
                 }, function(err) {
-                    console.log(err);
                     eventSavePromise.reject(err);
                 });
-
             }, function(err) {
                 console.log(err);
                 eventSavePromise.reject(err);
@@ -158,9 +119,12 @@ module.exports = (function() {
         },
         login: function(obj) {
             var defered = Q.defer();
-            var query = "select @rid,email_id,username from potluck_users where username='"+obj.username+"' and password ='"+obj.password+"'";
-            db.exec("select @rid,email_id,username from potluck_users where username='"+obj.username+"' and password ='"+obj.password+"'").then(function(response){
-                    defered.resolve(response);
+            var query = "select @rid,email_id,username from potluck_users where username='"+obj.username+"' and password ='"+md5(obj.password)+"'";
+            db.exec(query).then(function(response){
+                    if(response.results[0].content.length) 
+                        defered.resolve(response);
+                    else 
+                        defered.reject("Invalid login/password");    
                 },function(err){
                     defered.reject(err);
                 });
