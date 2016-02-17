@@ -1,22 +1,23 @@
 <header title="Sign Up"></header>
 <section class="container">
     <section class="row" ng-controller="RegisterController">
+        <div ng-show="isError">{{errorMessage}}</div>
         <section class="col-xs-12">
             <form name="userForm" ng-submit="submitForm()" novalidate>
       
-        <!-- USERNAME -->
-        <div class="form-group" ng-class="{ 'has-error' : userForm.username.$invalid && !userForm.username.$pristine }" >
-            <label>Username</label>
-            <input type="text" name="username" class="form-control" ng-model="user.username" ng-minlength="3" ng-maxlength="8" placeholder="username" required>
-            <p ng-show="userForm.username.$error.minlength" class="help-block">Username is too short.</p>
-            <p ng-show="userForm.username.$error.maxlength" class="help-block">Username is too long.</p>
+        <!-- Name -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }" >
+            <label>Name</label>
+            <input type="text" name="name" class="form-control" ng-model="user.name" ng-minlength="1" ng-maxlength="30" placeholder="name" required>
+            <p ng-show="userForm.name.$error.minlength" class="help-block">name is too short.</p>
+            <p ng-show="userForm.username.$error.maxlength" class="help-block">name is too long.</p>
         </div>
         
         <!-- EMAIL -->
-        <div class="form-group" ng-class="{ 'has-error' : userForm.email_id.$invalid && !userForm.email_id.$pristine }">
+        <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
             <label>Email</label>
-            <input type="email" name="email_id" placeholder="email" class="form-control" ng-model="user.email_id" required>
-            <p ng-show="userForm.email_id.$invalid && !userForm.email_id.$pristine" class="help-block">Enter a valid email.</p>
+            <input type="email" name="email" placeholder="email" class="form-control" ng-model="user.email" required>
+            <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
         </div>
 
         <!-- Password -->

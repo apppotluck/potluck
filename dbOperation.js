@@ -45,10 +45,10 @@ var saveUsers = function(userEmailId) {
     db.exec('insert into potluck_users(email_id,password,status,registerd_by,username)values(:emailId,:password,:status,:rby,:username)', {
         params: {
             emailId: userEmailId,
-            password:md5('123456'),
+            password: md5('123456'),
             status: 1,
             rby: "app",
-            username:userEmailId.match(/([^@]+).+/)[1]
+            username: userEmailId.match(/([^@]+).+/)[1]
         },
         RETURN: "@rid"
     }).then(function(res) {
@@ -94,7 +94,7 @@ module.exports = (function() {
                 userObject.push(obj);
             }
 
-            db.exec('insert into potluck_events(name,event_date,event_time,location,food_type_id,theme,message,created_by) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", [' + body.foodtype + '], "' + body.theme + '", "' + body.message + '",'+body.created_by+') RETURN @rid').then(function(res) {
+            db.exec('insert into potluck_events(name,event_date,event_time,location,food_type_id,theme,message,created_by) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", [' + body.foodtype + '], "' + body.theme + '", "' + body.message + '",' + body.created_by + ') RETURN @rid').then(function(res) {
                 var eventId = getRid(res);
                 _.map(userObject, function(v, k, arr) {
                     userPromise.push(saveUsers(arr[k].user));
@@ -119,15 +119,15 @@ module.exports = (function() {
         },
         login: function(obj) {
             var defered = Q.defer();
-            var query = "select @rid,email_id,username from potluck_users where username='"+obj.username+"' and password ='"+md5(obj.password)+"'";
-            db.exec(query).then(function(response){
-                    if(response.results[0].content.length) 
-                        defered.resolve(response);
-                    else 
-                        defered.reject("Invalid login/password");    
-                },function(err){
-                    defered.reject(err);
-                });
+            var query = "select @rid,email,name from potluck_users where email='" + obj.email + "' and password ='" + md5(obj.password) + "'";
+            db.exec(query).then(function(response) {
+                if (response.results[0].content.length)
+                    defered.resolve(response);
+                else
+                    defered.reject("Invalid login/password");
+            }, function(err) {
+                defered.reject(err);
+            });
             return defered.promise;
         },
         find: function(collectionName) {
@@ -175,17 +175,49 @@ module.exports = (function() {
             return defered.promise;
         },
         create_user: function(body) {
-            var defered = Q.defer();
-            var query = 'insert into potluck_users(username,email_id,password,status,registerd_by)values("' + body.username + '","' + body.email_id + '","' + md5(body.password) + '",1,"' + body.registerd_by + '") Return @rid';
-            db.exec(query).then(function(res) {
-                var userID = getRid(res);
-                obj = {
-                    "userId": userID
-                }
-                defered.resolve(obj);
-            }, function(err) {
-                defered.reject(err);
-            })
+            var defered = Q.defer(),
+                query,
+                checkUser;
+            // local user
+            switch (body.register_by) {
+                case 'local':
+                    checkUser = "select @rid from potluck_users where email='" + body.email + "'";
+                    query = 'insert into potluck_users(name,email,password)values("' + body.name + '","' + body.email + '","' + md5(body.password) + '") Return @this';
+                    break;
+                case 'facebook':
+                    checkUser = "select @rid from potluck_facebook_users where email='" + body.email + "'";
+                    query = 'insert into potluck_users_facebook(id,name,email)values("' + body.id + '","' + body.name + '","' + body.email + '") Return @this';
+                    break;
+                case 'gplus':
+                    checkUser = "select @rid from potluck_facebook_google_plus where email='" + body.email + "'";
+                    query = 'insert into potluck_users_google_plus(id,name,email)values("' + body.id + '","' + body.name + '","' + body.email + '") Return @this';
+                    break;
+            }
+            // user is local 
+            if (body.register_by === "local") {
+                db.exec(checkUser).then(function(response) {
+                    if (!response.results[0].content.length) {
+                        db.exec(query).then(function(res) {
+                            var userID = getRid(res);
+                            obj = {
+                                "userId": userID,
+                                "email": res.results[0].content.value.email_id,
+                                "name": res.results[0].content.name
+                            }
+                            defered.resolve(obj);
+                        }, function(err) {
+                            defered.reject(err);
+                        })
+                    } else {
+                        defered.reject('Email already exists');
+                    }
+                });
+            } else if (body.register_by === "facebook") {
+                db.exec(checkUser).then(function(response) {
+
+                })
+            }
+
             return defered.promise;
         }
     }

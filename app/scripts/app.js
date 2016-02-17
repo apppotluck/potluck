@@ -45,7 +45,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                         return {
                             'request': function(config) {
                                 config.headers = config.headers || {};
-                                if (config.url === "/potluck/auth/user" || config.url.split(".").pop() == '.html') {
+                                if (config.url === "/potluck/auth/user" || config.url === "/potluck/create-user"  || config.url.split(".").pop() == '.html') {
                                     config.headers.skipAuthorization = true;
                                 } else {
                                     if ($localStorage.token) {
@@ -64,8 +64,16 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                     }]);
                 }
             ])
-        .run(function($rootScope) {
-            // Load the facebook SDK asynchronously
+        .run(['$window', '$rootScope', function($window, $rootScope) {
+           
+            $window.signinCallback = function(authResult) {
+                if (authResult && authResult.access_token) {
+                    $rootScope.$broadcast('event:google-plus-signin-success', authResult);
+                } else {
+                    $rootScope.$broadcast('event:google-plus-signin-failure', authResult);
+                }
+            };
+             // Load the facebook SDK asynchronously
             (function() {
                 // If we've already installed the SDK, we're done
                 if (document.getElementById('facebook-jssdk')) {
@@ -85,7 +93,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                 // Insert the Facebook JS SDK into the DOM
                 firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
             }());
-        });
+        }]);
 
     return app;
 });

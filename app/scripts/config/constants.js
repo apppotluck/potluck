@@ -16,9 +16,9 @@ var loginModelObject = {   "username": ""
 
 
 var userModelObject = {   "userId": ""
-                        , "userName": "0"
+                        , "name": "0"
                         , "password": "0"
-                        , "emailId" : ""
+                        , "email" : ""
                         };
 
 

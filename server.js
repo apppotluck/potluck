@@ -118,10 +118,14 @@ apiRoutes.post('/auth/user', function(req, res) {
 
 apiRoutes.post('/create-user', function(req, res) {
     var body = req.body;
-    dbOperation.create_user(body).then(function(result) {
+    dbOperation.create_user(body).then(function(response) {
+        var token = jwt.sign(response, app.get('superSecret'), {
+            expiresIn: 1440 // expires in 24 hours
+        });
         var authResponse = {
             responseData: {
-                message: 'success'
+                message: 'success',
+                token: token
             }
         }
         res.json(authResponse);
@@ -129,7 +133,8 @@ apiRoutes.post('/create-user', function(req, res) {
     }, function(err) {
         var authResponse = {
             responseData: {
-                message: 'fail'
+                message: 'fail',
+                error: err
             }
         }
         res.json(authResponse);
@@ -179,6 +184,8 @@ app.use(function(req, res, next) {
 // apiRoutes.get('/', function(req, res) {
 //     res.json({ message: 'Welcome to the coolest API on earth!' });
 // });
+
+app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
 app.use('/potluck', apiRoutes);
 

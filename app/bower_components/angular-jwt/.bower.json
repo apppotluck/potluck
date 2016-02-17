@@ -36,6 +36,5 @@
   },
   "_source": "git://github.com/auth0/angular-jwt.git",
   "_target": "~0.0.9",
-  "_originalSource": "angular-jwt",
-  "_direct": true
+  "_originalSource": "angular-jwt"
 }

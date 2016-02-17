@@ -7,7 +7,7 @@
  */
 define(['app'], function(app)
 {
-    app.directive('googlePlusSignin', ['$window', function ($window) {
+    app.directive('googlePlusSignin',function () {
             var ending = /\.apps\.googleusercontent\.com$/;
 
             return {
@@ -32,11 +32,6 @@ define(['app'], function(app)
                         width: 'wide',
                         state: ''
                     };
-
-                    scope.signinCallback = function() {
-                      
-                    }
-
                     defaults.clientid = attrs.clientid;
                     defaults.theme = attrs.theme;
 
@@ -70,15 +65,5 @@ define(['app'], function(app)
                     });
                 }
             }
-        }]).
-        run(['$window','$rootScope',function($window, $rootScope) {
-            $window.signinCallback = function (authResult) {
-              alert("here===")
-                if (authResult && authResult.access_token){
-                    $rootScope.$broadcast('event:google-plus-signin-success', authResult);
-                } else {
-                    $rootScope.$broadcast('event:google-plus-signin-failure', authResult);
-                }
-            };
-        }]);
+        });
 })

@@ -7,7 +7,8 @@ define(['app'], function(app) {
         'twitterService',
         'jwtHelper',
         '$localStorage',
-        function($scope, API, $location, $facebook, twitterService, jwtHelper, $localStorage) {
+        '$rootScope',
+        function($scope, API, $location, $facebook, twitterService, jwtHelper, $localStorage,$rootScope) {
             $scope.constants = constants;
             $scope.invalidUser = false;
             // When the user clicks to fb connect
@@ -21,11 +22,8 @@ define(['app'], function(app) {
             function refresh() {
                 $facebook.api("/me?fields=id,name,email").then(
                     function(response) {
-                        console.log(response);
-
-                        $scope.welcomeMsg = "Welcome " + response.name;
-                        $scope.isLoggedIn = true;
-                        // $scope.refreshTimeline();
+                        response.register_by='facebook';
+                        API.authAndRegister(response);
                     },
                     function(err) {
                         $scope.welcomeMsg = "Please log in";
@@ -56,20 +54,33 @@ define(['app'], function(app) {
             // }
             $scope.$on('event:google-plus-signin-success', function(event, authResult) {
                 // User successfully authorized the G+ App!
-                console.log('Signed in!');
+                gapi.client.request({
+                    'path': '/plus/v1/people/me',
+                    'method': 'GET',
+                    'callback': $scope.userInfoCallback
+                });
             });
             $scope.$on('event:google-plus-signin-failure', function(event, authResult) {
                 // User has not authorized the G+ App!
                 console.log('Not signed into Google Plus.');
             });
 
+            // Process user info.
+            // userInfo is a JSON object.
+            // When callback is received, process user info.
+            $scope.userInfoCallback = function(userInfo) {
+                console.log(userInfo);
+                console.log(userInfo.displayName);
+                console.log(userInfo.emails[0].value);
+            };
+
             $scope.login = function() {
-                loginModelObject.username = $scope.login.username;
+                loginModelObject.email = $scope.login.email;
                 loginModelObject.password = $scope.login.password;
                 appConfig.serviceAPI.authAPI(API, function(result) {
                     if (result.responseData.message === "success") {
                         $localStorage.token = result.responseData.token;
-                        // $location.path('intro');
+                        $location.path('intro');
                     } else {
                         $scope.invalidUser = true;
                     }
