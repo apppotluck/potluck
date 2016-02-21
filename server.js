@@ -68,6 +68,15 @@ apiRoutes.get('/getEvents', function(req, res) {
     })
 });
 
+apiRoutes.get('/getEventDetails/:eId', function(req, res) {
+    dbOperation.getEventDetails(req.params.eId).then(function(eventDetails) {
+        res.json(eventDetails);
+        res.send();
+    }, function(err) {
+        res.json("error");
+        res.send();
+    })
+});
 
 
 apiRoutes.post('/create-event', function(req, res) {

@@ -126,11 +126,16 @@ module.exports = (function() {
             });
             return defered.promise;
         },
-        getEventDetails: function() {
+        getEventDetails: function(eventId) {
             var defered = Q.defer();
-            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events')
+            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events where @rid = "'+eventId+'"')
                 .then(function(response) {
-                    defered.resolve(response);
+                    db.query('select count(*) as total from potluck_invite_friends where event_id='+eventId).then(function(totalInvitees){
+                        response[0].totalInvitees = totalInvitees[0].total;
+                        defered.resolve(response);
+                    },function(err){
+                        defered.reject(false);
+                    })
                 }, function(err) {
                     defered.reject(false);
                 });

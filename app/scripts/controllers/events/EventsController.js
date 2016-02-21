@@ -14,8 +14,12 @@ define(['app'], function(app) {
             $scope.pastEvents = [];
 
             appConfig.serviceAPI.getEvents(API, function(eventResponse) {
+                var eventDate, eventDateWithHourAndMinute, unixTimeStamp;
                 for (var event in eventResponse) {
-                    if (Date.parse(eventResponse[event].event_date) > Date.now()) {
+                    eventDate = eventResponse[event].event_date.replace(/-/g, '\/');
+                    eventDateWithHourAndMinute = new Date(eventDate).setHours(eventResponse[event].event_time.split(":")[0]);
+                    eventDateWithHourAndMinute = new Date(eventDateWithHourAndMinute).setMinutes(eventResponse[event].event_time.split(":")[1]);
+                    if (eventDateWithHourAndMinute > Date.now()) {
                         $scope.upcomingEvents.push(eventResponse[event]);
                     } else {
                         $scope.pastEvents.push(eventResponse[event]);
@@ -50,9 +54,13 @@ define(['app'], function(app) {
         'jwtHelper',
         '$localStorage',
         '$routeParams',
-        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,$routeParams) {
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
             var eventId = $routeParams.eid
-            console.log("eId====>",eventId);
+            appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {  
+                $scope.event = eventDetails;  
+            }, function(err) {
+                console.log(err);
+            },$routeParams.eid);
         }
     ])
 });

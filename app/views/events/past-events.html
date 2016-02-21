@@ -9,19 +9,6 @@
         <article class="col-xs-3 pot-name col-gry">
             {{value.hostname[0]}}
         </article>
-        <section class="col-xs-12 p0 pop-confirm" ng-if="currentUser.userId != value.created_by[0]">
-            <ul>
-                <li>
-                    <input type="button" value="Yes" class="tertiary-btn">
-                </li>
-                <li>
-                    <input type="button" value="No" class="tertiary-btn">
-                </li>
-                <li>
-                    <input type="button" value="May Be" class="tertiary-btn">
-                </li>
-            </ul>
-        </section>
     </section>
     <section class="row">
         <!-- <button type="button" ng-click="createEvent()" class="btn pop-btn orange primary-btn">Create New Event</button> -->

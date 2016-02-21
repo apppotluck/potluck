@@ -13,8 +13,9 @@ if (window.location.hostname == 'localhost') {
 var SERVICE_NAME_AUTH_USER = 'auth/user'; //POST
 var SERVICE_NAME_CREATE_EVENT = 'create-event'; //POST
 var SERVICE_NAME_GET_FOOD_TYPE= 'getFoodType'; // GET
-var SERVICE_NAME_GET_GET_THEMES = 'getThemes'; // GET
-var SERVICE_NAME_GET_GET_EVENTS = 'getEvents'; // GET
+var SERVICE_NAME_GET_THEMES = 'getThemes'; // GET
+var SERVICE_NAME_GET_EVENTS = 'getEvents'; // GET
+var SERVICE_NAME_GET_EVENT_DETAILS = 'getEventDetails'; // GET
 var SERVICE_NAME_REGISTER_USER = 'create-user';
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
@@ -51,19 +52,25 @@ var GET_FOOD_TYPE = {
 
 var GET_THEMES = {
     method: METHOD_TYPE_GET,
-    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_GET_THEMES,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_THEMES,
     headers: requestHeaders
 };
 
 var GET_EVENTS = {
     method: METHOD_TYPE_GET,
-    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_GET_EVENTS,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_EVENTS,
     headers: requestHeaders
 };
 
 var CREATE_USER = {
     method: METHOD_TYPE_POST,
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_REGISTER_USER,
+    headers: requestHeaders
+};
+
+var GET_EVENT_DETAILS = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_EVENT_DETAILS,
     headers: requestHeaders
 };
 
@@ -124,6 +131,11 @@ var appConfig = {
             var serviceConfig = angular.copy(CREATE_USER);
             serviceConfig.data = requestBody;
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
-        }
+        },
+        'getEventDetails': function(API, _successCallback, _errorCallback,eventId) {
+            var serviceConfig = angular.copy(GET_EVENT_DETAILS);
+            serviceConfig.url = GET_EVENT_DETAILS.url + '/'+encodeURIComponent(eventId);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
     }
 };

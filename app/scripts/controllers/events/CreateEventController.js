@@ -8,7 +8,8 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             '$q',
             'jwtHelper',
             '$localStorage',
-            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,glocation) {
+            '$filter',
+            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,$filter,glocation) {
                 if ($localStorage.token === "undefined") {
                     $location.path('/');
                 } 
@@ -74,6 +75,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $scope.event.time = $scope.time1.getHours() + ":" + $scope.time1.getMinutes()
                     $scope.event.friends = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
+                    $scope.event.date = $filter('date')($scope.event.date,'yyyy-MM-dd'); 
                     var userToken = $localStorage.token;
                     var userDetails = jwtHelper.decodeToken(userToken);
                     $scope.event.created_by = userDetails.userId;

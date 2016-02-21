@@ -1,0 +1,31 @@
+<section class="row pot-details pot-details-list">
+    <section class="col-xs-12">
+        <h3 class="mt0" style="padding-left:16px">{{event[0].name}}</h3>
+        <ul class="mt10">
+            <li class="sprite host-ico">Host: {{event[0].hostname[0]}}</li>
+            <li class="sprite cal-ico">{{event[0].event_date}} | {{event[0].event_time}}</li>
+            <li class="sprite loc-ico">{{event[0].location}}</li>
+            <li class="sprite loc-ico">{{event[0].food_type}}</li>
+
+            <li class="sprite loc-ico">{{event[0].theme}}</li>
+            <li class="sprite loc-ico">Invitees can bring thier own choice of meal.</li>
+            <li class="sprite loc-ico">{{event[0].totalInvitees}} Friends has been added.</li>
+            <li class="sprite loc-ico">Message: {{event[0].message}}</li>
+        </ul>
+        <a href="details-expanded.html" class="pull-right">Show more</a>
+    </section>
+</section>
+<section class="row pot-serving-outer bg-lgt-gry">
+    <section class="col-xs-12">
+        <form>
+            <article class="form-group">
+                <label for="">List down your menu (one by one)</label>
+                <input type="text" class="form-control pop-form-control gry-bdr">
+                <textarea placeholder="For Ex: Good to eat for 10 people. Extra spicy." class="menu-message gry-bdr"></textarea>
+                <li>
+                    <input type="button" value="Add to the List" class="tertiary-btn">
+                </li>
+            </article>
+        </form>
+    </section>
+</section>
