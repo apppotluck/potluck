@@ -128,8 +128,8 @@ module.exports = (function() {
         },
         getEventDetails: function() {
             var defered = Q.defer();
-            db.select('event_id as eId,event_id.name as eventName,event_id.location as location,event_id.event_time as event_time,event_id.event_date as event_date,event_id.message as event_message,event_id.theme as event_theme,user_id.email_id as email_id,dish_id.name as dish_name,event_id.food_type_id.name as type_name').from('potluck_dish_allocation')
-                .all().then(function(response) {
+            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events')
+                .then(function(response) {
                     defered.resolve(response);
                 }, function(err) {
                     defered.reject(false);

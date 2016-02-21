@@ -19,7 +19,17 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.set('superSecret', config.secret); // secret variable
 app.use(favicon(__dirname + '/favicon.ico'));
 
+
 app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/app/index.html');
+});
+app.get('/create-event', function(req, res) {
+    res.sendFile(__dirname + '/app/index.html');
+});
+app.get('/events', function(req, res) {
+    res.sendFile(__dirname + '/app/index.html');
+});
+app.get('/event-details/:id', function(req, res) {
     res.sendFile(__dirname + '/app/index.html');
 });
 
@@ -62,7 +72,7 @@ apiRoutes.get('/getEvents', function(req, res) {
 
 apiRoutes.post('/create-event', function(req, res) {
     var body = req.body;
-    dbOperation.create('events', body)
+    dbOperation.createEvent('events', body)
         .then(function(result) {
             var authResponse = {
                 responseData: {
@@ -73,6 +83,7 @@ apiRoutes.post('/create-event', function(req, res) {
             res.json(authResponse);
             res.send();
         }, function(err) {
+            console.log(err)
             var authResponse = {
                 responseData: {
                     status: "failed",
@@ -92,9 +103,9 @@ apiRoutes.post('/create-event', function(req, res) {
 apiRoutes.post('/auth/user', function(req, res) {
     var body = req.body;
     dbOperation.login(body).then(function(response) {
-        var user = response.results[0].content[0].value;
+        var user = response;
         var token = jwt.sign(user, app.get('superSecret'), {
-            expiresIn: 1440 // expires in 24 hours
+            expiresIn: '2 days' // expires in 24 hours
         });
 
         var authResponse = {
@@ -120,7 +131,7 @@ apiRoutes.post('/create-user', function(req, res) {
     var body = req.body;
     dbOperation.create_user(body).then(function(response) {
         var token = jwt.sign(response, app.get('superSecret'), {
-            expiresIn: 1440 // expires in 24 hours
+            expiresIn: "2 days" // expires in 24 hours
         });
         var authResponse = {
             responseData: {
@@ -147,7 +158,7 @@ apiRoutes.post('/create-user', function(req, res) {
 // ---------------------------------------------------------
 app.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
-    var token = req.headers.authorization;
+    var token = req.headers["x-access-token"];
     if (req.headers.skipauthorization) { // In case of login of autherization is not required
         next();
     } else {
@@ -166,8 +177,8 @@ app.use(function(req, res, next) {
                     next();
                 }
             })
-        } else {
-
+        } 
+        else {
             // if there is no token
             // return an error
             return res.status(403).send({
@@ -177,15 +188,6 @@ app.use(function(req, res, next) {
         }
     }
 });
-
-// ---------------------------------------------------------
-// authenticated routes
-// ---------------------------------------------------------
-// apiRoutes.get('/', function(req, res) {
-//     res.json({ message: 'Welcome to the coolest API on earth!' });
-// });
-
-app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
 app.use('/potluck', apiRoutes);
 
