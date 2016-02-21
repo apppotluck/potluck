@@ -44,7 +44,6 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                     $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
                         return {
                             'request': function(config) {
-                                config.headers.demo = true;
                                 config.headers = config.headers || {};
                                 if (config.url === "/potluck/auth/user" || config.url === "/potluck/create-user" || config.url.split(".").pop() == '.html') {
                                     config.headers.skipAuthorization = true;

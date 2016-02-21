@@ -24,7 +24,6 @@ define([
                         }
                     }).error(function(response, status, headers, config) {
                         if (errorCallback) {
-
                             if (status == 401 || status == "401") {
                                 if (response.indexOf('Unauthorized-Session_Timeout') != -1) {
                                     sessionStorage.clear();

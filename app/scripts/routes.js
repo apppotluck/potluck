@@ -44,6 +44,13 @@ define([], function()
                     'controllers/events/EventsController',
                     'directives/header'
                 ]
+            },
+            '/event-details/:eid': {
+                templateUrl: '/views/events/event-details.html',
+                dependencies: [
+                    'controllers/events/EventsController',
+                    'directives/header'
+                ]
             }
         }
     };

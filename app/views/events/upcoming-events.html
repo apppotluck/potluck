@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<div ng-repeat="(key, value) in events">
+<div ng-repeat="(key, value) in upcomingEvents" id="pcominguEvent_{{value.rid}}"  ng-click="onEventClick()">
     <section class="row pot-details">
         <article class="col-xs-9">
             <h3 class="mt0">{{value.name}}</h3>
@@ -23,7 +23,11 @@
             </ul>
         </section>
     </section>
+
     <section class="row">
-        <button type="button" ng-click="createEvent()" class="btn pop-btn orange primary-btn">Create New Event</button>
+        <!-- <button type="button" ng-click="createEvent()" class="btn pop-btn orange primary-btn">Create New Event</button> -->
     </section>
 </div>
+<section class="row pot-details" ng-if="upcomingEvents.length == 0">
+    <div style="font-weight:bold;margin-top:6%;margin-left:38%">No upcoming events</div>
+</section>

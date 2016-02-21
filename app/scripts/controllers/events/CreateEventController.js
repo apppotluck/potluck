@@ -28,7 +28,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 // get food type 
                 $scope.foodTypeArray = {};
                 $scope.foodTypeArray["veg"] = "Veg";
-                $scope.foodTypeArray["nonveg"] = "No Veg";
+                $scope.foodTypeArray["nonveg"] = "Non Veg";
                 $scope.foodTypeArray["both"] = "Both";
 
 

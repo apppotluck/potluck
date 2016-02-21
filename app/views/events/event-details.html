@@ -1,0 +1,74 @@
+<header title="Event Details"></header>
+<link href="bower_components/angular-material/angular-material.css" rel="stylesheet" />
+<div ng-controller="EventDetailsController" class="row" layout="column" ng-cloak>
+	<section class="row">
+        	<section class="col-xs-12 pop-tab pop-tab-three p0">
+            	<ul>
+                	<li class="active w33"><a href="#">Details</a></li>
+                    <li class="w33"><a href="menu.html">Menu</a></li>
+                    <li class="w33"><a href="invitees.html">Invitees</a></li>
+                </ul>
+            </section>
+        </section>
+        <section class="row pot-details pot-details-list">
+        	<section class="col-xs-12">
+            	<h3 class="mt0">Newyear Potluck</h3>
+               <ul class="mt10">
+                    <li class="sprite host-ico">Host: Sajindas</li>
+                    <li class="sprite cal-ico">24th Feb, 2015 | 12.30 pm - 3:00 pm</li>
+                    <li class="sprite loc-ico">5421 N East River Road, Apt 1104, Chicago IL, 60656</li>
+                </ul>
+                <a href="details-expanded.html" class="pull-right">Show more</a>
+            </section>
+        </section>
+        <section class="row pot-serving-outer bg-lgt-gry">
+        	<section class="col-xs-12">
+            <form>
+                
+                <article class="form-group">
+                    <label for="">List down your menu (one by one)</label>
+                    <input type="text" class="form-control pop-form-control gry-bdr">
+                    <textarea placeholder="For Ex: Good to eat for 10 people. Extra spicy." class="menu-message gry-bdr"></textarea>
+                    <li><input type="button" value="Add to the List" class="tertiary-btn"></li>
+             	 </article>
+             </form>
+             </section>
+        </section>
+        <section class="menu-list">
+        	<ul>
+            	<li class="row pot-details">
+                <article class="col-xs-9">
+               		<h3 class="mt0">Chicken Briyani</h3>
+            	</article>
+                <article class="pot-name col-gry col-xs-3">
+                	<a href="#"><span class="close-icon"></span></a>
+            	</article>
+                <article class="col-xs-12 col-gry">
+                Spicy chicken briyani, suffcient for 10 ppl
+                </article>
+                </li>
+                <li class="row pot-details">
+                <article class="col-xs-9">
+               		<h3 class="mt0">Gopi Manchurian</h3>
+            	</article>
+                <article class="pot-name col-gry col-xs-3">
+                	<a href="#"><span class="close-icon"></span></a>
+            	</article>
+                <article class="col-xs-12 col-gry">
+                Good enough for 15 ppl
+                </article>
+                </li>
+                <li class="row pot-details">
+                <article class="col-xs-9">
+               		<h3 class="mt0">Vennila Ice Cream</h3>
+            	</article>
+                <article class="pot-name col-gry col-xs-3">
+                	<a href="#"><span class="close-icon"></span></a>
+            	</article>
+                <article class="col-xs-12 col-gry">
+                2 Family pack - 8 people can eat.
+                </article>
+                </li>
+            </ul>
+        	</section>
+</div>
