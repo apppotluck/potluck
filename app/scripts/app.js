@@ -44,17 +44,23 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                     $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
                         return {
                             'request': function(config) {
+                                config.headers.demo = true;
                                 config.headers = config.headers || {};
-                                if (config.url === "/potluck/auth/user" || config.url === "/potluck/create-user"  || config.url.split(".").pop() == '.html') {
+                                if (config.url === "/potluck/auth/user" || config.url === "/potluck/create-user" || config.url.split(".").pop() == '.html') {
                                     config.headers.skipAuthorization = true;
                                 } else {
-                                    if ($localStorage.token) {
-                                        config.headers.Authorization = $localStorage.token;
+                                    if (!config.url.indexOf("https://maps.googleapis.com/maps/api/geocode/json?")) {
+                                        console.log("no authentication required for google map");
+                                    } else {
+                                        if ($localStorage.token) {
+                                            config.headers["x-access-token"] = $localStorage.token;
+                                        }
                                     }
                                 }
                                 return config;
                             },
                             'responseError': function(response) {
+                                config.headers.demo = false;
                                 if (response.status === 401 || response.status === 403) {
                                     $location.path('/');
                                 }
@@ -65,7 +71,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                 }
             ])
         .run(['$window', '$rootScope', function($window, $rootScope) {
-           
+
             $window.signinCallback = function(authResult) {
                 if (authResult && authResult.access_token) {
                     $rootScope.$broadcast('event:google-plus-signin-success', authResult);
@@ -73,7 +79,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                     $rootScope.$broadcast('event:google-plus-signin-failure', authResult);
                 }
             };
-             // Load the facebook SDK asynchronously
+            // Load the facebook SDK asynchronously
             (function() {
                 // If we've already installed the SDK, we're done
                 if (document.getElementById('facebook-jssdk')) {

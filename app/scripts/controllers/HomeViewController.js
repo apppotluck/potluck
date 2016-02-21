@@ -11,10 +11,12 @@ define(['app'], function(app) {
         function($scope, API, $location, $facebook, twitterService, jwtHelper, $localStorage,$rootScope) {
             $scope.constants = constants;
             $scope.invalidUser = false;
+            // if(typeof $localStorage.token !== "undefined") {
+            //     $location.path('events');
+            // }
             // When the user clicks to fb connect
             $scope.fbLogin = function() {
                 $facebook.login().then(function() {
-                    // $scope.refreshTimeline();
                     refresh();
                 });
             };
@@ -68,11 +70,11 @@ define(['app'], function(app) {
             // Process user info.
             // userInfo is a JSON object.
             // When callback is received, process user info.
-            $scope.userInfoCallback = function(userInfo) {
-                console.log(userInfo);
-                console.log(userInfo.displayName);
-                console.log(userInfo.emails[0].value);
-            };
+            // $scope.userInfoCallback = function(userInfo) {
+            //     console.log(userInfo);
+            //     console.log(userInfo.displayName);
+            //     console.log(userInfo.emails[0].value);
+            // };
 
             $scope.login = function() {
                 loginModelObject.email = $scope.login.email;
@@ -80,7 +82,7 @@ define(['app'], function(app) {
                 appConfig.serviceAPI.authAPI(API, function(result) {
                     if (result.responseData.message === "success") {
                         $localStorage.token = result.responseData.token;
-                        $location.path('intro');
+                        $location.path('events');
                     } else {
                         $scope.invalidUser = true;
                     }

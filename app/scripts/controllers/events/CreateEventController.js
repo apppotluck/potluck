@@ -25,26 +25,11 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.totalNumberOfFriendsInvited = 0;
 
 
-                // $scope.themes = {};
-                // // get theme 
-                // appConfig.serviceAPI.getThemes(API, function(themeResponse) {
-                //     for(var i in themeResponse) {
-                //         $scope.themes[themeResponse[i]['@rid']] = themeResponse[i].name
-                //     }
-                //     console.log($scope.themes);
-                // }, function(err) {
-                //     console.log(err);
-                // });
-
                 // get food type 
-                $scope.foodTypeArray = {}
-                appConfig.serviceAPI.getFoodType(API, function(response) {
-                    for (var i in response) {
-                        $scope.foodTypeArray[response[i]['@rid']] = response[i].name
-                    }
-                }, function(err) {
-                    console.log(err);
-                });
+                $scope.foodTypeArray = {};
+                $scope.foodTypeArray["veg"] = "Veg";
+                $scope.foodTypeArray["nonveg"] = "No Veg";
+                $scope.foodTypeArray["both"] = "Both";
 
 
                 $scope.themes = ["Italian", "Indian", "Chinees", "USA"];
@@ -87,17 +72,14 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $scope.createEvent = function() {
 
                     $scope.event.time = $scope.time1.getHours() + ":" + $scope.time1.getMinutes()
-                    $scope.event.users = $rootScope.inviteUsers;
+                    $scope.event.friends = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
                     var userToken = $localStorage.token;
                     var userDetails = jwtHelper.decodeToken(userToken);
-                    $scope.event.created_by = userDetails.rid;
-                    console.log(userDetails)
-                    console.log($scope.event);
+                    $scope.event.created_by = userDetails.userId;
                     
                     appConfig.serviceAPI.createEvent(API, function(response) {
-                        console.log(response);
-                        if (response.status === "success") {
+                        if (response.responseData.status === "success") {
                             $location.path('events');
                         }
                     }, function(err) {

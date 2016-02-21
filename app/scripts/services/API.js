@@ -41,7 +41,7 @@ define([
                         appConfig.serviceAPI.registerUser(this, function(response) {
                             if (response.responseData.message === "success") {
                                 $localStorage.token = response.responseData.token;
-                                // $location.path('intro')
+                                $location.path('intro')
                             }
                         }, function(err) {
                             console.log(err);

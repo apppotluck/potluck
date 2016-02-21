@@ -8,21 +8,22 @@ define(['app'], function(app) {
             '$q',
             'jwtHelper',
             '$localStorage',
-            function($scope, API, $location, $rootScope, $q,jwtHelper,$localStorage) {
-            	console.log($localStorage)
+            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage) {
                 $scope.events = {};
-                // get Events 
+                $scope.nonHostUser = false;
                 appConfig.serviceAPI.getEvents(API, function(eventResponse) {
-                	console.log(eventResponse);
                     $scope.events = eventResponse;
-                    // for(var i in eventResponse) {
-                    //     for(var jj in eventResponse[i]) {
-                    //         console.log("jj---->",jj)
-                    //     }
-                    // }
+                    var userToken = $localStorage.token;
+                    var userDetails = jwtHelper.decodeToken(userToken);
+                    console.log($scope.events);
+                    console.log(userDetails);
+                    $scope.currentUser = userDetails;
                 }, function(err) {
                     console.log(err);
                 });
+                $scope.createEvent = function() {
+                    $location.path('/potluck/create-event');
+                }
             }
         ])
 });
