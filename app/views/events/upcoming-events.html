@@ -1,13 +1,29 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <div ng-repeat="(key, value) in events">
-	<section class="row pot-details">
-            <article class="col-xs-9">
-               <h3 class="mt0">{{value.name}}</h3>
-               <p class="pot-time col-gry">{{value.event_date}} | {{value.event_time}}</p>
-               <p class="pot-msg col-blu">Host</p>
-            </article>
-            <article class="col-xs-3 pot-name col-gry">
-                Sajindas
-            </article>
+    <section class="row pot-details">
+        <article class="col-xs-9">
+            <h3 class="mt0">{{value.name}}</h3>
+            <p class="pot-time col-gry">{{value.event_date}} | {{value.event_time}}</p>
+            <p class="pot-msg col-blu"><span ng-if="currentUser.userId == value.created_by[0]">Host</span></p>
+        </article>
+        <article class="col-xs-3 pot-name col-gry">
+            {{value.hostname[0]}}
+        </article>
+        <section class="col-xs-12 p0 pop-confirm" ng-if="currentUser.userId != value.created_by[0]">
+            <ul>
+                <li>
+                    <input type="button" value="Yes" class="tertiary-btn">
+                </li>
+                <li>
+                    <input type="button" value="No" class="tertiary-btn">
+                </li>
+                <li>
+                    <input type="button" value="May Be" class="tertiary-btn">
+                </li>
+            </ul>
         </section>
-</div>	
+    </section>
+    <section class="row">
+        <button type="button" ng-click="createEvent()" class="btn pop-btn orange primary-btn">Create New Event</button>
+    </section>
+</div>
