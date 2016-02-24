@@ -57,7 +57,9 @@ define(['app'], function(app) {
         function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
             var eventId = $routeParams.eid
             appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {  
-                $scope.event = eventDetails;  
+                console.log(eventDetails)
+                $scope.event = eventDetails;
+                $scope.eventInvitees = eventDetails[0].invitees;  
             }, function(err) {
                 console.log(err);
             },$routeParams.eid);

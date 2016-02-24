@@ -40,6 +40,7 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                             redirectTo: config.defaultRoutePaths
                         });
                     }
+                    
 
                     $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
                         return {
@@ -59,7 +60,6 @@ define(['routes', 'services/dependencyResolverFor'], function(config, dependency
                                 return config;
                             },
                             'responseError': function(response) {
-                                config.headers.demo = false;
                                 if (response.status === 401 || response.status === 403) {
                                     $location.path('/');
                                 }
