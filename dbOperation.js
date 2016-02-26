@@ -87,7 +87,7 @@ module.exports = (function() {
                 }
                 friendsObject.push(obj);
             }
-            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",[' + body.created_by + ']) RETURN @rid';
+            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",[' + body.created_by + '],"'+new Date()+'") RETURN @rid';
             db.exec(query).then(function(res) {
                 var eventId = getRid(res);
                 _.map(friendsObject, function(v, k, arr) {
@@ -130,8 +130,8 @@ module.exports = (function() {
             var defered = Q.defer();
             db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events where @rid = "'+eventId+'"')
                 .then(function(response) {
-                    db.query('select count(*) as total from potluck_invite_friends where event_id='+eventId).then(function(totalInvitees){
-                        response[0].totalInvitees = totalInvitees[0].total;
+                    db.query('select email_id,@rid,registerd from potluck_invite_friends where event_id='+eventId).then(function(inviteesResponse){
+                        response[0].invitees = inviteesResponse;
                         defered.resolve(response);
                     },function(err){
                         defered.reject(false);
@@ -219,6 +219,10 @@ module.exports = (function() {
                 })
             }
             return defered.promise;
+        },
+        update_menu: function() {
+            var defered = Q.defer();
+            
         }
     }
 })();

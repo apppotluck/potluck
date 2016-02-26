@@ -23,6 +23,9 @@ app.use(favicon(__dirname + '/favicon.ico'));
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/app/index.html');
 });
+app.get('/register', function(req, res) {
+    res.sendFile(__dirname + '/app/index.html');
+});
 app.get('/create-event', function(req, res) {
     res.sendFile(__dirname + '/app/index.html');
 });
@@ -159,6 +162,15 @@ apiRoutes.post('/create-user', function(req, res) {
         }
         res.json(authResponse);
         res.send();
+    })
+})
+
+apiRoutes.post('/update-menu',function(req,res){
+    var body = req.body;
+    dbOperation.update_menu(body).then(function(response){
+        console.log(response);
+    },function(err){
+
     })
 })
 

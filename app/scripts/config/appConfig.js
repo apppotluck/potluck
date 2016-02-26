@@ -17,6 +17,7 @@ var SERVICE_NAME_GET_THEMES = 'getThemes'; // GET
 var SERVICE_NAME_GET_EVENTS = 'getEvents'; // GET
 var SERVICE_NAME_GET_EVENT_DETAILS = 'getEventDetails'; // GET
 var SERVICE_NAME_REGISTER_USER = 'create-user';
+var SERVICE_NAME_UPDATE_MENU = 'update-menu'; // POST
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -74,6 +75,11 @@ var GET_EVENT_DETAILS = {
     headers: requestHeaders
 };
 
+var UPDATE_EVENT_MENU = {
+    method: METHOD_TYPE_POST,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_UPDATE_MENU,
+    headers: requestHeaders
+};
 
 
 var appConfig = {
@@ -137,5 +143,9 @@ var appConfig = {
             serviceConfig.url = GET_EVENT_DETAILS.url + '/'+encodeURIComponent(eventId);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
+        'updateEventMenu': function(API, _successCallback, _errorCallback,requestBody) {
+            var serviceConfig = angular.copy(UPDATE_EVENT_MENU);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        }
     }
 };

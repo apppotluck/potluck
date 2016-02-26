@@ -1,3 +1,60 @@
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+<style type="text/css">
+/* AUTOCOMPLETE */
+
+.autocomplete{
+  width: 100%;
+  position: relative;
+}
+
+.autocomplete input{
+  font-size: 1.2em;
+  width: 100%;
+  padding:0.4em;
+}
+
+.autocomplete ul{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-left: 1px solid #888;
+  border-right: 1px solid #888;
+  border-bottom: 1px solid #888;
+  z-index: 1;
+}
+
+.autocomplete li{
+  text-align: left;
+  list-style:none;
+  width: 100%;
+  padding:0.4em;
+  background-color: #fff;
+}
+
+.autocomplete li.active{
+  width: 100%;
+  background-color: #4bf;
+}
+
+.autocomplete .highlight {
+  background-color: #E2E2E2;
+}
+
+.autocomplete li.active .highlight {
+  background: #666;
+  color: #fff;
+}
+
+.md-padding {
+    height: 661px !important;
+}
+md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
+    min-height: 617px !important;
+}
+</style>
+
+
 <section class="row pot-details pot-details-list">
     <section class="col-xs-12">
         <h3 class="mt0" style="padding-left:16px">{{event[0].name}}</h3>
@@ -9,7 +66,7 @@
 
             <li class="sprite loc-ico">{{event[0].theme}}</li>
             <li class="sprite loc-ico">Invitees can bring thier own choice of meal.</li>
-            <li class="sprite loc-ico">{{event[0].totalInvitees}} Friends has been added.</li>
+            <li class="sprite loc-ico">{{event[0].invitees.length}} Friends has been added.</li>
             <li class="sprite loc-ico">Message: {{event[0].message}}</li>
         </ul>
         <a href="details-expanded.html" class="pull-right">Show more</a>
@@ -20,12 +77,31 @@
         <form>
             <article class="form-group">
                 <label for="">List down your menu (one by one)</label>
-                <input type="text" class="form-control pop-form-control gry-bdr">
-                <textarea placeholder="For Ex: Good to eat for 10 people. Extra spicy." class="menu-message gry-bdr"></textarea>
+                <input type="text" ng-model="menu.name" class="form-control pop-form-control gry-bdr">
+                <textarea placeholder="For Ex: Good to eat for 10 people. Extra spicy." class="menu-message gry-bdr" ng-model="menu.desc"></textarea>
                 <li>
-                    <input type="button" value="Add to the List" class="tertiary-btn">
+                    <input type="button" value="Add to the List" class="tertiary-btn" ng-click="addToList()">
                 </li>
             </article>
         </form>
+        <section class="menu-list">
+            <ul>
+                <li class="row pot-details" ng-repeat="(key, value) in menuList">
+                <article class="col-xs-9">
+                    <h3 class="mt0">{{value.name}}</h3>
+                </article>
+                <article class="pot-name col-gry col-xs-3">
+                    <a href="#" ng-click="removeMenu()"><span class="close-icon"></span></a>
+                </article>
+                <article class="col-xs-12 col-gry">
+                {{value.desc}}
+                </article>
+                </li>
+            </ul>
+            </section>
+            <section class="row">
+            <button type="submit" ng-click="addMenuToEvent()" class="btn pop-btn orange primary-btn">Update My Menu</button>
+        </section>
     </section>
+
 </section>

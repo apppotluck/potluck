@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<div ng-repeat="(key, value) in pastEvents" ng-click="onEventClick()" id="pastEvent_{{value.rid}}">
+<section class="row pot-details"  ng-repeat="(key, value) in pastEvents" ng-click="onEventClick()" id="pastEvent_{{value.rid}}">
+
     <section class="row pot-details">
         <article class="col-xs-9">
             <h3 class="mt0">{{value.name}}</h3>
@@ -13,4 +14,4 @@
     <section class="row">
         <!-- <button type="button" ng-click="createEvent()" class="btn pop-btn orange primary-btn">Create New Event</button> -->
     </section>
-</div>
+</section>

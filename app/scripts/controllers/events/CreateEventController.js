@@ -10,9 +10,6 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             '$localStorage',
             '$filter',
             function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,$filter,glocation) {
-                if ($localStorage.token === "undefined") {
-                    $location.path('/');
-                } 
                 $scope.event = {};
                 $scope.today = function() {
                     $scope.event.date = new Date();

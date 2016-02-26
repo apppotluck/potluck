@@ -55,6 +55,8 @@ define(['app'], function(app) {
         '$localStorage',
         '$routeParams',
         function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
+            $scope.menu = {}
+            $scope.menuList=[];
             var eventId = $routeParams.eid
             appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {  
                 console.log(eventDetails)
@@ -63,6 +65,28 @@ define(['app'], function(app) {
             }, function(err) {
                 console.log(err);
             },$routeParams.eid);
+
+            $scope.addToList = function() {
+                var userToken = $localStorage.token;
+                var userDetails = jwtHelper.decodeToken(userToken);
+                $scope.menuList.push({
+                    "name":$scope.menu.name,
+                    "desc":$scope.menu.desc,
+                    "event_id":$routeParams.eid,
+                    "added_by":userDetails.userId
+                })
+                $scope.menu.name=""; 
+                $scope.menu.desc="";    
+            }
+            $scope.removeMenu = function() {
+                delete $scope.menuList[this.key];
+            }
+            $scope.addMenuToEvent = function() {
+                console.log($scope.menuList);
+                appConfig.serviceAPI.updateEventMenu(API, function(menuResponse) {
+
+                },$scope.menuList);
+            }
         }
     ])
 });

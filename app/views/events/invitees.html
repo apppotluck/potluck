@@ -31,12 +31,12 @@
     </section>
 </section>
 <!--  -->
-<section class="row pot-details">
-    <section class="col-xs-2">
+<section class="row pot-details" ng-repeat="(key, value) in eventInvitees">
+    <section class="col-xs-2" >
         <img src="images/thumbnail.png" width="35" height="35" alt="thumbnail">
     </section>
     <article class="col-xs-7">
-        <h3 class="mt0">Pooja Sajindas</h3>
+        <h3 class="mt0">{{value.email_id}}</h3>
         <p class="pot-time col-gry">Feb 22, 9.15</p>
         <!--<p class="pot-msg col-blu">You</p>-->
     </article>
