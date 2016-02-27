@@ -1,1 +1,42 @@
-menu.html
+<section class="container" ng-controller="EventMenuController">
+    <section class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-rid'" id="menu_{{menu.rid}}">
+        <article class="col-xs-9">
+            <h3 class="mt0">{{menu.name}}</h3>
+            <p class="col-gry">{{menu.description}}</p>
+            <p class="pot-time col-gry">{{menu.created_date}}</p>
+            <p class="pot-msg">
+                <a href="#"><img src="/assets/images/camera.png" width="16" height="16"> Upload Image</a>
+            </p>
+            <ul class="img-preview">
+                <li></li>
+                <li></li>
+                <div class="clear"></div>
+            </ul>
+        </article>
+        <article class="col-xs-3 pot-name col-gry">
+        	<span ng-if="currentUser.userId == menu.added_by[0]">You</span>
+        	<span ng-if="currentUser.userId !== menu.added_by[0]">{{menu.user[0]}}</span>
+        </article>
+    </section>
+    
+    <!-- <section class="row pot-details">
+        <article class="col-xs-9">
+            <h3 class="mt0">Mutton Briyani</h3>
+            <p class="pot-time col-gry">24th Feb, 2015</p>
+            <p class="col-gry">Spicy and authentic mutton briyani.</p>
+            <ul class="img-preview">
+                <li></li>
+                <li></li>
+                <div class="clear"></div>
+            </ul>
+            <!-- <p class="pot-msg col-grn">You've accepted the invitation</p>
+        </article>
+        <article class="col-xs-3 pot-name col-gry">
+            Arun Gadela
+        </article>
+    </section> -->
+    
+    <!--<section class="row">
+        	<button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
+        </section>-->
+</section>

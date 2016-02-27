@@ -56,37 +56,81 @@ define(['app'], function(app) {
         '$routeParams',
         function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
             $scope.menu = {}
-            $scope.menuList=[];
+            $scope.menuList = [];
+            $scope.update_menu_error = false;
             var eventId = $routeParams.eid
-            appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {  
-                console.log(eventDetails)
+            $scope.selectedIndex = 0;
+
+            appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {
                 $scope.event = eventDetails;
-                $scope.eventInvitees = eventDetails[0].invitees;  
+                $scope.eventInvitees = eventDetails[0].invitees;
             }, function(err) {
                 console.log(err);
-            },$routeParams.eid);
+            }, $routeParams.eid);
 
             $scope.addToList = function() {
                 var userToken = $localStorage.token;
                 var userDetails = jwtHelper.decodeToken(userToken);
                 $scope.menuList.push({
-                    "name":$scope.menu.name,
-                    "desc":$scope.menu.desc,
-                    "event_id":$routeParams.eid,
-                    "added_by":userDetails.userId
+                    "name": $scope.menu.name,
+                    "desc": $scope.menu.desc,
+                    "event_id": $routeParams.eid,
+                    "added_by": userDetails.userId
                 })
-                $scope.menu.name=""; 
-                $scope.menu.desc="";    
+                $scope.menu.name = "";
+                $scope.menu.desc = "";
             }
             $scope.removeMenu = function() {
                 delete $scope.menuList[this.key];
-            }
+            };
             $scope.addMenuToEvent = function() {
-                console.log($scope.menuList);
                 appConfig.serviceAPI.updateEventMenu(API, function(menuResponse) {
+                    if (menuResponse.responseData.message === "success") {
+                        $scope.$broadcast('updateMenuList');
+                        $scope.selectedIndex = 1;
 
-                },$scope.menuList);
-            }
+                    } else {
+                        $scope.update_menu_error = true;
+                    }
+                }, function(err) {
+                    console.log(err);
+                }, $scope.menuList);
+            };
+        }
+    ])
+    app.controller('EventMenuController', [
+        '$scope',
+        'API',
+        '$location',
+        '$rootScope',
+        '$q',
+        'jwtHelper',
+        '$localStorage',
+        '$routeParams',
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
+            $scope.eventMenu = {}
+
+            var getEventMenuList = function() {
+                var menuArray = [];
+                appConfig.serviceAPI.getEventMenuDetails(API, function(eventMenuDetails) {
+                    $scope.eventMenuArray = Object.keys(eventMenuDetails)
+                        .map(function(key) {
+                            return eventMenuDetails[key].value;
+                        });
+
+                    console.log($scope.eventMenuArray)
+                }, function(err) {
+                    console.log(err);
+                }, $routeParams.eid);
+            };
+            getEventMenuList();
+            $scope.$on('updateMenuList', function() {
+                getEventMenuList();
+            });
+            var userToken = $localStorage.token;
+            var userDetails = jwtHelper.decodeToken(userToken);
+            $scope.currentUser = userDetails;
+
         }
     ])
 });

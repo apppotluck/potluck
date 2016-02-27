@@ -74,6 +74,18 @@ var saveInviteFriend = function(friendEmail, event_id) {
 //     })
 //     return dishPromise.promise;
 // }
+var save_menu = function(body) {
+    var defered = Q.defer();
+
+    var query = "insert into potluck_event_menu(name,description,event_id,added_by,created_date) values ('" + body.name + "','" + body.desc + "'," + body.event_id + "," + body.added_by + ",'" + new Date() + "')"
+    console.log(query);
+    db.exec(query).then(function(response) {
+        defered.resolve(response);
+    }, function(err) {
+        defered.reject(err);
+    });
+    return defered.promise;
+};
 
 module.exports = (function() {
     return {
@@ -87,7 +99,7 @@ module.exports = (function() {
                 }
                 friendsObject.push(obj);
             }
-            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",[' + body.created_by + '],"'+new Date()+'") RETURN @rid';
+            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",[' + body.created_by + '],"' + new Date() + '") RETURN @rid';
             db.exec(query).then(function(res) {
                 var eventId = getRid(res);
                 _.map(friendsObject, function(v, k, arr) {
@@ -109,17 +121,16 @@ module.exports = (function() {
             var defered = Q.defer();
             var query = "select * from potluck_users where email='" + obj.email + "' and password ='" + md5(obj.password) + "' and type = 'local'";
             db.exec(query).then(function(response) {
-                 if (response.results[0].content.length) {
+                if (response.results[0].content.length) {
                     var userID = getRid(response);
                     var userObj = {
-                            "userId": userID,
-                            "email": response.results[0].content[0].value.email,
-                            "name": response.results[0].content[0].value.name,
-                            "register_by": "local"
-                        }
+                        "userId": userID,
+                        "email": response.results[0].content[0].value.email,
+                        "name": response.results[0].content[0].value.name,
+                        "register_by": "local"
+                    }
                     defered.resolve(userObj);
-                }
-                else
+                } else
                     defered.reject("Invalid login/password");
             }, function(err) {
                 defered.reject(err);
@@ -128,12 +139,12 @@ module.exports = (function() {
         },
         getEventDetails: function(eventId) {
             var defered = Q.defer();
-            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events where @rid = "'+eventId+'"')
+            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events where @rid = "' + eventId + '"')
                 .then(function(response) {
-                    db.query('select email_id,@rid,registerd from potluck_invite_friends where event_id='+eventId).then(function(inviteesResponse){
+                    db.query('select email_id,@rid,registerd from potluck_invite_friends where event_id=' + eventId).then(function(inviteesResponse) {
                         response[0].invitees = inviteesResponse;
                         defered.resolve(response);
-                    },function(err){
+                    }, function(err) {
                         defered.reject(false);
                     })
                 }, function(err) {
@@ -220,9 +231,32 @@ module.exports = (function() {
             }
             return defered.promise;
         },
-        update_menu: function() {
+        update_menu: function(body) {
             var defered = Q.defer();
-            
+            var promiseArray = [];
+            for(var i=0;i<body.length;i++){
+                promiseArray.push(save_menu(body[i]));
+            }
+            Q.allSettled(promiseArray).then(function(response){
+                if(response[0].state === 'fulfilled') {
+                    defered.resolve(response);
+                } else {
+                    defered.reject("try again.");
+                }                
+            },function(err){
+                defered.reject(err);
+            });
+            return defered.promise;
+        },
+        getEventMenuDetails:function(eventId) {
+            var defered = Q.defer();
+            var query = "select @rid,name,description,added_by, added_by.name as user,created_date from potluck_event_menu where event_id="+eventId
+            db.exec(query).then(function(response){
+                defered.resolve(response.results[0].content);
+            },function(err){
+                defered.reject(err);
+            })
+            return defered.promise;
         }
     }
 })();

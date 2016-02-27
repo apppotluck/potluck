@@ -168,11 +168,34 @@ apiRoutes.post('/create-user', function(req, res) {
 apiRoutes.post('/update-menu',function(req,res){
     var body = req.body;
     dbOperation.update_menu(body).then(function(response){
-        console.log(response);
+        var menuUpdateResponse = {
+            responseData: {
+                message: 'success'
+            }
+        }
+        res.json(menuUpdateResponse);
+        res.send();
     },function(err){
-
+        var menuUpdateResponse = {
+            responseData: {
+                message: 'fail',
+                error: err
+            }
+        }
+        res.json(menuUpdateResponse);
+        res.send();
     })
 })
+
+apiRoutes.get('/get-menu-details/:eId',function(req,res){
+        dbOperation.getEventMenuDetails(req.params.eId).then(function(eventMenuDetails) {
+        res.json(eventMenuDetails);
+        res.send();
+    }, function(err) {
+        res.json("error");
+        res.send();
+    })
+});
 
 // ---------------------------------------------------------
 // route middleware to authenticate and check token

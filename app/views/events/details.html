@@ -84,7 +84,9 @@ md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
                 </li>
             </article>
         </form>
+
         <section class="menu-list">
+            <div ng-show="update_menu_error">Something went wrong.Please try again.</div>
             <ul>
                 <li class="row pot-details" ng-repeat="(key, value) in menuList">
                 <article class="col-xs-9">
