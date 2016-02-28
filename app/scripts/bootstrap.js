@@ -11,6 +11,8 @@ require.config({
         , 'angular-dateParser': '/bower_components/angular-dateParser/dataparser'
         , 'jwtHelper'         : '/bower_components/angular-jwt/dist/angular-jwt.min'
         , 'localStorage'      : '/bower_components/ngstorage/ngStorage.min'
+        , 'ngFileUpload'      : '/bower_components/ng-file-upload/ng-file-upload'
+        , 'ngFileUploadShim'  : '/bower_components/ng-file-upload/ng-file-upload-shim'
         , 'bootstrap'         : '../lib/bootstrap/js/bootstrap.min'
         , 'jquery'            : '/bower_components/jquery/dist/jquery'
         , 'constants'         : '/scripts/config/constants'
@@ -63,6 +65,12 @@ require.config({
         },
         'localStorage': {
              deps:['angular']
+        },
+        'ngFileUpload': {
+            deps:['angular']
+        },
+        'ngFileUploadShim': {
+            deps:['angular']
         }
         
     },
@@ -82,7 +90,8 @@ require
         'ngMaterial',
         'jwtHelper',
         'localStorage',
-
+        'ngFileUpload',
+        'ngFileUploadShim',
     ],
     function(app)
     {

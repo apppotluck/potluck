@@ -5,8 +5,24 @@ var express = require('express'),
     dbOperation = require('./dbOperation'),
     jwt = require('jsonwebtoken'), // used to create, sign, and verify tokens
     favicon = require('serve-favicon'),
+    multer = require('multer'),
+    fs = require('fs'),
     app = express(),
     config = require('./config');
+
+var storage = multer.diskStorage({
+    limits: {
+        fileSize: 500000
+    },
+    destination: function(req, file, callback) {
+        callback(null, './app/assets/uploads');
+    },
+    filename: function(req, file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = multer({ storage: storage }).single('file');
+
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({
@@ -39,7 +55,7 @@ app.get('/event-details/:id', function(req, res) {
 // ---------------------------------------------------------
 // get an instance of the router for api routes
 // ---------------------------------------------------------
-var apiRoutes = express.Router(); 
+var apiRoutes = express.Router();
 
 apiRoutes.get('/getFoodType', function(req, res) {
     dbOperation.getFoodType().then(function(foodTypeResponse) {
@@ -165,9 +181,9 @@ apiRoutes.post('/create-user', function(req, res) {
     })
 })
 
-apiRoutes.post('/update-menu',function(req,res){
+apiRoutes.post('/update-menu', function(req, res) {
     var body = req.body;
-    dbOperation.update_menu(body).then(function(response){
+    dbOperation.update_menu(body).then(function(response) {
         var menuUpdateResponse = {
             responseData: {
                 message: 'success'
@@ -175,7 +191,7 @@ apiRoutes.post('/update-menu',function(req,res){
         }
         res.json(menuUpdateResponse);
         res.send();
-    },function(err){
+    }, function(err) {
         var menuUpdateResponse = {
             responseData: {
                 message: 'fail',
@@ -187,8 +203,8 @@ apiRoutes.post('/update-menu',function(req,res){
     })
 })
 
-apiRoutes.get('/get-menu-details/:eId',function(req,res){
-        dbOperation.getEventMenuDetails(req.params.eId).then(function(eventMenuDetails) {
+apiRoutes.get('/get-menu-details/:eId', function(req, res) {
+    dbOperation.getEventMenuDetails(req.params.eId).then(function(eventMenuDetails) {
         res.json(eventMenuDetails);
         res.send();
     }, function(err) {
@@ -196,6 +212,25 @@ apiRoutes.get('/get-menu-details/:eId',function(req,res){
         res.send();
     })
 });
+apiRoutes.post('/dish/image/:menu_id', function(req, res) {
+    upload(req, res, function(err, result) {
+        if (err) {
+            return res.end("Error uploading file.");
+        } else {
+            var fileObject = {
+                "filename": req.file.filename,
+                "destination": req.file.path
+            }
+            dbOperation.updateMenuImage(req.params.menu_id,req.file.filename).then(function(response){
+                res.json(fileObject)
+                res.send();
+            },function(err){
+                res.json("error");
+                res.send();
+            })
+        }
+    });
+})
 
 // ---------------------------------------------------------
 // route middleware to authenticate and check token
@@ -221,8 +256,7 @@ app.use(function(req, res, next) {
                     next();
                 }
             })
-        } 
-        else {
+        } else {
             // if there is no token
             // return an error
             return res.status(403).send({

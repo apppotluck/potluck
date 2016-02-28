@@ -5,20 +5,25 @@
             <p class="col-gry">{{menu.description}}</p>
             <p class="pot-time col-gry">{{menu.created_date}}</p>
             <p class="pot-msg">
-                <a href="#"><img src="/assets/images/camera.png" width="16" height="16"> Upload Image</a>
+                <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="10000" ngf-max-size="1GB">
+                    Upload Image</button>
+                <img ng-src={{fileInputContent}}>
             </p>
-            <ul class="img-preview">
-                <li></li>
-                <li></li>
+            <ul class="img-preview" >
+                <li ng-repeat="(key,value) in menu.menuImageDetails">
+                    <img width="35px" height="35px" ng-src="/assets/uploads/{{value.image}}">
+                </li>
                 <div class="clear"></div>
             </ul>
         </article>
         <article class="col-xs-3 pot-name col-gry">
-        	<span ng-if="currentUser.userId == menu.added_by[0]">You</span>
-        	<span ng-if="currentUser.userId !== menu.added_by[0]">{{menu.user[0]}}</span>
+            <span ng-if="currentUser.userId == menu.added_by[0]">You</span>
+            <span ng-if="currentUser.userId !== menu.added_by[0]">{{menu.user[0]}}</span>
         </article>
     </section>
-    
+    <section class="row pot-details" ng-if="eventMenuArray.length == 0">
+        <div style="font-weight:bold;margin-top:6%;margin-left:38%">No menu detail</div>
+    </section>
     <!-- <section class="row pot-details">
         <article class="col-xs-9">
             <h3 class="mt0">Mutton Briyani</h3>
@@ -35,8 +40,7 @@
             Arun Gadela
         </article>
     </section> -->
-    
     <!--<section class="row">
-        	<button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
+            <button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
         </section>-->
 </section>

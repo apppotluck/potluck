@@ -107,21 +107,33 @@ define(['app'], function(app) {
         'jwtHelper',
         '$localStorage',
         '$routeParams',
-        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams) {
+        'Upload',
+        '$timeout',
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout) {
             $scope.eventMenu = {}
 
             var getEventMenuList = function() {
                 var menuArray = [];
                 appConfig.serviceAPI.getEventMenuDetails(API, function(eventMenuDetails) {
-                    $scope.eventMenuArray = Object.keys(eventMenuDetails)
-                        .map(function(key) {
-                            return eventMenuDetails[key].value;
-                        });
-
-                    console.log($scope.eventMenuArray)
-                }, function(err) {
-                    console.log(err);
-                }, $routeParams.eid);
+                        $scope.eventMenuArray = Object.keys(eventMenuDetails.menu)
+                            .map(function(key) {
+                                return eventMenuDetails.menu[key].value;
+                            });
+                        for (var ii = 0; ii < $scope.eventMenuArray.length; ii++) {
+                            $scope.eventMenuArray[ii].menuImageDetails = [];
+                            for (var jj = 0; jj < eventMenuDetails.menu_image.length; jj++) {
+                                if (eventMenuDetails.menu_image[jj].value.menu_id[0] === $scope.eventMenuArray[ii].rid) {
+                                    $scope.eventMenuArray[ii].menuImageDetails.push({
+                                        "image": eventMenuDetails.menu_image[jj].value.image,
+                                        "menuImageRid": eventMenuDetails.menu_image[jj].value.rid
+                                    })
+                                }
+                            }
+                        }
+                    },
+                    function(err) {
+                        console.log(err);
+                    }, $routeParams.eid);
             };
             getEventMenuList();
             $scope.$on('updateMenuList', function() {
@@ -130,7 +142,40 @@ define(['app'], function(app) {
             var userToken = $localStorage.token;
             var userDetails = jwtHelper.decodeToken(userToken);
             $scope.currentUser = userDetails;
+            $scope.onFileUpload = function(element) {
+                $scope.$apply(function(scope) {
+                    var file = element.files[0];
+                    FileInputService.readFileAsync(file).then(function(fileInputContent) {
+                        $scope.fileInputContent = fileInputContent;
+                    });
+                })
+            }
+            $scope.uploadFiles = function(file, errFiles) {
+                $scope.f = file;
+                $scope.files = {}
+                $scope.errFile = errFiles && errFiles[0];
+                if (file) {
+                    var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
+                    file.upload = Upload.upload({
+                        url: fileUploadUrl,
+                        data: { file: file }
+                    });
 
+                    file.upload.then(function(response) {
+                        $timeout(function() {                            
+                            file.result = response.data;
+                            $scope.files = response.data.filename;
+                            $scope.$broadcast('updateMenuList');
+                        });
+                    }, function(response) {
+                        if (response.status > 0)
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function(evt) {
+                        file.progress = Math.min(100, parseInt(100.0 *
+                            evt.loaded / evt.total));
+                    });
+                }
+            }
         }
     ])
 });

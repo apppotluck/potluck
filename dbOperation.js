@@ -234,26 +234,45 @@ module.exports = (function() {
         update_menu: function(body) {
             var defered = Q.defer();
             var promiseArray = [];
-            for(var i=0;i<body.length;i++){
+            for (var i = 0; i < body.length; i++) {
                 promiseArray.push(save_menu(body[i]));
             }
-            Q.allSettled(promiseArray).then(function(response){
-                if(response[0].state === 'fulfilled') {
+            Q.allSettled(promiseArray).then(function(response) {
+                if (response[0].state === 'fulfilled') {
                     defered.resolve(response);
                 } else {
                     defered.reject("try again.");
-                }                
-            },function(err){
+                }
+            }, function(err) {
                 defered.reject(err);
             });
             return defered.promise;
         },
-        getEventMenuDetails:function(eventId) {
+        getEventMenuDetails: function(eventId) {
             var defered = Q.defer();
-            var query = "select @rid,name,description,added_by, added_by.name as user,created_date from potluck_event_menu where event_id="+eventId
-            db.exec(query).then(function(response){
-                defered.resolve(response.results[0].content);
-            },function(err){
+            var query = "select @rid,name,description,added_by, added_by.name as user,created_date from potluck_event_menu where event_id=" + eventId
+            db.exec(query).then(function(response) {
+                var selectQuery = "select @rid,image,menu_id from potluck_menu_images";
+                db.exec(selectQuery).then(function(res) {
+                    var object = {
+                        "menu": response.results[0].content,
+                        "menu_image":res.results[0].content
+                    }
+                    defered.resolve(object);
+                }, function(err) {
+                    defered.reject(object);
+                })
+            }, function(err) {
+                defered.reject(err);
+            })
+            return defered.promise;
+        },
+        updateMenuImage: function(menu_id, fileName) {
+            var defered = Q.defer();
+            var query = "insert into potluck_menu_images(menu_id,image)values(" + menu_id + ",'" + fileName + "')";
+            db.exec(query).then(function(response) {
+                defered.resolve(response);
+            }, function(err) {
                 defered.reject(err);
             })
             return defered.promise;
