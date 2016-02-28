@@ -1,4 +1,15 @@
-<section class="container" ng-controller="EventMenuController">
+<style type="text/css">
+.dialogdemoBasicUsage #popupContainer {
+  position: relative; }
+.dialogdemoBasicUsage .footer {
+  width: 100%;
+  text-align: center;
+  margin-left: 20px; }
+.dialogdemoBasicUsage .footer, .dialogdemoBasicUsage .footer > code {
+  font-size: 0.8em;
+  margin-top: 50px; }
+</style>
+<section class="container" ng-controller="EventMenuController" class="" id="popupContainer" ng-cloak>
     <section class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-rid'" id="menu_{{menu.rid}}">
         <article class="col-xs-9">
             <h3 class="mt0">{{menu.name}}</h3>
@@ -9,9 +20,10 @@
                     Upload Image</button>
                 <img ng-src={{fileInputContent}}>
             </p>
-            <ul class="img-preview" >
+            <ul class="img-preview">
                 <li ng-repeat="(key,value) in menu.menuImageDetails">
-                    <img width="35px" height="35px" ng-src="/assets/uploads/{{value.image}}">
+                    <img ng-click="showImagePreview()" width="35px" height="35px" ng-src="/assets/uploads/{{value.image}}">
+                    <span ng-click="deleteImage($event,menu.rid)"><img width="15px" height="15px" src="/assets/images/trash.png"></span>
                 </li>
                 <div class="clear"></div>
             </ul>
@@ -24,23 +36,7 @@
     <section class="row pot-details" ng-if="eventMenuArray.length == 0">
         <div style="font-weight:bold;margin-top:6%;margin-left:38%">No menu detail</div>
     </section>
-    <!-- <section class="row pot-details">
-        <article class="col-xs-9">
-            <h3 class="mt0">Mutton Briyani</h3>
-            <p class="pot-time col-gry">24th Feb, 2015</p>
-            <p class="col-gry">Spicy and authentic mutton briyani.</p>
-            <ul class="img-preview">
-                <li></li>
-                <li></li>
-                <div class="clear"></div>
-            </ul>
-            <!-- <p class="pot-msg col-grn">You've accepted the invitation</p>
-        </article>
-        <article class="col-xs-3 pot-name col-gry">
-            Arun Gadela
-        </article>
-    </section> -->
-    <!--<section class="row">
-            <button type="submit" class="btn pop-btn orange primary-btn">Submit</button>
-        </section>-->
+    <modal title="Login form" visible="showModal">
+        sdflsldfjlk
+    </modal>
 </section>

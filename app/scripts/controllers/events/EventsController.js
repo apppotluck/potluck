@@ -109,9 +109,11 @@ define(['app'], function(app) {
         '$routeParams',
         'Upload',
         '$timeout',
-        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout) {
+        '$mdDialog',
+        '$mdMedia',
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout, $mdDialog, $mdMedia) {
             $scope.eventMenu = {}
-
+            $scope.showModal = false;
             var getEventMenuList = function() {
                 var menuArray = [];
                 appConfig.serviceAPI.getEventMenuDetails(API, function(eventMenuDetails) {
@@ -150,32 +152,84 @@ define(['app'], function(app) {
                     });
                 })
             }
-            $scope.uploadFiles = function(file, errFiles) {
-                $scope.f = file;
-                $scope.files = {}
-                $scope.errFile = errFiles && errFiles[0];
-                if (file) {
-                    var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
-                    file.upload = Upload.upload({
-                        url: fileUploadUrl,
-                        data: { file: file }
-                    });
+            $scope.showImagePreview = showDialog;
+            function showDialog($event) {
+                var parentEl = angular.element(document.body);
+                $mdDialog.show({
+                    parent: parentEl,
+                    targetEvent: $event,
+                    template: '<md-dialog aria-label="List dialog">' +
+                        '  <md-dialog-content><img src="/assets/uploads/' + this.value.image + '">' +
+                        '  </md-dialog-content>' +
+                        '</md-dialog>',
+                    locals: {
+                        items: $scope.items
+                    },
+                    controller: DialogController
+                });
 
-                    file.upload.then(function(response) {
-                        $timeout(function() {                            
-                            file.result = response.data;
-                            $scope.files = response.data.filename;
-                            $scope.$broadcast('updateMenuList');
-                        });
-                    }, function(response) {
-                        if (response.status > 0)
-                            $scope.errorMsg = response.status + ': ' + response.data;
-                    }, function(evt) {
-                        file.progress = Math.min(100, parseInt(100.0 *
-                            evt.loaded / evt.total));
-                    });
+                function DialogController($scope, $mdDialog, items) {
+                    $scope.items = items;
+                    $scope.closeDialog = function() {
+                        $mdDialog.hide();
+                    }
                 }
             }
+
+            $scope.deleteImage = function(ev,menuId) {
+                var imageId = this.value.menuImageRid;
+                var confirm = $mdDialog.confirm()
+                    .title('Would you like to delete this image?')
+                    .ariaLabel('Lucky day')
+                    .targetEvent(ev)
+                    .ok('Yes')
+                    .cancel('No');
+                $mdDialog.show(confirm).then(function() {
+                    appConfig.serviceAPI.deleteMenuMenuImage(API, function(eventMenuDetails) {
+                        $scope.$broadcast('updateMenuList');
+                    },function(err){
+                        console.log("try again!");
+                    },imageId,menuId)
+                   
+                }, function() {
+                    $scope.status = 'You decided to keep your debt.';
+                });
+            };
+
+
+
+        function DialogController($scope, $mdDialog, items) {
+            $scope.items = items;
+            $scope.closeDialog = function() {
+                $mdDialog.hide();
+            }
         }
-    ])
+        $scope.uploadFiles = function(file, errFiles) {
+            $scope.f = file;
+            $scope.files = {}
+            $scope.errFile = errFiles && errFiles[0];
+            if (file) {
+                var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
+                file.upload = Upload.upload({
+                    url: fileUploadUrl,
+                    data: { file: file }
+                });
+
+                file.upload.then(function(response) {
+                    $timeout(function() {
+                        file.result = response.data;
+                        $scope.files = response.data.filename;
+                        $scope.$broadcast('updateMenuList');
+                    });
+                }, function(response) {
+                    if (response.status > 0)
+                        $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    file.progress = Math.min(100, parseInt(100.0 *
+                        evt.loaded / evt.total));
+                });
+            }
+        }
+    }])
+
 });

@@ -231,6 +231,26 @@ apiRoutes.post('/dish/image/:menu_id', function(req, res) {
         }
     });
 })
+apiRoutes.get('/delete-menu-image/:image_id/:menu_id',function(req,res){
+    dbOperation.deleteMenuImage(req.params.menu_id,req.params.image_id).then(function(eventMenuDetails) {
+        var menuImageDeleteResponse = {
+            responseData: {
+                message: 'success'
+            }
+        }
+        res.json(menuImageDeleteResponse);
+        res.send();
+    }, function(err) {
+        var menuImageDeleteResponse = {
+            responseData: {
+                message: 'fail',
+                error: err
+            }
+        }
+        res.json(menuImageDeleteResponse);
+        res.send();
+    })
+})
 
 // ---------------------------------------------------------
 // route middleware to authenticate and check token

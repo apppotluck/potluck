@@ -276,6 +276,16 @@ module.exports = (function() {
                 defered.reject(err);
             })
             return defered.promise;
-        }
+        },
+        deleteMenuImage: function(menu_id, image_id) {
+            var defered = Q.defer();
+            var query = "delete from potluck_menu_images where menu_id="+menu_id+" and @rid="+image_id;
+            db.exec(query).then(function(response) {
+                defered.resolve(response);
+            }, function(err) {
+                defered.reject(err);
+            })
+            return defered.promise;
+        },
     }
 })();

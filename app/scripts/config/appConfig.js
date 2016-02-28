@@ -18,7 +18,8 @@ var SERVICE_NAME_GET_EVENTS = 'getEvents'; // GET
 var SERVICE_NAME_GET_EVENT_DETAILS = 'getEventDetails'; // GET
 var SERVICE_NAME_REGISTER_USER = 'create-user';
 var SERVICE_NAME_UPDATE_MENU = 'update-menu'; // POST
-var SERVICE_NAME_GET_MENU_DETAILS = 'get-menu-details'
+var SERVICE_NAME_GET_MENU_DETAILS = 'get-menu-details';
+var SERVICE_NAME_GET_MENU_IMAGE_DELETE = 'delete-menu-image'
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
 var METHOD_TYPE_PUT = 'PUT';
@@ -87,7 +88,14 @@ var GET_EVENT_MENU_DETAILS = {
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_MENU_DETAILS,
     headers: requestHeaders
 
-}
+};
+
+var GET_EVENT_MENU_IMAGE_DELETE = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_MENU_IMAGE_DELETE,
+    headers: requestHeaders
+
+};
 
 
 var appConfig = {
@@ -159,6 +167,11 @@ var appConfig = {
         'getEventMenuDetails': function(API, _successCallback, _errorCallback,eventId) {
             var serviceConfig = angular.copy(GET_EVENT_MENU_DETAILS);
             serviceConfig.url = GET_EVENT_MENU_DETAILS.url + '/'+encodeURIComponent(eventId);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'deleteMenuMenuImage': function(API, _successCallback, _errorCallback,imageId,menuId) {
+            var serviceConfig = angular.copy(GET_EVENT_MENU_IMAGE_DELETE);
+            serviceConfig.url = GET_EVENT_MENU_IMAGE_DELETE.url + '/'+encodeURIComponent(imageId)+'/'+encodeURIComponent(menuId);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
     }
