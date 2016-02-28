@@ -144,6 +144,13 @@ define(['app'], function(app) {
             var userToken = $localStorage.token;
             var userDetails = jwtHelper.decodeToken(userToken);
             $scope.currentUser = userDetails;
+            $scope.isVisible = false;
+            $scope.editMenu = function() {
+                $scope.isVisible = !$scope.isVisible;
+            }
+            $scope.updateMenu = function() {
+
+            }
             $scope.onFileUpload = function(element) {
                 $scope.$apply(function(scope) {
                     var file = element.files[0];

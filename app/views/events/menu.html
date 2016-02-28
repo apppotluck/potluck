@@ -10,7 +10,7 @@
   margin-top: 50px; }
 </style>
 <section class="container" ng-controller="EventMenuController" class="" id="popupContainer" ng-cloak>
-    <section class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-rid'" id="menu_{{menu.rid}}">
+    <section title="click to edit" ng-click="editMenu()" class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-created_date'" id="menu_{{menu.rid}}">
         <article class="col-xs-9">
             <h3 class="mt0">{{menu.name}}</h3>
             <p class="col-gry">{{menu.description}}</p>
@@ -27,16 +27,19 @@
                 </li>
                 <div class="clear"></div>
             </ul>
+            <div ng-show="isVisible">
+                 <input type="test" ng-model="menu.name">
+                 <input type="text" ng-model="menu.description">
+                 <button name="Submit" value="Update Menu" ng-click="updateMenu()">Update Menu </button>   
+            </div>
         </article>
         <article class="col-xs-3 pot-name col-gry">
             <span ng-if="currentUser.userId == menu.added_by[0]">You</span>
             <span ng-if="currentUser.userId !== menu.added_by[0]">{{menu.user[0]}}</span>
         </article>
+
     </section>
     <section class="row pot-details" ng-if="eventMenuArray.length == 0">
         <div style="font-weight:bold;margin-top:6%;margin-left:38%">No menu detail</div>
     </section>
-    <modal title="Login form" visible="showModal">
-        sdflsldfjlk
-    </modal>
 </section>
