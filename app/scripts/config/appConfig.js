@@ -17,6 +17,7 @@ var SERVICE_NAME_GET_THEMES = 'getThemes'; // GET
 var SERVICE_NAME_GET_EVENTS = 'getEvents'; // GET
 var SERVICE_NAME_GET_EVENT_DETAILS = 'getEventDetails'; // GET
 var SERVICE_NAME_REGISTER_USER = 'create-user';
+var SERVICE_NAME_INSERT_MENU = 'insert-menu'; // POST
 var SERVICE_NAME_UPDATE_MENU = 'update-menu'; // POST
 var SERVICE_NAME_GET_MENU_DETAILS = 'get-menu-details';
 var SERVICE_NAME_GET_MENU_IMAGE_DELETE = 'delete-menu-image'
@@ -74,6 +75,12 @@ var CREATE_USER = {
 var GET_EVENT_DETAILS = {
     method: METHOD_TYPE_GET,
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_EVENT_DETAILS,
+    headers: requestHeaders
+};
+
+var INSERT_EVENT_MENU = {
+    method: METHOD_TYPE_POST,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_INSERT_MENU,
     headers: requestHeaders
 };
 
@@ -159,8 +166,8 @@ var appConfig = {
             serviceConfig.url = GET_EVENT_DETAILS.url + '/'+encodeURIComponent(eventId);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
-        'updateEventMenu': function(API, _successCallback, _errorCallback,requestBody) {
-            var serviceConfig = angular.copy(UPDATE_EVENT_MENU);
+        'insertEventMenu': function(API, _successCallback, _errorCallback,requestBody) {
+            var serviceConfig = angular.copy(INSERT_EVENT_MENU);
             serviceConfig.data = requestBody;
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
@@ -172,6 +179,11 @@ var appConfig = {
         'deleteMenuMenuImage': function(API, _successCallback, _errorCallback,imageId,menuId) {
             var serviceConfig = angular.copy(GET_EVENT_MENU_IMAGE_DELETE);
             serviceConfig.url = GET_EVENT_MENU_IMAGE_DELETE.url + '/'+encodeURIComponent(imageId)+'/'+encodeURIComponent(menuId);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'updateEventMenu': function(API, _successCallback, _errorCallback,requestBody) {
+            var serviceConfig = angular.copy(UPDATE_EVENT_MENU);
+            serviceConfig.data = requestBody;
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
     }

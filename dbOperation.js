@@ -231,7 +231,7 @@ module.exports = (function() {
             }
             return defered.promise;
         },
-        update_menu: function(body) {
+        insert_menu: function(body) {
             var defered = Q.defer();
             var promiseArray = [];
             for (var i = 0; i < body.length; i++) {
@@ -287,5 +287,17 @@ module.exports = (function() {
             })
             return defered.promise;
         },
+        updateEventMenu: function(body) {
+            var defered = Q.defer();
+            console.log(body)
+            var query = "update potluck_event_menu SET name='"+body.name+"', description='"+body.description+"' where @rid="+body.rid;
+            console.log(query)
+            db.exec(query).then(function(response) {
+                defered.resolve(response);
+            }, function(err) {
+                defered.reject(err);
+            })
+            return defered.promise;
+        }
     }
 })();

@@ -8,9 +8,32 @@
 .dialogdemoBasicUsage .footer, .dialogdemoBasicUsage .footer > code {
   font-size: 0.8em;
   margin-top: 50px; }
+.animate-show {
+  line-height: 20px;
+  opacity: 1;
+  padding: 10px;
+  border: 1px solid black;
+  background: white;
+}
+
+.animate-show.ng-hide-add, .animate-show.ng-hide-remove {
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+}
+
+.check-element {
+  padding: 10px;
+  border: 1px solid black;
+  background: white;
+}  
 </style>
 <section class="container" ng-controller="EventMenuController" class="" id="popupContainer" ng-cloak>
-    <section title="click to edit" ng-click="editMenu()" class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-created_date'" id="menu_{{menu.rid}}">
+    <section title="click to edit" ng-click="isVisible=!isVisible" class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-created_date'" id="menu_{{menu.rid}}">
         <article class="col-xs-9">
             <h3 class="mt0">{{menu.name}}</h3>
             <p class="col-gry">{{menu.description}}</p>
@@ -27,7 +50,7 @@
                 </li>
                 <div class="clear"></div>
             </ul>
-            <div ng-show="isVisible">
+            <div ng-show="isVisible" class="check-element animate-show" id="edit_menu_{{menu.rid}}">
                  <input type="test" ng-model="menu.name">
                  <input type="text" ng-model="menu.description">
                  <button name="Submit" value="Update Menu" ng-click="updateMenu()">Update Menu </button>   

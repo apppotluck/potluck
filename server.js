@@ -181,9 +181,9 @@ apiRoutes.post('/create-user', function(req, res) {
     })
 })
 
-apiRoutes.post('/update-menu', function(req, res) {
+apiRoutes.post('/insert-menu', function(req, res) {
     var body = req.body;
-    dbOperation.update_menu(body).then(function(response) {
+    dbOperation.insert_menu(body).then(function(response) {
         var menuUpdateResponse = {
             responseData: {
                 message: 'success'
@@ -248,6 +248,28 @@ apiRoutes.get('/delete-menu-image/:image_id/:menu_id',function(req,res){
             }
         }
         res.json(menuImageDeleteResponse);
+        res.send();
+    })
+})
+
+apiRoutes.post('/update-menu', function(req, res) {
+    var body = req.body;
+    dbOperation.updateEventMenu(body).then(function(response) {
+        var menuUpdateResponse = {
+            responseData: {
+                message: 'success'
+            }
+        }
+        res.json(menuUpdateResponse);
+        res.send();
+    }, function(err) {
+        var menuUpdateResponse = {
+            responseData: {
+                message: 'fail',
+                error: err
+            }
+        }
+        res.json(menuUpdateResponse);
         res.send();
     })
 })

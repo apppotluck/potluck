@@ -84,7 +84,7 @@ define(['app'], function(app) {
                 delete $scope.menuList[this.key];
             };
             $scope.addMenuToEvent = function() {
-                appConfig.serviceAPI.updateEventMenu(API, function(menuResponse) {
+                appConfig.serviceAPI.insertEventMenu(API, function(menuResponse) {
                     if (menuResponse.responseData.message === "success") {
                         $scope.$broadcast('updateMenuList');
                         $scope.selectedIndex = 1;
@@ -145,10 +145,18 @@ define(['app'], function(app) {
             var userDetails = jwtHelper.decodeToken(userToken);
             $scope.currentUser = userDetails;
             $scope.isVisible = false;
-            $scope.editMenu = function() {
-                $scope.isVisible = !$scope.isVisible;
-            }
             $scope.updateMenu = function() {
+                appConfig.serviceAPI.updateEventMenu(API, function(menuResponse) {
+                    if (menuResponse.responseData.message === "success") {
+                        $scope.$broadcast('updateMenuList');
+                        $scope.selectedIndex = 1;
+
+                    } else {
+                        $scope.update_menu_error = true;
+                    }
+                }, function(err) {
+                    console.log(err);
+                }, this.menu);
 
             }
             $scope.onFileUpload = function(element) {
