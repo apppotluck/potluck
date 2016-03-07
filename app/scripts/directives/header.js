@@ -14,9 +14,9 @@ define(['app'], function(app) {
             template: '<section class="pop-btn yellow"> <section class="col-xs-1 back-arrow"><span class=""><a href="{{link}}"><img src="/assets/images/arrow.png" width="10" height="17" alt="Back Arrow"></a></span></section><section class="col-xs-9 title-text">{{title}}</section><section class="col-xs-1 sprite pot-moreover" ng-click="displayLinks()" ng-transclude></section><section ng-show="settingLinks"><ul class="dropdown"><li><a href="#">Invite More Friends</a></li><li><a href="#">Broadcast Message</a></li><li><a href="#">Share Event</a></li><li><a href="#">Settings</a></li><li><a href="#" ng-click="signout()">Sign Out</a></li><li style="border-top: 1px solid #ccc;"><a href="#">Cancel Event</a></li></ul></section></section>',
             replace: true,
             link: function(scope, element, attrs, linker) {
-               if ($localStorage.token === undefined) {
-                    $location.path('/');
-                } 
+               // if ($localStorage.token === undefined) {
+               //      $location.path('/');
+               //  } 
                 if($location.$$path === '/register') {
                     scope.link = '/';
                 } else {

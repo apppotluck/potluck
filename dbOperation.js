@@ -42,19 +42,57 @@ var getRid = function(res) {
 //     return dishAllocationPromise.promise;
 // };
 
+var updateInviteFriendStatus = function(email_id, uid) {
+    var selectQuery = "select @rid from potluck_invite_friends where email_id='" + email_id + "'";
+    db.exec(selectQuery).then(function(res) {
+        if (res.results[0].content.length) {
+            var updateInvitee = "update potluck_invite_friends set registerd = 1,registered_user_id=" + uid + " where email_id='" + email_id + "'";
+            db.exec(updateInvitee).then(function(res) {
+
+            }, function(err) {
+
+            })
+        }
+    }, function(err) {
+
+    })
+}
+
 var saveInviteFriend = function(friendEmail, event_id) {
     var inviteFriendPromise = Q.defer();
     var userID, obj = {};
-    var query = 'insert into potluck_invite_friends(email_id,event_id,registerd) values ("' + friendEmail + '", [' + event_id + '],0) RETURN @rid';
-    db.exec(query).then(function(res) {
-        invite_id = getRid(res);
-        obj = {
-            "invite_id": invite_id
+    var checkUsers = "select * from potluck_users where email = '" + friendEmail + "'";
+    db.exec(checkUsers).then(function(response) {
+        if (response.results[0].content.length) {
+            var query = 'insert into potluck_invite_friends(email_id,event_id,registerd) values ("' + friendEmail + '", [' + event_id + '],1) RETURN @rid';
+        } else {
+            var query = 'insert into potluck_invite_friends(email_id,event_id,registerd) values ("' + friendEmail + '", [' + event_id + '],0) RETURN @rid';
         }
-        inviteFriendPromise.resolve(obj);
-    }, function(err) {
-        console.log("some problem", err);
-        inviteFriendPromise.reject(err);
+        db.exec(query).then(function(res) {
+            invite_id = getRid(res);
+            if (response.results[0].content.length) {
+                var userId = getRid(response);
+                // In case of registered user update users.invitted_to field
+                var updateUsers = "update " + userId + " add inviteed_to = " + event_id;
+                obj = {
+                    "invite_id": invite_id
+                }
+                db.exec(updateUsers).then(function(response) {
+                    inviteFriendPromise.resolve(obj);
+                }, function(err) {
+                    console.log("some problem while updaing users with inviteed_to", err);
+                    inviteFriendPromise.reject(err);
+                });
+            } else {
+                obj = {
+                    "invite_id": invite_id
+                }
+                inviteFriendPromise.resolve(obj);
+            }
+        }, function(err) {
+            console.log("some problem", err);
+            inviteFriendPromise.reject(err);
+        })
     })
     return inviteFriendPromise.promise;
 }
@@ -77,7 +115,7 @@ var saveInviteFriend = function(friendEmail, event_id) {
 var save_menu = function(body) {
     var defered = Q.defer();
 
-    var query = "insert into potluck_event_menu(name,description,event_id,added_by,created_date) values ('" + body.name + "','" + body.desc + "'," + body.event_id + "," + body.added_by + ",'" + new Date() + "')"
+    var query = "insert into potluck_event_menu(name,description,event_id,added_by,created_date) values ('" + body.name + "','" + body.desc + "'," + body.event_id + "," + body.added_by + ",'" + Date.now() + "')"
     console.log(query);
     db.exec(query).then(function(response) {
         defered.resolve(response);
@@ -99,7 +137,7 @@ module.exports = (function() {
                 }
                 friendsObject.push(obj);
             }
-            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",[' + body.created_by + '],"' + new Date() + '") RETURN @rid';
+            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",' + body.created_by + ',"' + Date.now() + '") RETURN @rid';
             db.exec(query).then(function(res) {
                 var eventId = getRid(res);
                 _.map(friendsObject, function(v, k, arr) {
@@ -107,7 +145,20 @@ module.exports = (function() {
                 });
 
                 Q.allSettled(friendPromise).then(function(response) {
-                    eventSavePromise.resolve("event saved successfully");
+                    _.map(response, function(v, k, a) {
+                        if (v.state === 'fulfilled') {
+                            var updateEvent = "update " + eventId + " add invitees = " + v.value.invite_id;
+                            console.log("updateEvent===>", updateEvent);
+                            db.exec(updateEvent)
+                        }
+                    });
+                    var updateUsers = "update " + body.created_by + " add created_events = " + eventId;
+                    db.exec(updateUsers).then(function(res) {
+                        eventSavePromise.resolve("event saved successfully");
+                    }, function(err) {
+                        eventSavePromise.reject(err);
+                    })
+
                 }, function(err) {
                     eventSavePromise.reject(err);
                 });
@@ -152,14 +203,14 @@ module.exports = (function() {
                 });
             return defered.promise;
         },
-        getEvents: function() {
+        getEvents: function(uid) {
             var defered = Q.defer();
-            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events')
-                .then(function(response) {
-                    defered.resolve(response);
-                }, function(err) {
-                    defered.reject(false);
-                });
+            var query = "select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = "+uid+"), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = "+uid+"),$c = unionAll( $a, $b )";
+            db.exec(query).then(function(result){
+                defered.resolve(result);
+            },function(e){
+                defered.reject(false)
+            })
             return defered.promise;
         },
         create_user: function(body) {
@@ -167,6 +218,7 @@ module.exports = (function() {
                 query,
                 checkUser;
             // local user
+
             switch (body.register_by) {
                 case 'local':
                     checkUser = "select @rid from potluck_users where email='" + body.email + "' and type = 'local'";
@@ -193,6 +245,7 @@ module.exports = (function() {
                                 "name": res.results[0].content.name,
                                 "register_by": "local"
                             }
+                            updateInviteFriendStatus(body.email, userID);
                             defered.resolve(obj);
                         }, function(err) {
                             defered.reject(err);
@@ -212,6 +265,7 @@ module.exports = (function() {
                                 "name": res.results[0].content.name,
                                 "register_by": "facebook"
                             }
+                            updateInviteFriendStatus(body.email, userID);
                             defered.resolve(obj);
                         }, function(err) {
                             defered.reject(err);
@@ -229,6 +283,7 @@ module.exports = (function() {
                     }
                 })
             }
+
             return defered.promise;
         },
         insert_menu: function(body) {
@@ -256,7 +311,7 @@ module.exports = (function() {
                 db.exec(selectQuery).then(function(res) {
                     var object = {
                         "menu": response.results[0].content,
-                        "menu_image":res.results[0].content
+                        "menu_image": res.results[0].content
                     }
                     defered.resolve(object);
                 }, function(err) {
@@ -279,7 +334,7 @@ module.exports = (function() {
         },
         deleteMenuImage: function(menu_id, image_id) {
             var defered = Q.defer();
-            var query = "delete from potluck_menu_images where menu_id="+menu_id+" and @rid="+image_id;
+            var query = "delete from potluck_menu_images where menu_id=" + menu_id + " and @rid=" + image_id;
             db.exec(query).then(function(response) {
                 defered.resolve(response);
             }, function(err) {
@@ -290,7 +345,7 @@ module.exports = (function() {
         updateEventMenu: function(body) {
             var defered = Q.defer();
             console.log(body)
-            var query = "update potluck_event_menu SET name='"+body.name+"', description='"+body.description+"' where @rid="+body.rid;
+            var query = "update potluck_event_menu SET name='" + body.name + "', description='" + body.description + "' where @rid=" + body.rid;
             console.log(query)
             db.exec(query).then(function(response) {
                 defered.resolve(response);

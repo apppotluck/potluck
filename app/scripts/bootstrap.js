@@ -11,8 +11,9 @@ require.config({
         , 'angular-dateParser': '/bower_components/angular-dateParser/dataparser'
         , 'jwtHelper'         : '/bower_components/angular-jwt/dist/angular-jwt.min'
         , 'localStorage'      : '/bower_components/ngstorage/ngStorage.min'
+        , 'ngFileUploadShim'  : '/bower_components/ng-file-upload-shim/ng-file-upload-shim'
         , 'ngFileUpload'      : '/bower_components/ng-file-upload/ng-file-upload'
-        , 'ngFileUploadShim'  : '/bower_components/ng-file-upload/ng-file-upload-shim'
+        , 'ngCordova'         : '/bower_components/ngCordova/dist/ng-cordova'        
         , 'bootstrap'         : '../lib/bootstrap/js/bootstrap.min'
         , 'jquery'            : '/bower_components/jquery/dist/jquery'
         , 'constants'         : '/scripts/config/constants'
@@ -28,7 +29,7 @@ require.config({
             exports: 'angular'
         },
         'app': {
-            deps: ['angular', 'angular-route','bootstrap','constants','appConfig','angular-animate','bootstrap-ui']
+            deps: ['angular', 'angular-route','bootstrap','constants','appConfig','angular-animate','bootstrap-ui','ngCordova']
         },
         'angular-route': {
             deps: ['angular']
@@ -67,10 +68,10 @@ require.config({
              deps:['angular']
         },
         'ngFileUpload': {
-            deps:['angular']
+            deps:['angular','ngFileUploadShim']
         },
-        'ngFileUploadShim': {
-            deps:['angular']
+        'ngCordova': {
+             deps:['angular']
         }
         
     },

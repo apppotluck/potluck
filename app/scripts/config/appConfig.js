@@ -152,8 +152,9 @@ var appConfig = {
             var serviceConfig = angular.copy(GET_THEMES);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
-        'getEvents': function(API, _successCallback, _errorCallback) {
+        'getEvents': function(API, _successCallback, _errorCallback,uid) {
             var serviceConfig = angular.copy(GET_EVENTS);
+            serviceConfig.url = GET_EVENTS.url + '/'+encodeURIComponent(uid);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
         'registerUser': function(API, _successCallback, _errorCallback, requestBody) {

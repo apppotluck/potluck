@@ -77,8 +77,8 @@ apiRoutes.get('/getThemes', function(req, res) {
     })
 });
 
-apiRoutes.get('/getEvents', function(req, res) {
-    dbOperation.getEvents().then(function(eventsResponse) {
+apiRoutes.get('/getEvents/:uid', function(req, res) {
+    dbOperation.getEvents(req.params.uid).then(function(eventsResponse) {
         res.json(eventsResponse);
         res.send();
     }, function(err) {

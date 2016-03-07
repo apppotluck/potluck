@@ -12,10 +12,13 @@ define(['app'], function(app) {
             $scope.nonHostUser = false;
             $scope.upcomingEvents = [];
             $scope.pastEvents = [];
+            var userToken = $localStorage.token;
+            var userDetails = jwtHelper.decodeToken(userToken);
 
             appConfig.serviceAPI.getEvents(API, function(eventResponse) {
+                console.log(eventResponse);
                 var eventDate, eventDateWithHourAndMinute, unixTimeStamp;
-                for (var event in eventResponse) {
+                for (var event in eventResponse.results[0].content) {
                     eventDate = eventResponse[event].event_date.replace(/-/g, '\/');
                     eventDateWithHourAndMinute = new Date(eventDate).setHours(eventResponse[event].event_time.split(":")[0]);
                     eventDateWithHourAndMinute = new Date(eventDateWithHourAndMinute).setMinutes(eventResponse[event].event_time.split(":")[1]);
@@ -35,7 +38,7 @@ define(['app'], function(app) {
 
             }, function(err) {
                 console.log(err);
-            });
+            },userDetails.userId);
             $scope.createEvent = function() {
                 $location.path('/create-event');
             }
@@ -120,7 +123,7 @@ define(['app'], function(app) {
                         $scope.eventMenuArray = Object.keys(eventMenuDetails.menu)
                             .map(function(key) {
                                 return eventMenuDetails.menu[key].value;
-                            });
+                            });    
                         for (var ii = 0; ii < $scope.eventMenuArray.length; ii++) {
                             $scope.eventMenuArray[ii].menuImageDetails = [];
                             for (var jj = 0; jj < eventMenuDetails.menu_image.length; jj++) {
@@ -219,10 +222,10 @@ define(['app'], function(app) {
                 $mdDialog.hide();
             }
         }
-        $scope.uploadFiles = function(file, errFiles) {
+        $scope.uploadFiles = function(file) {
             $scope.f = file;
             $scope.files = {}
-            $scope.errFile = errFiles && errFiles[0];
+            console.log(file)        
             if (file) {
                 var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
                 file.upload = Upload.upload({

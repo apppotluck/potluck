@@ -32,14 +32,15 @@
   background: white;
 }  
 </style>
+<script type="text/javascript" src="http://localhost:8000/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js"></script>
 <section class="container" ng-controller="EventMenuController" class="" id="popupContainer" ng-cloak>
     <section title="click to edit" ng-click="isVisible=!isVisible" class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-created_date'" id="menu_{{menu.rid}}">
         <article class="col-xs-9">
             <h3 class="mt0">{{menu.name}}</h3>
             <p class="col-gry">{{menu.description}}</p>
-            <p class="pot-time col-gry">{{menu.created_date}}</p>
+            <p class="pot-time col-gry">{{menu.created_date | date:'medium'}}</p>
             <p class="pot-msg">
-                <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="10000" ngf-max-size="1GB">
+                <button type="file" ngf-select="uploadFiles($file)" accept="image/*" ngf-max-height="10000" ngf-max-size="1GB">
                     Upload Image</button>
                 <img ng-src={{fileInputContent}}>
             </p>
@@ -50,11 +51,11 @@
                 </li>
                 <div class="clear"></div>
             </ul>
-            <div ng-show="isVisible" class="check-element animate-show" id="edit_menu_{{menu.rid}}">
+            <!-- <div ng-show="isVisible" class="check-element animate-show" id="edit_menu_{{menu.rid}}">
                  <input type="test" ng-model="menu.name">
                  <input type="text" ng-model="menu.description">
                  <button name="Submit" value="Update Menu" ng-click="updateMenu()">Update Menu </button>   
-            </div>
+            </div> -->
         </article>
         <article class="col-xs-3 pot-name col-gry">
             <span ng-if="currentUser.userId == menu.added_by[0]">You</span>
