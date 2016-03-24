@@ -155,7 +155,6 @@ define(['app'], function(app) {
             $scope.selectedIndex = 0;
 
             appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {
-                console.log(eventDetails);
                 $scope.event = eventDetails;
                 $scope.eventInvitees = eventDetails[0].invitees;
             }, function(err) {
@@ -343,4 +342,10 @@ define(['app'], function(app) {
         }
     ])
 
-});
+    app.filter('contains', function() {
+        return function(array, needle) {
+            return array.indexOf(needle) >= 0;
+        };
+    });
+
+})

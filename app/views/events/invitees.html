@@ -45,7 +45,10 @@
             </h3>
         <p class="pot-time col-gry">Feb 22, 9.15</p>
     </article>
-    <article class="col-xs-3 pot-name col-grn">
-        <span ng-if="value['user_id'].indexOf(event[0]['accepted_users'] > -1)">Accepted</span>
+    <article>
+        <span class="col-xs-3 pot-name col-grn" ng-if="event[0]['accepted_users'] | contains: value['user_id']">Accepted</span>
+        <span class="col-xs-3 pot-name col-red" ng-if="event[0]['declined_users'] | contains: value['user_id']">Declined</span>
+        <span ng-if="event[0]['may_be_users'] | contains: value['user_id']">Declined</span>
+
     </article>
 </section>
