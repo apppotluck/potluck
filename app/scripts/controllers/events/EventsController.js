@@ -51,6 +51,17 @@ define(['app'], function(app) {
                                 }
                             }
                         }
+                        if (typeof event.may_be_accepted_user !== "undefined") {
+                            if (event.may_be_accepted_user.length > 0) {
+                                for (var i = 0; i < event.may_be_accepted_user.length; i++) {
+                                    if (event.may_be_accepted_user[i] === currentUser) {
+                                        event.may_be_accepted_event = true;
+                                    } else {
+                                        event.may_be_accepted_event = false;
+                                    }
+                                }
+                            }
+                        }
 
                         if (eventDateWithHourAndMinute > Date.now()) {
                             $scope.upcomingEvents.push(event);
@@ -99,43 +110,6 @@ define(['app'], function(app) {
             $scope.$watch('upcomingEvents', function(value) {
                 console.log(value);
             })
-            $scope.acceptedEvent = function() {
-                // var userToken = $localStorage.token,
-                //     userDetails = jwtHelper.decodeToken(userToken),
-                //     currentUser = userDetails.userId,
-                //     acceptedEventFlag = false;
-
-                // return acceptedEventFlag;
-            }
-            $scope.declinedEvent = function() {
-                console.log('puneet');
-                // var userToken = $localStorage.token,
-                //     userDetails = jwtHelper.decodeToken(userToken),
-                //     currentUser = userDetails.userId,
-                //     declinedEventFlag = false;
-                // if (typeof this.value.declined_users !== "undefined") {
-                //     if (this.value.declined_users.length > 0) {
-                //         for (var i = 0; i < this.value.declined_users.length; i++) {
-                //             if (this.value.declined_users[i] === currentUser) {
-                //                 declinedEventFlag = true;
-                //             }
-                //         }
-                //     }
-                // }
-            }
-            $scope.showAcceptence = function() {
-                // console.log('puneet');
-                // var userToken = $localStorage.token,
-                //     userDetails = jwtHelper.decodeToken(userToken),
-                //     currentUser = userDetails.userId,
-                //     mayBeAcceptedEventFlag=false;
-                // if (typeof this.value.accepted_users === "undefined" &&
-                //     typeof this.value.declined_users === "undefined" &&
-                //     typeof this.value.may_be_accepted_users === "undefined"
-                // ) {
-                //     return true;
-                // }  
-            }
         }
     ]);
     app.controller('EventDetailsController', [

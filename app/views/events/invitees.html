@@ -5,7 +5,8 @@
     </section>
     <section class="col-xs-3 invitees-list">
         <p class="col-grn">Accepted</p>
-        <h1>{{event[0]['accepted_users'].length}}</h1>
+        <h1 ng-if="event[0]['accepted_users'].length>0">{{event[0]['accepted_users'].length}}</h1>
+        <h1 ng-if="!event[0]['accepted_users'].length">0</h1>
     </section>
     <section class="col-xs-3 invitees-list">
         <p class="col-red">Declined</p>
@@ -15,8 +16,8 @@
     </section>
     <section class="col-xs-3 invitees-list">
         <p class="col-blu">May be</p>
-        <h1 ng-if="event[0]['may_be_users'].length>0">{{event[0]['may_be_users'].length}}</h1>
-         <h1 ng-if="!event[0]['may_be_users'].length">0</h1>
+        <h1 ng-if="event[0]['may_be_accepted_user'].length>0">{{event[0]['may_be_accepted_user'].length}}</h1>
+         <h1 ng-if="!event[0]['may_be_accepted_user'].length">0</h1>
     </section>
 </section>
 <section class="row pot-details">
@@ -48,7 +49,7 @@
     <article>
         <span class="col-xs-3 pot-name col-grn" ng-if="event[0]['accepted_users'] | contains: value['user_id']">Accepted</span>
         <span class="col-xs-3 pot-name col-red" ng-if="event[0]['declined_users'] | contains: value['user_id']">Declined</span>
-        <span ng-if="event[0]['may_be_users'] | contains: value['user_id']">Declined</span>
+        <span class="col-xs-3 pot-name col-blu" ng-if="event[0]['may_be_accepted_user'] | contains: value['user_id']">May be</span>
 
     </article>
 </section>

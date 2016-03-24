@@ -7,12 +7,12 @@
             <p class="pot-msg col-blu"><span ng-if="currentUser.userId == value.created_by">Host</span></p>
             <p class="pot-msg col-red" ng-if="value.declined_event">You've rejected the invitation</p>
             <p class="pot-msg col-grn" ng-if="value.accepted_event">You've accepted the invitation</p>
+            <p class="pot-msg col-blu" ng-if="value.may_be_accepted_event">You may be join the event</p>
         </article>
         <article class="col-xs-3 pot-name col-gry">
             {{value.created_user}}
         </article>
-        
-        <section class="col-xs-12 p0 pop-confirm" ng-if="!value.accepted_event && !value.declined_event && currentUser.userId != value.created_by">
+        <section class="col-xs-12 p0 pop-confirm" ng-if="!value.accepted_event && !value.declined_event && !value.may_be_accepted_event && currentUser.userId != value.created_by">
             <ul>
                 <li>
                     <input type="button" ng-click="eventAcceptence(1)" value="Yes" class="tertiary-btn">
