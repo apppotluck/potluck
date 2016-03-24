@@ -43,15 +43,19 @@ var getRid = function(res) {
 // };
 
 var updateInviteFriendStatus = function(email_id, uid) {
-    var selectQuery = "select @rid from potluck_invite_friends where email_id='" + email_id + "'";
+
+    var selectQuery = "select * from potluck_invite_friends where email_id='" + email_id + "'";
     db.exec(selectQuery).then(function(res) {
+        var event_id = "#" + res.results[0].content[0].value.event_id.cluster + ":" + res.results[0].content[0].value.event_id.position;
         if (res.results[0].content.length) {
-            var updateInvitee = "update potluck_invite_friends set registerd = 1,registered_user_id=" + uid + " where email_id='" + email_id + "'";
-            db.exec(updateInvitee).then(function(res) {
+            var updateUid = "update potluck_invite_friends SET user_id ="+uid+" where email_id = '"+email_id+"'";
+            var updateUsers = "update " + uid + " add inviteed_to = " + event_id;
+            db.exec(updateUid).then(function(res){
+               db.exec(updateUsers).then(function(res) {}, function(err) {}) 
+           },function(err){
 
-            }, function(err) {
-
-            })
+           })
+            
         }
     }, function(err) {
 
@@ -63,11 +67,7 @@ var saveInviteFriend = function(friendEmail, event_id) {
     var userID, obj = {};
     var checkUsers = "select * from potluck_users where email = '" + friendEmail + "'";
     db.exec(checkUsers).then(function(response) {
-        if (response.results[0].content.length) {
-            var query = 'insert into potluck_invite_friends(email_id,event_id,registerd) values ("' + friendEmail + '", [' + event_id + '],1) RETURN @rid';
-        } else {
-            var query = 'insert into potluck_invite_friends(email_id,event_id,registerd) values ("' + friendEmail + '", [' + event_id + '],0) RETURN @rid';
-        }
+        var query = 'insert into potluck_invite_friends(email_id,event_id) values ("' + friendEmail + '", ' + event_id + ') RETURN @rid';
         db.exec(query).then(function(res) {
             invite_id = getRid(res);
             if (response.results[0].content.length) {
@@ -148,7 +148,6 @@ module.exports = (function() {
                     _.map(response, function(v, k, a) {
                         if (v.state === 'fulfilled') {
                             var updateEvent = "update " + eventId + " add invitees = " + v.value.invite_id;
-                            console.log("updateEvent===>", updateEvent);
                             db.exec(updateEvent)
                         }
                     });
@@ -190,9 +189,9 @@ module.exports = (function() {
         },
         getEventDetails: function(eventId) {
             var defered = Q.defer();
-            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname from potluck_events where @rid = "' + eventId + '"')
+            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname,accepted_users,declined_users,may_be_users from potluck_events where @rid = "' + eventId + '"')
                 .then(function(response) {
-                    db.query('select email_id,@rid,registerd from potluck_invite_friends where event_id=' + eventId).then(function(inviteesResponse) {
+                    db.query('select email_id,@rid,user_id,user_id.name as username from potluck_invite_friends where event_id=' + eventId).then(function(inviteesResponse) {
                         response[0].invitees = inviteesResponse;
                         defered.resolve(response);
                     }, function(err) {
@@ -205,10 +204,10 @@ module.exports = (function() {
         },
         getEvents: function(uid) {
             var defered = Q.defer();
-            var query = "select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = "+uid+"), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = "+uid+"),$c = unionAll( $a, $b )";
-            db.exec(query).then(function(result){
+            var query = "select *,created_by.name as created_user from (select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = " + uid + "), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = " + uid + "),$c = unionAll( $a, $b ))";
+            db.exec(query).then(function(result) {
                 defered.resolve(result);
-            },function(e){
+            }, function(e) {
                 defered.reject(false)
             })
             return defered.promise;
@@ -344,11 +343,41 @@ module.exports = (function() {
         },
         updateEventMenu: function(body) {
             var defered = Q.defer();
-            console.log(body)
             var query = "update potluck_event_menu SET name='" + body.name + "', description='" + body.description + "' where @rid=" + body.rid;
-            console.log(query)
             db.exec(query).then(function(response) {
                 defered.resolve(response);
+            }, function(err) {
+                defered.reject(err);
+            })
+            return defered.promise;
+        },
+        updateEventAcceptanceStatus: function(body) {
+            var defered = Q.defer();
+            /*
+               body.type == 1 = accepted
+               body.type == 2 = declined
+               body.type == 3 = maybe
+            */
+            var userUpdate,
+                eventUpdate;
+
+            if (body.type === 1) {
+                userUpdate = "update " + body.user_id + " add accepted_events =" + body.event_id;
+                eventUpdate = "update " + body.event_id + " add accepted_users =" + body.user_id;
+            } else if (body.type === 2) {
+                userUpdate = "update " + body.user_id + " add declined_events =" + body.event_id;
+                eventUpdate = "update " + body.event_id + " add declined_users =" + body.user_id;
+            } else {
+                userUpdate = "update " + body.user_id + " add may_be_accepted_event =" + body.event_id;
+                eventUpdate = "update " + body.event_id + " add may_be_accepted_user =" + body.user_id;
+            }
+
+            db.exec(userUpdate).then(function(response) {
+                db.exec(eventUpdate).then(function(updatedUserResponse) {
+                    defered.resolve(updatedUserResponse);
+                }, function(err) {
+                    defered.reject(err);
+                })
             }, function(err) {
                 defered.reject(err);
             })

@@ -10,41 +10,131 @@ define(['app'], function(app) {
         function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage) {
             $scope.events = {};
             $scope.nonHostUser = false;
-            $scope.upcomingEvents = [];
-            $scope.pastEvents = [];
+
             var userToken = $localStorage.token;
             var userDetails = jwtHelper.decodeToken(userToken);
+            var eventsList = function() {
+                $scope.upcomingEvents = [];
+                $scope.pastEvents = [];
+                var userToken = $localStorage.token,
+                    userDetails = jwtHelper.decodeToken(userToken),
+                    currentUser = userDetails.userId;
+                appConfig.serviceAPI.getEvents(API, function(eventResponse) {
+                    var eventDate, eventDateWithHourAndMinute, unixTimeStamp;
+                    for (var eventIndex in eventResponse.results[0].content) {
+                        // console.log(eventResponse.results[0].content[eventIndex].value);
+                        var event = eventResponse.results[0].content[eventIndex].value
+                        var eventId = '#' + eventResponse.results[0].content[eventIndex].cluster + ":" + eventResponse.results[0].content[eventIndex].position;
+                        eventDate = event.event_date.replace(/-/g, '\/');
+                        eventDateWithHourAndMinute = new Date(eventDate).setHours(event.event_time.split(":")[0]);
+                        eventDateWithHourAndMinute = new Date(eventDateWithHourAndMinute).setMinutes(event.event_time.split(":")[1]);
+                        event.event_id = eventId;
+                        if (typeof event.accepted_users !== "undefined") {
+                            if (event.accepted_users.length > 0) {
+                                for (var i = 0; i < event.accepted_users.length; i++) {
+                                    if (event.accepted_users[i] === currentUser) {
+                                        event.accepted_event = true;
+                                    } else {
+                                        event.accepted_event = false;
+                                    }
+                                }
+                            }
+                        }
+                        if (typeof event.declined_users !== "undefined") {
+                            if (event.declined_users.length > 0) {
+                                for (var i = 0; i < event.declined_users.length; i++) {
+                                    if (event.declined_users[i] === currentUser) {
+                                        event.declined_event = true;
+                                    } else {
+                                        event.declined_event = false;
+                                    }
+                                }
+                            }
+                        }
 
-            appConfig.serviceAPI.getEvents(API, function(eventResponse) {
-                console.log(eventResponse);
-                var eventDate, eventDateWithHourAndMinute, unixTimeStamp;
-                for (var event in eventResponse.results[0].content) {
-                    eventDate = eventResponse[event].event_date.replace(/-/g, '\/');
-                    eventDateWithHourAndMinute = new Date(eventDate).setHours(eventResponse[event].event_time.split(":")[0]);
-                    eventDateWithHourAndMinute = new Date(eventDateWithHourAndMinute).setMinutes(eventResponse[event].event_time.split(":")[1]);
-                    if (eventDateWithHourAndMinute > Date.now()) {
-                        $scope.upcomingEvents.push(eventResponse[event]);
-                    } else {
-                        $scope.pastEvents.push(eventResponse[event]);
+                        if (eventDateWithHourAndMinute > Date.now()) {
+                            $scope.upcomingEvents.push(event);
+                        } else {
+                            $scope.pastEvents.push(event);
+                        }
                     }
-                }
-                var userToken = $localStorage.token;
-                var userDetails = jwtHelper.decodeToken(userToken);
-                if (typeof userDetails.userId === "undefined") {
-                    $location.path('/');
-                } else {
-                    $scope.currentUser = userDetails;
-                }
+                    var userToken = $localStorage.token;
+                    var userDetails = jwtHelper.decodeToken(userToken);
+                    if (typeof userDetails.userId === "undefined") {
+                        $location.path('/');
+                    } else {
+                        $scope.currentUser = userDetails;
+                    }
 
-            }, function(err) {
-                console.log(err);
-            },userDetails.userId);
+                }, function(err) {
+                    console.log(err);
+                }, userDetails.userId);
+            }
+            eventsList();
+            $scope.$on('getEventList', function() {
+                eventsList();
+            });
             $scope.createEvent = function() {
                 $location.path('/create-event');
             }
 
             $scope.onEventClick = function() {
-                $location.path('/event-details/' + this.value.rid);
+                $location.path('/event-details/' + this.value.event_id);
+            }
+            $scope.eventAcceptence = function(type) {
+                var userToken = $localStorage.token;
+                var userDetails = jwtHelper.decodeToken(userToken);
+                var object = {
+                    "user_id": userDetails.userId,
+                    "event_id": this.value.event_id,
+                    "type": type
+                }
+                appConfig.serviceAPI.updateEventAcceptence(API, function(eventDetails) {
+                    $scope.$broadcast('getEventList');
+                }, function(err) {
+                    console.log(err);
+                }, object);
+            }
+
+            $scope.$watch('upcomingEvents', function(value) {
+                console.log(value);
+            })
+            $scope.acceptedEvent = function() {
+                // var userToken = $localStorage.token,
+                //     userDetails = jwtHelper.decodeToken(userToken),
+                //     currentUser = userDetails.userId,
+                //     acceptedEventFlag = false;
+
+                // return acceptedEventFlag;
+            }
+            $scope.declinedEvent = function() {
+                console.log('puneet');
+                // var userToken = $localStorage.token,
+                //     userDetails = jwtHelper.decodeToken(userToken),
+                //     currentUser = userDetails.userId,
+                //     declinedEventFlag = false;
+                // if (typeof this.value.declined_users !== "undefined") {
+                //     if (this.value.declined_users.length > 0) {
+                //         for (var i = 0; i < this.value.declined_users.length; i++) {
+                //             if (this.value.declined_users[i] === currentUser) {
+                //                 declinedEventFlag = true;
+                //             }
+                //         }
+                //     }
+                // }
+            }
+            $scope.showAcceptence = function() {
+                // console.log('puneet');
+                // var userToken = $localStorage.token,
+                //     userDetails = jwtHelper.decodeToken(userToken),
+                //     currentUser = userDetails.userId,
+                //     mayBeAcceptedEventFlag=false;
+                // if (typeof this.value.accepted_users === "undefined" &&
+                //     typeof this.value.declined_users === "undefined" &&
+                //     typeof this.value.may_be_accepted_users === "undefined"
+                // ) {
+                //     return true;
+                // }  
             }
         }
     ]);
@@ -65,6 +155,7 @@ define(['app'], function(app) {
             $scope.selectedIndex = 0;
 
             appConfig.serviceAPI.getEventDetails(API, function(eventDetails) {
+                console.log(eventDetails);
                 $scope.event = eventDetails;
                 $scope.eventInvitees = eventDetails[0].invitees;
             }, function(err) {
@@ -123,7 +214,7 @@ define(['app'], function(app) {
                         $scope.eventMenuArray = Object.keys(eventMenuDetails.menu)
                             .map(function(key) {
                                 return eventMenuDetails.menu[key].value;
-                            });    
+                            });
                         for (var ii = 0; ii < $scope.eventMenuArray.length; ii++) {
                             $scope.eventMenuArray[ii].menuImageDetails = [];
                             for (var jj = 0; jj < eventMenuDetails.menu_image.length; jj++) {
@@ -171,6 +262,7 @@ define(['app'], function(app) {
                 })
             }
             $scope.showImagePreview = showDialog;
+
             function showDialog($event) {
                 var parentEl = angular.element(document.body);
                 $mdDialog.show({
@@ -194,7 +286,7 @@ define(['app'], function(app) {
                 }
             }
 
-            $scope.deleteImage = function(ev,menuId) {
+            $scope.deleteImage = function(ev, menuId) {
                 var imageId = this.value.menuImageRid;
                 var confirm = $mdDialog.confirm()
                     .title('Would you like to delete this image?')
@@ -205,10 +297,10 @@ define(['app'], function(app) {
                 $mdDialog.show(confirm).then(function() {
                     appConfig.serviceAPI.deleteMenuMenuImage(API, function(eventMenuDetails) {
                         $scope.$broadcast('updateMenuList');
-                    },function(err){
+                    }, function(err) {
                         console.log("try again!");
-                    },imageId,menuId)
-                   
+                    }, imageId, menuId)
+
                 }, function() {
                     $scope.status = 'You decided to keep your debt.';
                 });
@@ -216,38 +308,39 @@ define(['app'], function(app) {
 
 
 
-        function DialogController($scope, $mdDialog, items) {
-            $scope.items = items;
-            $scope.closeDialog = function() {
-                $mdDialog.hide();
+            function DialogController($scope, $mdDialog, items) {
+                $scope.items = items;
+                $scope.closeDialog = function() {
+                    $mdDialog.hide();
+                }
             }
-        }
-        $scope.uploadFiles = function(file) {
-            $scope.f = file;
-            $scope.files = {}
-            console.log(file)        
-            if (file) {
-                var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
-                file.upload = Upload.upload({
-                    url: fileUploadUrl,
-                    data: { file: file }
-                });
-
-                file.upload.then(function(response) {
-                    $timeout(function() {
-                        file.result = response.data;
-                        $scope.files = response.data.filename;
-                        $scope.$broadcast('updateMenuList');
+            $scope.uploadFiles = function(file) {
+                $scope.f = file;
+                $scope.files = {}
+                console.log(file)
+                if (file) {
+                    var fileUploadUrl = '/potluck/dish/image/' + encodeURIComponent(this.menu.rid);
+                    file.upload = Upload.upload({
+                        url: fileUploadUrl,
+                        data: { file: file }
                     });
-                }, function(response) {
-                    if (response.status > 0)
-                        $scope.errorMsg = response.status + ': ' + response.data;
-                }, function(evt) {
-                    file.progress = Math.min(100, parseInt(100.0 *
-                        evt.loaded / evt.total));
-                });
+
+                    file.upload.then(function(response) {
+                        $timeout(function() {
+                            file.result = response.data;
+                            $scope.files = response.data.filename;
+                            $scope.$broadcast('updateMenuList');
+                        });
+                    }, function(response) {
+                        if (response.status > 0)
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function(evt) {
+                        file.progress = Math.min(100, parseInt(100.0 *
+                            evt.loaded / evt.total));
+                    });
+                }
             }
         }
-    }])
+    ])
 
 });

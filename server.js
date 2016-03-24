@@ -221,18 +221,18 @@ apiRoutes.post('/dish/image/:menu_id', function(req, res) {
                 "filename": req.file.filename,
                 "destination": req.file.path
             }
-            dbOperation.updateMenuImage(req.params.menu_id,req.file.filename).then(function(response){
+            dbOperation.updateMenuImage(req.params.menu_id, req.file.filename).then(function(response) {
                 res.json(fileObject)
                 res.send();
-            },function(err){
+            }, function(err) {
                 res.json("error");
                 res.send();
             })
         }
     });
 })
-apiRoutes.get('/delete-menu-image/:image_id/:menu_id',function(req,res){
-    dbOperation.deleteMenuImage(req.params.menu_id,req.params.image_id).then(function(eventMenuDetails) {
+apiRoutes.get('/delete-menu-image/:image_id/:menu_id', function(req, res) {
+    dbOperation.deleteMenuImage(req.params.menu_id, req.params.image_id).then(function(eventMenuDetails) {
         var menuImageDeleteResponse = {
             responseData: {
                 message: 'success'
@@ -270,6 +270,28 @@ apiRoutes.post('/update-menu', function(req, res) {
             }
         }
         res.json(menuUpdateResponse);
+        res.send();
+    })
+})
+
+apiRoutes.post('/update-event-acceptence', function(req, res) {
+    var body = req.body;
+    dbOperation.updateEventAcceptanceStatus(body).then(function(response) {
+        var eventAcceptanceResponse = {
+            responseData: {
+                message: 'success'
+            }
+        }
+        res.json(eventAcceptanceResponse);
+        res.send();
+    }, function(err) {
+        var eventAcceptanceResponse = {
+            responseData: {
+                message: 'fail',
+                error: err
+            }
+        }
+        res.json(eventAcceptanceResponse);
         res.send();
     })
 })
