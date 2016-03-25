@@ -1,9 +1,29 @@
 <!-- <header title="Add Invitees"></header>
- --><section class="row" >
-	Invite friends
-	<div ng-repeat="item in items">
-		<input type="text" placeholder="{{item.friendNameName}}" ng-model="item.friendNameName"> X
-	</div>	
-	<button name="add more friend" value="Add more" ng-click="add()">Add More</button>
-	<button name="submit" ng-click="addFriends()">Submit</button>
+ -->
+<section class="row">
+    <section class="col-xs-12">
+      <form>
+      	<span ng-show="invalidEmail">Please enter valid email id</span>
+      	<span ng-show="userExist">You cannot add youself in event as you are hosting event</span>
+        <article class="form-group pot-form-group" > <span class="invfriends-icon" ng-click="add()"></span>
+          <input type="text" class="form-control form-control-ce  pop-form-control gry-bdr" ng-model="name.invitee" id="name" placeholder="Type contact name..." ng-keypress="addInvitee($event)">
+          <span class="col-gry error-msg">Add invitees to the event.</span> </article>
+        <section class="row invitees-details"  ng-repeat="item in items">
+          <section class="col-xs-12 p0">
+            <section class="col-xs-2"> <img src="assets/images/thumbnail.png" width="35" height="35" alt="thumbnail"> </section>
+            <article class="col-xs-7">
+              <h3 class="mt0">{{item.friendNameName}}</h3>
+            </article>
+            <article class="pot-name col-gry col-xs-3"> <a href="#" ng-click="removeInvite($index)"><span class="close-icon"></span></a> </article>
+          </section>
+        </section>
+        <section class="row invitees-details"  ng-if="!items.length">
+        	<div style="font-weight:bold;margin-top:6%;margin-left:38%">No invitees added yet</div>
+        </section>
+      </form>
+      <section class="row" ng-if="items.length" >
+        <button type="submit" class="btn pop-btn orange primary-btn" ng-click="addFriends()">Submit</button>
+      </section>
+    </section>
+  </section>   
 </section>

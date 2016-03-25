@@ -142,7 +142,7 @@ module.exports = (function() {
                 }
                 friendsObject.push(obj);
             }
-            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",' + body.created_by + ',"' + Date.now() + '") RETURN @rid';
+            var query = 'insert into potluck_events(name,event_date,event_time,location,food_type,theme,message,created_by,created_date,status) values ("' + body.name + '", "' + body.date + '", "' + body.time + '", "' + body.currentlocation + '", "' + body.foodtype + '", "' + body.theme + '", "' + body.message + '",' + body.created_by + ',"' + Date.now() + '",1) RETURN @rid';
             db.exec(query).then(function(res) {
                 var eventId = getRid(res);
                 _.map(friendsObject, function(v, k, arr) {
@@ -194,7 +194,7 @@ module.exports = (function() {
         },
         getEventDetails: function(eventId) {
             var defered = Q.defer();
-            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname,accepted_users,declined_users,may_be_accepted_user from potluck_events where @rid = "' + eventId + '"')
+            db.query('select @rid,name,event_date,location,food_type,theme,message,event_time,created_by,created_by.name as hostname,accepted_users,declined_users,may_be_accepted_user from potluck_events where @rid = "' + eventId + '" and status = 1')
                 .then(function(response) {
                     db.query('select email_id,@rid,user_id,user_id.name as username from potluck_invite_friends where event_id=' + eventId).then(function(inviteesResponse) {
                         response[0].invitees = inviteesResponse;
@@ -209,7 +209,7 @@ module.exports = (function() {
         },
         getEvents: function(uid) {
             var defered = Q.defer();
-            var query = "select *,created_by.name as created_user from (select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = " + uid + "), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = " + uid + "),$c = unionAll( $a, $b ))";
+            var query = "select *,created_by.name as created_user from (select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = " + uid + "), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = " + uid + "),$c = unionAll( $a, $b )) where status = 1";
             db.exec(query).then(function(result) {
                 defered.resolve(result);
             }, function(e) {

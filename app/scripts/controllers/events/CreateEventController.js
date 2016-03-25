@@ -9,7 +9,7 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             'jwtHelper',
             '$localStorage',
             '$filter',
-            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage,$filter,glocation) {
+            function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $filter, glocation) {
                 $scope.event = {};
                 $scope.today = function() {
                     $scope.event.date = new Date();
@@ -72,11 +72,11 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                     $scope.event.time = $scope.time1.getHours() + ":" + $scope.time1.getMinutes()
                     $scope.event.friends = $rootScope.inviteUsers;
                     $scope.event.dishAllocation = $rootScope.dishesAndUsers;
-                    $scope.event.date = $filter('date')($scope.event.date,'yyyy-MM-dd'); 
+                    $scope.event.date = $filter('date')($scope.event.date, 'yyyy-MM-dd');
                     var userToken = $localStorage.token;
                     var userDetails = jwtHelper.decodeToken(userToken);
                     $scope.event.created_by = userDetails.userId;
-                    
+
                     appConfig.serviceAPI.createEvent(API, function(response) {
                         if (response.responseData.status === "success") {
                             $location.path('events');
@@ -93,16 +93,44 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
         'API',
         '$location',
         '$rootScope',
-        function($scope, API, $location, $rootScope) {
+        'jwtHelper',
+        '$localStorage',
+        function($scope, API, $location, $rootScope,jwtHelper, $localStorage) {
             $scope.inviteFriendsForm = '/views/events/invite-friends.html';
-            $scope.items = [{
-                "friendNameName": ""
-            }];
+            $scope.name=[];
+            $scope.invalidEmail=false;
+            $scope.userExist = false;
             $scope.add = function() {
-                $scope.items.push({
-                    friendNameName: ""
-                });
+                var userToken = $localStorage.token;
+                var userDetails = jwtHelper.decodeToken(userToken);
+                if(/[^@]@([a-zA-z.-]+)\.[a-zA-Z]{2,}$/.test($scope.name.invitee)) {
+                    if($scope.name.invitee === userDetails.email) {
+                        $scope.invalidEmail=false;
+                        $scope.userExist= true;
+                    } else {
+                        if (typeof($scope.items) === "undefined") {
+                            $scope.items=[];
+                            $scope.items.push({
+                                friendNameName: $scope.name.invitee
+                            });
+                        } else {
+                            $scope.items.push({
+                                friendNameName: $scope.name.invitee
+                            });
+                        }
+                        $scope.name.invitee = "";
+                        $scope.invalidEmail=false;
+                        $scope.userExist= false;
+                    }
+                } else {
+                    $scope.invalidEmail=true;
+                    $scope.userExist= false;
+                }
             };
+            $scope.addInvitee = function(keyEvent) {
+                if (keyEvent.which === 13)
+                    $scope.add();
+            }
             $scope.addFriends = function() {
                 var userArray = [];
                 for (var i in $scope.items) {
@@ -113,6 +141,9 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
                 $rootScope.totalNumberOfFriendsInvited = $scope.items.length;
                 $rootScope.inviteUsers = userArray;
 
+            };
+            $scope.removeInvite = function($index) {
+                 $scope.items.splice($index,1)
             }
         }
     ])
@@ -147,4 +178,4 @@ define(['app', "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=f
             }
         }
     ])
-});
+})
