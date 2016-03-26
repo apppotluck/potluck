@@ -3,7 +3,8 @@ var Q = require('q'),
     Oriento = require('oriento'),
     util = require("util"),
     EventEmitter = require("events").EventEmitter,
-    md5 = require('md5');
+    md5 = require('md5'),
+    nodemailer = require('nodemailer');
 
 var server = Oriento({
     host: 'localhost',
@@ -46,10 +47,13 @@ var updateInviteFriendStatus = function(email_id, uid) {
 
     var selectQuery = "select * from potluck_invite_friends where email_id='" + email_id + "'";
     db.exec(selectQuery).then(function(res) {
-        var event_id = "#" + res.results[0].content[0].value.event_id.cluster + ":" + res.results[0].content[0].value.event_id.position;
+        var event_id=[]
+        _.map(res.results[0].content,function(content,key) {
+            event_id.push(content.value.event_id)
+        })
         if (res.results[0].content.length) {
             var updateUid = "update potluck_invite_friends SET user_id =" + uid + " where email_id = '" + email_id + "'";
-            var updateUsers = "update " + uid + " add inviteed_to = " + event_id;
+            var updateUsers = "update " + uid + " add inviteed_to = [" + event_id +"]";
             db.exec(updateUid).then(function(res) {
                 db.exec(updateUsers).then(function(res) {}, function(err) {})
             }, function(err) {
@@ -92,6 +96,23 @@ var saveInviteFriend = function(friendEmail, event_id) {
                 obj = {
                     "invite_id": invite_id
                 }
+                // send mail to invitees
+                // create reusable transporter object using the default SMTP transport
+                var transporter = nodemailer.createTransport('smtps://puneetsiet@gmail.com:P@ssword123456@smtp.gmail.com');
+                var mailOptions = {
+                    from: '"Fred Potluck" <potluck@gmail.com>', // sender address
+                    to: friendEmail, // list of receivers
+                    subject: 'Potluck mail', // Subject line
+                    text: 'Please join the app to see the event.Click here to login/register', // plaintext body
+                    html: '<b>Please join the app to see the event. <a href="http://localhost:8000/">Click here</a> to login/register</b>' // html body
+                };
+                // send mail with defined transport object
+                // transporter.sendMail(mailOptions, function(error, info) {
+                //     if (error) {
+                //         return console.log(error);
+                //     }
+                //     console.log('Message sent: ' + info.response);
+                // });
                 inviteFriendPromise.resolve(obj);
             }
         }, function(err) {
