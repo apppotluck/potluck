@@ -315,10 +315,66 @@ define(['app'], function(app) {
             }
         }
     ])
+    app.controller('CancelEventsController',['$scope',
+        'API',
+        '$location',
+        '$rootScope',
+        '$q',
+        'jwtHelper',
+        '$localStorage',
+        '$routeParams',
+        'Upload',
+        '$timeout',
+        '$mdDialog',
+        '$mdMedia',
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout, $mdDialog, $mdMedia) {
+            var userToken = $localStorage.token,
+                userDetails = jwtHelper.decodeToken(userToken),
+                currentUser = userDetails.userId;   
+            var eventsList = function() {
+                $scope.events=[];
+                appConfig.serviceAPI.getEvents(API, function(eventResponse) {
+                    for (var eventIndex in eventResponse.results[0].content) {
+                        if(eventResponse.results[0].content[eventIndex].value.created_by === userDetails.userId) {
+                            var events = {"event_id":'#'+eventResponse.results[0].content[eventIndex].cluster+":"+eventResponse.results[0].content[eventIndex].position,
+                                          "event_name":eventResponse.results[0].content[eventIndex].value.name
+                                         }
+                            $scope.events.push(events);
+                        }
+                    }
+                },function(err){
+                   console.log(err); 
+                },userDetails.userId)
+            }
+            eventsList(); 
+            $scope.$on('cancelEventList', function() {
+                eventsList();
+            });
+            $scope.cancelEvent = function(ev) {
+            var event_id = this.value.event_id;    
+            var confirm = $mdDialog.confirm()
+                .title('Cancel Event')
+                .textContent('Would you like to cancel this event?')
+                .ariaLabel('Cance Event')
+                .targetEvent(ev)
+                .ok('Yes')
+                .cancel('No');
+            $mdDialog.show(confirm).then(function() {
+                    appConfig.serviceAPI.cancelEvents(API, function(eventResponse) {
+                        $scope.$broadcast('cancelEventList');
+                    },function(err){
+                        console.log(err);
+                    },event_id,userDetails.userId)
+                }, function() {
+            });
+           } 
+        }
+    ]);
 
     app.filter('contains', function() {
         return function(array, needle) {
-            return array.indexOf(needle) >= 0;
+            if(array.length>0)
+                return array.indexOf(needle) >= 0;
         };
     });
 

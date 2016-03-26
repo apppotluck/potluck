@@ -33,7 +33,7 @@
 }  
 </style>
 <script type="text/javascript" src="http://localhost:8000/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js"></script>
-<section class="container" ng-controller="EventMenuController" class="" id="popupContainer" ng-cloak>
+<section class="container" ng-controller="EventMenuController" id="popupContainer" ng-cloak>
     <section title="click to edit" ng-click="isVisible=!isVisible" class="row pot-details" ng-repeat="menu in eventMenuArray | orderBy:'-created_date'" id="menu_{{menu.rid}}">
         <article class="col-xs-9">
             <h3 class="mt0">{{menu.name}}</h3>

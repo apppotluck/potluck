@@ -31,7 +31,7 @@ define(['app'], function(app) {
                      $location.path('/');
                 };
                 scope.cancelEvents = function() {
-                    alert("sfsdf")
+                    $location.path('/cancel-events');
                 }
             }
         }

@@ -51,6 +51,13 @@ define([], function()
                     'controllers/events/EventsController',
                     'directives/header'
                 ]
+            },
+            '/cancel-events': {
+                templateUrl: '/views/events/cancel-events.html',
+                dependencies: [
+                    'controllers/events/EventsController',
+                    'directives/header'
+                ]
             }
         }
     };

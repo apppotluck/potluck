@@ -142,7 +142,6 @@ var save_menu = function(body) {
     var defered = Q.defer();
 
     var query = "insert into potluck_event_menu(name,description,event_id,added_by,created_date) values ('" + body.name + "','" + body.desc + "'," + body.event_id + "," + body.added_by + ",'" + Date.now() + "')"
-    console.log(query);
     db.exec(query).then(function(response) {
         defered.resolve(response);
     }, function(err) {
@@ -407,6 +406,17 @@ module.exports = (function() {
             }, function(err) {
                 defered.reject(err);
             })
+            return defered.promise;
+        },
+        cancelEvents: function(event_id,uid) {
+            var defered = Q.defer();
+            var query="update potluck_events set status=0 where created_by="+uid+" and @rid="+event_id;
+            console.log(query)
+            db.exec(query).then(function(updatedEvent){
+                defered.resolve(true);
+            },function(err){
+                defered.reject(err);
+            })            
             return defered.promise;
         }
     }

@@ -51,7 +51,9 @@ app.get('/events', function(req, res) {
 app.get('/event-details/:id', function(req, res) {
     res.sendFile(__dirname + '/app/index.html');
 });
-
+app.get('/cancel-events', function(req, res) {
+    res.sendFile(__dirname + '/app/index.html');
+});
 // ---------------------------------------------------------
 // get an instance of the router for api routes
 // ---------------------------------------------------------
@@ -86,6 +88,16 @@ apiRoutes.get('/getEvents/:uid', function(req, res) {
         res.send();
     })
 });
+
+apiRoutes.get('/cancelEvents/:event_id/:uid',function(req, res){
+   dbOperation.cancelEvents(req.params.event_id,req.params.uid).then(function(eventsResponse) {
+        res.json(eventsResponse);
+        res.send();
+    }, function(err) {
+        res.json("error");
+        res.send();
+    }) 
+})
 
 apiRoutes.get('/getEventDetails/:eId', function(req, res) {
     dbOperation.getEventDetails(req.params.eId).then(function(eventDetails) {
