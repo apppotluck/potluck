@@ -91,6 +91,15 @@ apiRoutes.get('/getEvents/:uid', function(req, res) {
         res.send();
     })
 });
+apiRoutes.post('/addMoreInviteesInEvent/:eId',function(req,res){
+    dbOperation.addMoreInviteesInEvent(req.params.eId,req.body).then(function(response){
+        res.json(response);
+        res.send()
+    },function(err){
+        res.json('error');
+        res.send();    
+    })
+})
 
 apiRoutes.get('/cancelEvents/:event_id/:uid',function(req, res){
    dbOperation.cancelEvents(req.params.event_id,req.params.uid).then(function(eventsResponse) {

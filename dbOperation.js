@@ -47,13 +47,13 @@ var updateInviteFriendStatus = function(email_id, uid) {
 
     var selectQuery = "select * from potluck_invite_friends where email_id='" + email_id + "'";
     db.exec(selectQuery).then(function(res) {
-        var event_id=[]
-        _.map(res.results[0].content,function(content,key) {
+        var event_id = []
+        _.map(res.results[0].content, function(content, key) {
             event_id.push(content.value.event_id)
         })
         if (res.results[0].content.length) {
             var updateUid = "update potluck_invite_friends SET user_id =" + uid + " where email_id = '" + email_id + "'";
-            var updateUsers = "update " + uid + " add inviteed_to = [" + event_id +"]";
+            var updateUsers = "update " + uid + " add inviteed_to = [" + event_id + "]";
             db.exec(updateUid).then(function(res) {
                 db.exec(updateUsers).then(function(res) {}, function(err) {})
             }, function(err) {
@@ -73,48 +73,56 @@ var saveInviteFriend = function(friendEmail, event_id) {
     db.exec(checkUsers).then(function(response) {
         if (response.results[0].content.length) {
             var userId = getRid(response);
-            var query = 'insert into potluck_invite_friends(email_id,event_id,user_id) values ("' + friendEmail + '", ' + event_id + ', '+userId+') RETURN @rid';
+            var query = 'insert into potluck_invite_friends(email_id,event_id,user_id) values ("' + friendEmail + '", ' + event_id + ', ' + userId + ') RETURN @rid';
         } else {
             var query = 'insert into potluck_invite_friends(email_id,event_id) values ("' + friendEmail + '", ' + event_id + ') RETURN @rid';
         }
         db.exec(query).then(function(res) {
-            invite_id = getRid(res);
-            if (response.results[0].content.length) {
-                var userId = getRid(response);
-                // In case of registered user update users.invitted_to field
-                var updateUsers = "update " + userId + " add inviteed_to = " + event_id;
-                obj = {
-                    "invite_id": invite_id
-                }
-                db.exec(updateUsers).then(function(response) {
+            var invite_id = getRid(res);
+            var updateEvent = "update " + event_id + " add invitees = " + invite_id;
+            db.exec(updateEvent).then(function(updatedEvent){
+
+                // If user already register then update userId
+                if (response.results[0].content.length) {
+                    var userId = getRid(response);
+                    // In case of registered user update users.invitted_to field
+                    var updateUsers = "update " + userId + " add inviteed_to = " + event_id;
+                    
+                    obj = {
+                        "invite_id": invite_id
+                    }
+                    db.exec(updateUsers).then(function(response) {
+                        inviteFriendPromise.resolve(obj);
+                    }, function(err) {
+                        console.log("some problem while updaing users with inviteed_to", err);
+                        inviteFriendPromise.reject(err);
+                    });
+                } else {
+                    obj = {
+                            "invite_id": invite_id
+                        }
+                        // send mail to invitees
+                        // create reusable transporter object using the default SMTP transport
+                    var transporter = nodemailer.createTransport('smtps://puneetsiet@gmail.com:P@ssword123456@smtp.gmail.com');
+                    var mailOptions = {
+                        from: '"Fred Potluck" <potluck@gmail.com>', // sender address
+                        to: friendEmail, // list of receivers
+                        subject: 'Potluck mail', // Subject line
+                        text: 'Please join the app to see the event.Click here to login/register', // plaintext body
+                        html: '<b>Please join the app to see the event. <a href="http://localhost:8000/">Click here</a> to login/register</b>' // html body
+                    };
+                    // send mail with defined transport object
+                    // transporter.sendMail(mailOptions, function(error, info) {
+                    //     if (error) {
+                    //         return console.log(error);
+                    //     }
+                    //     console.log('Message sent: ' + info.response);
+                    // });
                     inviteFriendPromise.resolve(obj);
-                }, function(err) {
-                    console.log("some problem while updaing users with inviteed_to", err);
-                    inviteFriendPromise.reject(err);
-                });
-            } else {
-                obj = {
-                    "invite_id": invite_id
                 }
-                // send mail to invitees
-                // create reusable transporter object using the default SMTP transport
-                var transporter = nodemailer.createTransport('smtps://puneetsiet@gmail.com:P@ssword123456@smtp.gmail.com');
-                var mailOptions = {
-                    from: '"Fred Potluck" <potluck@gmail.com>', // sender address
-                    to: friendEmail, // list of receivers
-                    subject: 'Potluck mail', // Subject line
-                    text: 'Please join the app to see the event.Click here to login/register', // plaintext body
-                    html: '<b>Please join the app to see the event. <a href="http://localhost:8000/">Click here</a> to login/register</b>' // html body
-                };
-                // send mail with defined transport object
-                // transporter.sendMail(mailOptions, function(error, info) {
-                //     if (error) {
-                //         return console.log(error);
-                //     }
-                //     console.log('Message sent: ' + info.response);
-                // });
-                inviteFriendPromise.resolve(obj);
-            }
+            },function(err){
+                inviteFriendPromise.reject(err);
+            });
         }, function(err) {
             console.log("some problem", err);
             inviteFriendPromise.reject(err);
@@ -170,12 +178,12 @@ module.exports = (function() {
                 });
 
                 Q.allSettled(friendPromise).then(function(response) {
-                    _.map(response, function(v, k, a) {
-                        if (v.state === 'fulfilled') {
-                            var updateEvent = "update " + eventId + " add invitees = " + v.value.invite_id;
-                            db.exec(updateEvent)
-                        }
-                    });
+                    // _.map(response, function(v, k, a) {
+                    //     if (v.state === 'fulfilled') {
+                    //         var updateEvent = "update " + eventId + " add invitees = " + v.value.invite_id;
+                    //         db.exec(updateEvent)
+                    //     }
+                    // });
                     var updateUsers = "update " + body.created_by + " add created_events = " + eventId;
                     db.exec(updateUsers).then(function(res) {
                         eventSavePromise.resolve("event saved successfully");
@@ -408,25 +416,44 @@ module.exports = (function() {
             })
             return defered.promise;
         },
-        cancelEvents: function(event_id,uid) {
+        cancelEvents: function(event_id, uid) {
             var defered = Q.defer();
-            var query="update potluck_events set status=0 where created_by="+uid+" and @rid="+event_id;
+            var query = "update potluck_events set status=0 where created_by=" + uid + " and @rid=" + event_id;
             console.log(query)
-            db.exec(query).then(function(updatedEvent){
+            db.exec(query).then(function(updatedEvent) {
                 defered.resolve(true);
-            },function(err){
+            }, function(err) {
                 defered.reject(err);
-            })            
+            })
             return defered.promise;
         },
         getEventInvitees: function(event_id) {
             var defered = Q.defer();
-            var query="select *,user_id.name as username from potluck_invite_friends where event_id="+event_id;
-            db.exec(query).then(function(invitees){
+            var query = "select *,user_id.name as username from potluck_invite_friends where event_id=" + event_id;
+            db.exec(query).then(function(invitees) {
                 defered.resolve(invitees);
-            },function(err){
+            }, function(err) {
                 defered.reject(err);
-            })            
+            })
+            return defered.promise;
+        },
+        addMoreInviteesInEvent: function(eventId, body) {
+            var defered = Q.defer();
+            var promiseArray = [];
+            for (var i = 0; i < body.length; i++) {
+                if (_.isUndefined(body[i].invitees_id)) {
+                    promiseArray.push(saveInviteFriend(body[i].email, eventId))
+                }
+            }
+            Q.allSettled(promiseArray).then(function(response) {
+                _.map(response, function(v, k, a) {
+                    if (v.state === 'fulfilled') {
+                        defered.resolve(true);
+                    } else {
+                        defered.reject("some error while adding invitees.");
+                    }
+                });
+            });
             return defered.promise;
         },
     }

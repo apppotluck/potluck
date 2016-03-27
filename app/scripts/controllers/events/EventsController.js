@@ -386,7 +386,7 @@ define(['app'], function(app) {
             var userToken = $localStorage.token,
                 userDetails = jwtHelper.decodeToken(userToken),
                 currentUser = userDetails.userId;
-                $scope.showOnInviteeMoreFriendClick = false;
+            $scope.showOnInviteeMoreFriendClick = false;
             var eventsList = function() {
                 $scope.events = [];
                 appConfig.serviceAPI.getEvents(API, function(eventResponse) {
@@ -415,17 +415,17 @@ define(['app'], function(app) {
 
             $scope.inviteFriend = function(ev) {
                 $scope.showOnInviteeMoreFriendClick = true;
-                var event_id = this.value.event_id;
+                $scope.event_id = this.value.event_id;
                 $scope.contacts = [];
                 $scope.inviteesEmail = [];
                 appConfig.serviceAPI.getInvitees(API, function(inviteesResponse) {
                     for (var eventIndex in inviteesResponse.results[0].content) {
                         var invitees = {
-                                "invitees_id": '#' + inviteesResponse.results[0].content[eventIndex].cluster + ":" + inviteesResponse.results[0].content[eventIndex].position,
-                                "email": inviteesResponse.results[0].content[eventIndex].value.email_id,
-                                "name": inviteesResponse.results[0].content[eventIndex].value.username
-                            }
-                            // $scope.inviteesEmail.push(invitees.email);
+                            "invitees_id": '#' + inviteesResponse.results[0].content[eventIndex].cluster + ":" + inviteesResponse.results[0].content[eventIndex].position,
+                            "email": inviteesResponse.results[0].content[eventIndex].value.email_id,
+                            "name": inviteesResponse.results[0].content[eventIndex].value.username,
+                            "user_id": inviteesResponse.results[0].content[eventIndex].value.user_id
+                        }
                         $scope.contacts.push(invitees);
                     }
                 }, function(err) {
@@ -441,9 +441,18 @@ define(['app'], function(app) {
             }
             $scope.removeInvitees = function() {
                 console.log(this.inviteesEmail)
-                // $scope.contacts.push({
-                //     email: this.inviteesEmail[this.inviteesEmail.length - 1]
-                // });
+                    // $scope.contacts.push({
+                    //     email: this.inviteesEmail[this.inviteesEmail.length - 1]
+                    // });
+            }
+            $scope.saveInvittes = function() {
+                console.log(this.contacts);
+                console.log(this.event_id);
+                appConfig.serviceAPI.addMoreInviteesInEvent(API, function(inviteesResponse) {
+                    console.log(inviteesResponse)
+                }, function(err) {
+                    console.log(err);
+                }, this.contacts,this.event_id)
             }
         }
     ]);
