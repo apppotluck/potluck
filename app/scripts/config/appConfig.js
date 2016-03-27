@@ -22,6 +22,7 @@ var SERVICE_NAME_UPDATE_MENU = 'update-menu'; // POST
 var SERVICE_NAME_GET_MENU_DETAILS = 'get-menu-details';
 var SERVICE_NAME_GET_MENU_IMAGE_DELETE = 'delete-menu-image';
 var SERVICE_NAME_UPDATE_EVENT_ACCEPTENCE = 'update-event-acceptence';
+var SERVICE_NAME_GET_EVENT_INVITEES = 'events/getInvitees'
 var SERVICE_NAME_CANCEL_EVENT = 'cancelEvents';
 var METHOD_TYPE_GET = 'GET';
 var METHOD_TYPE_POST = 'POST';
@@ -116,7 +117,11 @@ var CANCEL_EVENT = {
     method: METHOD_TYPE_GET,
     url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_CANCEL_EVENT,
     headers: requestHeaders
-
+}
+var GET_EVENT_INVITEES = {
+    method: METHOD_TYPE_GET,
+    url: SERVICES_DOMAIN_NAME + SERVICES_CONTEXT_NAME + SERVICE_NAME_GET_EVENT_INVITEES,
+    headers: requestHeaders
 }
 
 
@@ -210,6 +215,11 @@ var appConfig = {
         'cancelEvents': function(API, _successCallback, _errorCallback,eventId,userId) {
             var serviceConfig = angular.copy(CANCEL_EVENT);
             serviceConfig.url = CANCEL_EVENT.url + '/'+encodeURIComponent(eventId)+'/'+encodeURIComponent(userId);
+            API.getAPI(serviceConfig, _successCallback, _errorCallback);
+        },
+        'getInvitees': function(API, _successCallback, _errorCallback,eventId) {
+            var serviceConfig = angular.copy(GET_EVENT_INVITEES);
+            serviceConfig.url = GET_EVENT_INVITEES.url + '/'+encodeURIComponent(eventId);
             API.getAPI(serviceConfig, _successCallback, _errorCallback);
         },
     }

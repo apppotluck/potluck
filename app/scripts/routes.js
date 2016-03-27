@@ -58,6 +58,13 @@ define([], function()
                     'controllers/events/EventsController',
                     'directives/header'
                 ]
+            },
+            '/invite-friends': {
+                templateUrl: '/views/events/invite-friends-for-events.html',
+                dependencies: [
+                    'controllers/events/EventsController',
+                    'directives/header'
+                ]
             }
         }
     };

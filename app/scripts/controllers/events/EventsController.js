@@ -315,7 +315,7 @@ define(['app'], function(app) {
             }
         }
     ])
-    app.controller('CancelEventsController',['$scope',
+    app.controller('CancelEventsController', ['$scope',
         'API',
         '$location',
         '$rootScope',
@@ -330,50 +330,127 @@ define(['app'], function(app) {
         function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout, $mdDialog, $mdMedia) {
             var userToken = $localStorage.token,
                 userDetails = jwtHelper.decodeToken(userToken),
-                currentUser = userDetails.userId;   
+                currentUser = userDetails.userId;
             var eventsList = function() {
-                $scope.events=[];
+                $scope.events = [];
                 appConfig.serviceAPI.getEvents(API, function(eventResponse) {
                     for (var eventIndex in eventResponse.results[0].content) {
-                        if(eventResponse.results[0].content[eventIndex].value.created_by === userDetails.userId) {
-                            var events = {"event_id":'#'+eventResponse.results[0].content[eventIndex].cluster+":"+eventResponse.results[0].content[eventIndex].position,
-                                          "event_name":eventResponse.results[0].content[eventIndex].value.name
-                                         }
+                        if (eventResponse.results[0].content[eventIndex].value.created_by === userDetails.userId) {
+                            var events = {
+                                "event_id": '#' + eventResponse.results[0].content[eventIndex].cluster + ":" + eventResponse.results[0].content[eventIndex].position,
+                                "event_name": eventResponse.results[0].content[eventIndex].value.name
+                            }
                             $scope.events.push(events);
                         }
                     }
-                },function(err){
-                   console.log(err); 
-                },userDetails.userId)
+                }, function(err) {
+                    console.log(err);
+                }, userDetails.userId)
             }
-            eventsList(); 
+            eventsList();
             $scope.$on('cancelEventList', function() {
                 eventsList();
             });
             $scope.cancelEvent = function(ev) {
-            var event_id = this.value.event_id;    
-            var confirm = $mdDialog.confirm()
-                .title('Cancel Event')
-                .textContent('Would you like to cancel this event?')
-                .ariaLabel('Cance Event')
-                .targetEvent(ev)
-                .ok('Yes')
-                .cancel('No');
-            $mdDialog.show(confirm).then(function() {
+                var event_id = this.value.event_id;
+                var confirm = $mdDialog.confirm()
+                    .title('Cancel Event')
+                    .textContent('Would you like to cancel this event?')
+                    .ariaLabel('Cance Event')
+                    .targetEvent(ev)
+                    .ok('Yes')
+                    .cancel('No');
+                $mdDialog.show(confirm).then(function() {
                     appConfig.serviceAPI.cancelEvents(API, function(eventResponse) {
                         $scope.$broadcast('cancelEventList');
-                    },function(err){
+                    }, function(err) {
                         console.log(err);
-                    },event_id,userDetails.userId)
-                }, function() {
-            });
-           } 
+                    }, event_id, userDetails.userId)
+                }, function() {});
+            }
+        }
+    ]);
+    app.controller('InviteFriendsController', ['$scope',
+        'API',
+        '$location',
+        '$rootScope',
+        '$q',
+        'jwtHelper',
+        '$localStorage',
+        '$routeParams',
+        'Upload',
+        '$timeout',
+        '$mdDialog',
+        '$mdMedia',
+        function($scope, API, $location, $rootScope, $q, jwtHelper, $localStorage, $routeParams, Upload, $timeout, $mdDialog, $mdMedia) {
+            var userToken = $localStorage.token,
+                userDetails = jwtHelper.decodeToken(userToken),
+                currentUser = userDetails.userId;
+                $scope.showOnInviteeMoreFriendClick = false;
+            var eventsList = function() {
+                $scope.events = [];
+                appConfig.serviceAPI.getEvents(API, function(eventResponse) {
+                    console.log(eventResponse)
+                    for (var eventIndex in eventResponse.results[0].content) {
+                        var events = {
+                            "event_id": '#' + eventResponse.results[0].content[eventIndex].cluster + ":" + eventResponse.results[0].content[eventIndex].position,
+                            "event_name": eventResponse.results[0].content[eventIndex].value.name
+                        }
+
+                        $scope.events.push(events);
+                    }
+                    // console.log($scope.events);
+                }, function(err) {
+                    console.log(err);
+                }, userDetails.userId)
+            }
+
+            eventsList();
+            // $scope.$on('cancelEventList', function() {
+            //     eventsList();
+            // });
+            $scope.event_details = function() {
+                $location.path("event-details/" + this.value.event_id)
+            }
+
+            $scope.inviteFriend = function(ev) {
+                $scope.showOnInviteeMoreFriendClick = true;
+                var event_id = this.value.event_id;
+                $scope.contacts = [];
+                $scope.inviteesEmail = [];
+                appConfig.serviceAPI.getInvitees(API, function(inviteesResponse) {
+                    for (var eventIndex in inviteesResponse.results[0].content) {
+                        var invitees = {
+                                "invitees_id": '#' + inviteesResponse.results[0].content[eventIndex].cluster + ":" + inviteesResponse.results[0].content[eventIndex].position,
+                                "email": inviteesResponse.results[0].content[eventIndex].value.email_id,
+                                "name": inviteesResponse.results[0].content[eventIndex].value.username
+                            }
+                            // $scope.inviteesEmail.push(invitees.email);
+                        $scope.contacts.push(invitees);
+                    }
+                }, function(err) {
+                    console.log(err);
+                }, this.value.event_id)
+
+
+            }
+            $scope.addInvitess = function() {
+                $scope.contacts.push({
+                    email: this.inviteesEmail[this.inviteesEmail.length - 1]
+                });
+            }
+            $scope.removeInvitees = function() {
+                console.log(this.inviteesEmail)
+                // $scope.contacts.push({
+                //     email: this.inviteesEmail[this.inviteesEmail.length - 1]
+                // });
+            }
         }
     ]);
 
     app.filter('contains', function() {
         return function(array, needle) {
-            if(array.length>0)
+            if (array)
                 return array.indexOf(needle) >= 0;
         };
     });

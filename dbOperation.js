@@ -229,7 +229,7 @@ module.exports = (function() {
         },
         getEvents: function(uid) {
             var defered = Q.defer();
-            var query = "select *,created_by.name as created_user from (select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = " + uid + "), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = " + uid + "),$c = unionAll( $a, $b )) where status = 1";
+            var query = "select *,created_by.name as created_user from (select expand($c) let $a = (SELECT expand(created_events) from potluck_users where @rid = " + uid + "), $b = (SELECT expand(inviteed_to) from potluck_users where @rid = " + uid + "),$c = unionAll( $a, $b )) where status = 1 group by @rid";
             db.exec(query).then(function(result) {
                 defered.resolve(result);
             }, function(e) {
@@ -418,6 +418,16 @@ module.exports = (function() {
                 defered.reject(err);
             })            
             return defered.promise;
-        }
+        },
+        getEventInvitees: function(event_id) {
+            var defered = Q.defer();
+            var query="select *,user_id.name as username from potluck_invite_friends where event_id="+event_id;
+            db.exec(query).then(function(invitees){
+                defered.resolve(invitees);
+            },function(err){
+                defered.reject(err);
+            })            
+            return defered.promise;
+        },
     }
 })()
