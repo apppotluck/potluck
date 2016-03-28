@@ -4,7 +4,7 @@ var Q = require('q'),
     util = require("util"),
     EventEmitter = require("events").EventEmitter,
     md5 = require('md5'),
-    nodemailer = require('nodemailer');
+    mailer = require('./mailer');
 
 var server = Oriento({
     host: 'localhost',
@@ -80,18 +80,27 @@ var saveInviteFriend = function(friendEmail, event_id) {
         db.exec(query).then(function(res) {
             var invite_id = getRid(res);
             var updateEvent = "update " + event_id + " add invitees = " + invite_id;
-            db.exec(updateEvent).then(function(updatedEvent){
+            db.exec(updateEvent).then(function(updatedEvent) {
 
                 // If user already register then update userId
                 if (response.results[0].content.length) {
                     var userId = getRid(response);
                     // In case of registered user update users.invitted_to field
                     var updateUsers = "update " + userId + " add inviteed_to = " + event_id;
-                    
+
                     obj = {
                         "invite_id": invite_id
                     }
                     db.exec(updateUsers).then(function(response) {
+                        // send mail to invitees
+                        var text = 'Please login to see the event detail.Click here to login'; // plaintext body
+                        var html = '<b>Please login to see the event detail. <a href="http://localhost:8000/">Click here</a> to login</b>'; // html body
+                        var subject = "Potluck event invitation";
+                        mailer.send(friendEmail, subject, text, html).then(function(mailResponse) {
+                            console.log(mailResponse)
+                        }, function(err) {
+                            console.log(err);
+                        })
                         inviteFriendPromise.resolve(obj);
                     }, function(err) {
                         console.log("some problem while updaing users with inviteed_to", err);
@@ -102,25 +111,16 @@ var saveInviteFriend = function(friendEmail, event_id) {
                             "invite_id": invite_id
                         }
                         // send mail to invitees
-                        // create reusable transporter object using the default SMTP transport
-                    var transporter = nodemailer.createTransport('smtps://puneetsiet@gmail.com:P@ssword123456@smtp.gmail.com');
-                    var mailOptions = {
-                        from: '"Fred Potluck" <potluck@gmail.com>', // sender address
-                        to: friendEmail, // list of receivers
-                        subject: 'Potluck mail', // Subject line
-                        text: 'Please join the app to see the event.Click here to login/register', // plaintext body
-                        html: '<b>Please join the app to see the event. <a href="http://localhost:8000/">Click here</a> to login/register</b>' // html body
-                    };
-                    // send mail with defined transport object
-                    // transporter.sendMail(mailOptions, function(error, info) {
-                    //     if (error) {
-                    //         return console.log(error);
-                    //     }
-                    //     console.log('Message sent: ' + info.response);
-                    // });
+                    var text = 'Please join the app to see the event.Click here to login/register'; // plaintext body
+                    var html = '<b>Please join the app to see the event. <a href="http://localhost:8000/">Click here</a> to login/register</b>'; // html body
+                    mailer.send(friendEmail, "Join Potluck", text, html).then(function(mailResponse) {
+                        console.log(mailResponse)
+                    }, function(err) {
+                        console.log(err);
+                    })
                     inviteFriendPromise.resolve(obj);
                 }
-            },function(err){
+            }, function(err) {
                 inviteFriendPromise.reject(err);
             });
         }, function(err) {
@@ -419,12 +419,27 @@ module.exports = (function() {
         cancelEvents: function(event_id, uid) {
             var defered = Q.defer();
             var query = "update potluck_events set status=0 where created_by=" + uid + " and @rid=" + event_id;
-            console.log(query)
-            db.exec(query).then(function(updatedEvent) {
-                defered.resolve(true);
-            }, function(err) {
-                defered.reject(err);
+            var getInvittesForEvent = "select name,invitees.email_id from potluck_events where @rid = "+event_id;
+            var promiseArray = []
+            db.exec(getInvittesForEvent).then(function(res){
+                var subject = "Potluck event Cancelled";
+                var text = res.results[0].content[0].value.name +" event has been cancelled";
+                var html = res.results[0].content[0].value.name +" event has been cancelled";
+                for(var i=0;i<res.results[0].content[0].value.invitees.length;i++) {
+                    var to = res.results[0].content[0].value.invitees[i];
+                    promiseArray.push(mailer.send(to,subject,text,html));
+                }
+                Q.allSettled(promiseArray).then(function(res){
+                    db.exec(query).then(function(updatedEvent) {
+                        defered.resolve(true);
+                        }, function(err) {
+                            defered.reject(err);
+                        })
+                })
+            },function(err){
+                console.log(err);
             })
+            
             return defered.promise;
         },
         getEventInvitees: function(event_id) {

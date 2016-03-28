@@ -28,7 +28,7 @@
 <div ng-controller="CancelEventsController" class="container" id="cancelEventContainer" ng-cloak>
     <div ng-repeat="(key, value) in events" id="event_{{value.event_id}}">
         <section class="row pot-details">
-            <span>{{value["event_name"]}}</span>
+            <span><a href="#" ng-click="event_details()">{{value["event_name"]}}</a></span>
             <span> <button ng-click="cancelEvent($event)"> Cancel Event</button></span>
         </section>
     </div>

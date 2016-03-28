@@ -34,9 +34,11 @@ define(['app'], function(app) {
                                 for (var i = 0; i < event.accepted_users.length; i++) {
                                     if (event.accepted_users[i] === currentUser) {
                                         event.accepted_event = true;
-                                    } else {
-                                        event.accepted_event = false;
-                                    }
+                                        // console.log(event);
+                                    } 
+                                    // else {
+                                    //     event.accepted_event = false;
+                                    // }
                                 }
                             }
                         }
@@ -45,9 +47,10 @@ define(['app'], function(app) {
                                 for (var i = 0; i < event.declined_users.length; i++) {
                                     if (event.declined_users[i] === currentUser) {
                                         event.declined_event = true;
-                                    } else {
-                                        event.declined_event = false;
-                                    }
+                                    } 
+                                    // else {
+                                    //     event.declined_event = false;
+                                    // }
                                 }
                             }
                         }
@@ -56,9 +59,10 @@ define(['app'], function(app) {
                                 for (var i = 0; i < event.may_be_accepted_user.length; i++) {
                                     if (event.may_be_accepted_user[i] === currentUser) {
                                         event.may_be_accepted_event = true;
-                                    } else {
-                                        event.may_be_accepted_event = false;
-                                    }
+                                    } 
+                                    // else {
+                                    //     event.may_be_accepted_event = false;
+                                    // }
                                 }
                             }
                         }
@@ -351,8 +355,35 @@ define(['app'], function(app) {
             $scope.$on('cancelEventList', function() {
                 eventsList();
             });
+            $scope.event_details = function() {
+                $location.path("event-details/"+this.value.event_id);
+            }
             $scope.cancelEvent = function(ev) {
                 var event_id = this.value.event_id;
+               //  $mdDialog.show({
+               //    clickOutsideToClose: true,
+               //    scope: $scope,        
+               //    preserveScope: true,           
+               //    template: '<md-dialog aria-label="Cancel Event" ng-cloak>' +
+               //                '<md-toolbar>'+
+               //                '<div class="md-toolbar-tools">'+
+               //                '<h2>Cancel event</h2>'+
+               //                '<span flex></span>'+
+               //                '<md-button class="md-icon-button" ng-click="cancel()">'+
+               //                '<md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>'+
+               //                '</md-button>'+
+               //                '</div>'+
+               //                '</md-toolbar>'+
+               //                '  <md-dialog-content>' +
+               //                '     <input type="text">' +
+               //                '  </md-dialog-content>' +
+               //                '</md-dialog>',
+               //    controller: function DialogController($scope, $mdDialog) {
+               //       $scope.closeDialog = function() {
+               //          $mdDialog.hide();
+               //       }
+               //    }
+               // });
                 var confirm = $mdDialog.confirm()
                     .title('Cancel Event')
                     .textContent('Would you like to cancel this event?')
@@ -446,10 +477,9 @@ define(['app'], function(app) {
                     // });
             }
             $scope.saveInvittes = function() {
-                console.log(this.contacts);
-                console.log(this.event_id);
                 appConfig.serviceAPI.addMoreInviteesInEvent(API, function(inviteesResponse) {
                     console.log(inviteesResponse)
+                    $scope.showOnInviteeMoreFriendClick = false;
                 }, function(err) {
                     console.log(err);
                 }, this.contacts,this.event_id)
@@ -459,7 +489,7 @@ define(['app'], function(app) {
 
     app.filter('contains', function() {
         return function(array, needle) {
-            if (array)
+            // if (array)
                 return array.indexOf(needle) >= 0;
         };
     });
